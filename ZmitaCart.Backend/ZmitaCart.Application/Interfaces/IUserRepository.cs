@@ -1,8 +1,11 @@
-﻿using ZmitaCart.Application.Dtos;
+﻿using ZmitaCart.Application.Dtos.User;
+using ZmitaCart.Domain.ValueObjects;
 
 namespace ZmitaCart.Application.Interfaces;
 
 public interface IUserRepository
 {
-	public string Login(LoginUserDto user);
+	public Task RegisterAsync(RegisterUserDto user);
+	public Task<string> LoginAsync(LoginUserDto user);
+	public Task ChangeRoleAsync(string userEmail, Role newRole);
 }

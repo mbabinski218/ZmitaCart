@@ -12,9 +12,18 @@ public class ApplicationDbContext : DbContext
     }
     
     public DbSet<Weather> WeatherList { get; set; } = null!;
+    
+    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Category> Categories { get; set; } = null!;
+    public DbSet<Offer> Offers { get; set; } = null!;
+    public DbSet<Favorite> Favorites { get; set; } = null!;
+    public DbSet<Bought> Bought { get; set; } = null!;
+    public DbSet<Feedback> Feedbacks { get; set; } = null!;
+    public DbSet<Chat> Chats { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
+        modelBuilder.Entity<User>().OwnsOne(u => u.Address);
+        modelBuilder.Entity<User>().OwnsOne(u => u.Role);
     }
 }

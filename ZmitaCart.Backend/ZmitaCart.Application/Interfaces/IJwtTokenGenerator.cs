@@ -1,8 +1,8 @@
-﻿using ZmitaCart.Application.Dtos;
+﻿using ZmitaCart.Application.Dtos.User;
 
 namespace ZmitaCart.Application.Interfaces;
 
 public interface IJwtTokenGenerator
 {
-	public string CreateToken(int userId, string userName, string lastName, string email, string role);
+	public string CreateToken(UserClaimsDto userClaims);
 }

@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using ZmitaCart.Application.Dtos.User;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Infrastructure.Common;
 
@@ -17,7 +18,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 		_jwtSettings = jwtSettings.Value;
 	}
 
-	public string CreateToken(int userId, string userName, string lastName, string email, string role)
+	public string CreateToken(UserClaimsDto userClaims)
 	{
 		var signingCredentials = new SigningCredentials(
 			new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)), 
@@ -25,11 +26,10 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
 		var claims = new List<Claim>
 		{
-			new(JwtRegisteredClaimNames.Sub, userId.ToString()),
-			new(JwtRegisteredClaimNames.GivenName, userName),
-			new(JwtRegisteredClaimNames.FamilyName, lastName),
-			new(JwtRegisteredClaimNames.Email, email),
-			new("role", role),
+			new(JwtRegisteredClaimNames.Sub, userClaims.Id.ToString()),
+			new(JwtRegisteredClaimNames.GivenName, userClaims.FirstName),
+			new(JwtRegisteredClaimNames.Email, userClaims.Email),
+			new("role", userClaims.Role),
 			new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
 		};
 		

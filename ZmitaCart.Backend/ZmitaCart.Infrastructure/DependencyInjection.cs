@@ -30,6 +30,7 @@ public static class DependencyInjection
         configuration.Bind(JwtSettings.sectionName, jwtSettings);
         
         services.AddSingleton(Options.Create(jwtSettings));
+        services.AddSingleton(Options.Create(new PasswordManager()));
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         
         return services;

@@ -17,7 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Common" />
       <Folder Include="Exception" />
       <Folder Include="Persistence\Migrations" />
     </ItemGroup>

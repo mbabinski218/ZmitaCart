@@ -2,7 +2,6 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
@@ -43,7 +42,7 @@ public class UserRepository : IUserRepository
 			LastName = registerUserDto.LastName,
 			PasswordHash = passwordHash,
 			PasswordSalt = passwordSalt,
-			Role = Role.User,
+			Role = registerUserDto.Role ?? Role.User,
 		};
         
 		await _dbContext.Users.AddAsync(user);

@@ -12,11 +12,11 @@ public class Offer : AggregateRoot<int>
 	public bool IsAvailable { get; set; }
 	public DateTimeOffset CreatedAt { get; set; }
 	public Condition Condition { get; set; }
-	public int CategoryId { get; set; }
-	public Category Category { get; set; } = null!;
-	public int UserId { get; set; }
-	public User User { get; set; } = null!;
-	public ICollection<Favorite> Favorites { get; set; }
-	public ICollection<Bought> Bought { get; set; }
+	public int? CategoryId { get; set; }
+	public Category? Category { get; set; }
+	public int? UserId { get; set; }
+	public User? User { get; set; }
+	public ICollection<UserOffer>? Favorites { get; set; }
+	public ICollection<Bought>? Bought { get; set; }
 	// public ICollection<OfferImage>? OfferImages { get; set; }
 }

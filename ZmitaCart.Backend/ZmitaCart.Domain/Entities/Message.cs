@@ -7,7 +7,7 @@ public class Message : Entity<int>
 	public string Text { get; set; } = null!;
 	public DateTimeOffset Date { get; set; } 
 	public int UserId { get; set; }
-	public virtual User User { get; set; }
+	public virtual User User { get; set; } = null!;
 	public int ChatId { get; set; }
-	public virtual Chat Chat { get; set; }
+	public virtual Conversation Conversation { get; set; } = null!;
 }

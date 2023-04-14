@@ -12,10 +12,10 @@ public class User : AggregateRoot<int>
 	public byte[] PasswordHash { get; set; } = null!;
 	public byte[] PasswordSalt { get; set; } = null!;
 	public string? Phone { get; set; }
-	public Address? Address { get; set; }
+	public Address Address { get; set; } = null!;
 	public ICollection<Bought>? Bought { get; set; }
-	public ICollection<Chat>? Chats { get; set; }
-	public ICollection<Favorite>? Favorites { get; set; }
+	public ICollection<UserConversation>? Chats { get; set; }
+	public ICollection<UserOffer>? Favorites { get; set; }
 	public ICollection<Feedback>? Feedbacks { get; set; }
 	public ICollection<Offer>? Offers { get; set; }
 }

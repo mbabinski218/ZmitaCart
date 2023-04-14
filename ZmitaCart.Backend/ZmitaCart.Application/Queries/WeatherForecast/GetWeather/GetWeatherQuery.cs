@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using ZmitaCart.Domain.Entities;
 
-namespace ZmitaCart.Application.WeatherForecasts.Queries.GetWeather;
+namespace ZmitaCart.Application.Queries.WeatherForecast.GetWeather;
 
 public class GetWeatherQuery : IRequest<Weather>
 {

@@ -2,7 +2,8 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using ZmitaCart.Application.Dtos.User;
+using ZmitaCart.Application.Common;
+using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Domain.ValueObjects;
@@ -28,18 +29,18 @@ public class UserRepository : IUserRepository
 		_passwordManager = passwordManager.Value;
 	}
 
-	public async Task RegisterAsync(RegisterUserDto userDto)
+	public async Task RegisterAsync(RegisterUserDto registerUserDto)
 	{
-		if (await _dbContext.Users.AnyAsync(user => user.Email == userDto.Email))
+		if (await _dbContext.Users.AnyAsync(user => user.Email == registerUserDto.Email))
 			throw new InvalidDataException("Email already used");
 
-		_passwordManager.CreatePasswordHash(userDto.Password, out var passwordHash, out var passwordSalt);
+		_passwordManager.CreatePasswordHash(registerUserDto.Password, out var passwordHash, out var passwordSalt);
 		
 		var user = new User
 		{
-			Email = userDto.Email,
-			FirstName = userDto.FirstName,
-			LastName = userDto.LastName,
+			Email = registerUserDto.Email,
+			FirstName = registerUserDto.FirstName,
+			LastName = registerUserDto.LastName,
 			PasswordHash = passwordHash,
 			PasswordSalt = passwordSalt,
 			Role = Role.User,
@@ -49,14 +50,14 @@ public class UserRepository : IUserRepository
 		await _dbContext.SaveChangesAsync();
 	}
 
-	public async Task<string> LoginAsync(LoginUserDto userDto)
+	public async Task<string> LoginAsync(LoginUserDto loginUserDto)
 	{
-		var (passwordHash, passwordSalt) = await GetPasswordHashAndSalt(userDto.Email);
+		var (passwordHash, passwordSalt) = await GetPasswordHashAndSalt(loginUserDto.Email);
 
-		if (!_passwordManager.VerifyPasswordHash(userDto.Password, passwordHash, passwordSalt))
+		if (!_passwordManager.VerifyPasswordHash(loginUserDto.Password, passwordHash, passwordSalt))
 			throw new InvalidLoginDataException("Wrong email or password");
 
-		var userClaims = await GetUserClaims(userDto.Email);
+		var userClaims = await GetUserClaims(loginUserDto.Email);
 
 		return _jwtTokenGenerator.CreateToken(userClaims);
 	}
@@ -95,7 +96,7 @@ public class UserRepository : IUserRepository
 			.FirstOrDefaultAsync();
 
 		if (userClaims == null)
-			throw new DatabaseException("Transaction error");
+			throw new DatabaseException("Email not found in database");
 
 		return userClaims;
 	}

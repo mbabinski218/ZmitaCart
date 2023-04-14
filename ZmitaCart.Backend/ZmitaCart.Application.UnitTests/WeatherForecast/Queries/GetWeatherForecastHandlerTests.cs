@@ -1,5 +1,5 @@
 ﻿using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Application.WeatherForecasts.Queries.GetWeather;
+using ZmitaCart.Application.Queries.WeatherForecast.GetWeather;
 using ZmitaCart.Domain.Entities;
 
 namespace ZmitaCart.Application.UnitTests.WeatherForecast.Queries;

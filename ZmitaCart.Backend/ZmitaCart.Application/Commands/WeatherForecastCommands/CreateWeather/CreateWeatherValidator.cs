@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace ZmitaCart.Application.WeatherForecasts.Commands.CreateWeather;
+namespace ZmitaCart.Application.Commands.WeatherForecastCommands.CreateWeather;
 
 public class CreateWeatherValidator : AbstractValidator<CreateWeatherCommand>
 {

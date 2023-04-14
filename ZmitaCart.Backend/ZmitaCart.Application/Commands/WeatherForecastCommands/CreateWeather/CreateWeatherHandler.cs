@@ -2,7 +2,7 @@
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
 
-namespace ZmitaCart.Application.WeatherForecasts.Commands.CreateWeather;
+namespace ZmitaCart.Application.Commands.WeatherForecastCommands.CreateWeather;
 
 public class CreateWeatherHandler : IRequestHandler<CreateWeatherCommand, Weather>
 {

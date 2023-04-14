@@ -2,7 +2,7 @@
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
 
-namespace ZmitaCart.Application.WeatherForecasts.Queries.GetWeather;
+namespace ZmitaCart.Application.Queries.WeatherForecast.GetWeather;
 
 public class GetWeatherHandler : IRequestHandler<GetWeatherQuery, Weather>
 {

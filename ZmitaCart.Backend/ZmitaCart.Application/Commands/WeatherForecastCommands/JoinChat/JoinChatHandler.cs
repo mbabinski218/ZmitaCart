@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using ZmitaCart.Domain.Events;
 
-namespace ZmitaCart.Application.WeatherForecasts.Commands.JoinChat;
+namespace ZmitaCart.Application.Commands.WeatherForecastCommands.JoinChat;
 
 public class JoinChatHandler : IRequestHandler<JoinChatCommand>
 {

@@ -1,24 +1,19 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using ZmitaCart.Application.WeatherForecasts.Commands.CreateWeather;
-using ZmitaCart.Application.WeatherForecasts.Queries.GetWeather;
+using ZmitaCart.API.Common;
+using ZmitaCart.Application.Commands.WeatherForecastCommands.CreateWeather;
+using ZmitaCart.Application.Queries.WeatherForecast.GetWeather;
 using ZmitaCart.Domain.Entities;
 
 namespace ZmitaCart.API.Controllers;
 
-[ApiController]
-[Route("[controller]")]
-public class WeatherForecastController : ControllerBase
+public class WeatherForecastController : ApiController
 {
-    private readonly IMediator _mediator;
-    private readonly ILogger<WeatherForecastController> _logger;
-
-    public WeatherForecastController(ILogger<WeatherForecastController> logger, IMediator mediator)
+    public WeatherForecastController(IMediator mediator) : base(mediator)
     {
-        _logger = logger;
-        _mediator = mediator;
+        
     }
-
+    
     [HttpPost]
     public async Task<ActionResult<Weather>> Create([FromBody] CreateWeatherCommand command)
     {
@@ -35,4 +30,5 @@ public class WeatherForecastController : ControllerBase
         };
         return Ok(await _mediator.Send(query));
     }
+
 }

@@ -1,4 +1,4 @@
-﻿using ZmitaCart.Application.Dtos.User;
+﻿using ZmitaCart.Application.Dtos.UserDtos;
 
 namespace ZmitaCart.Application.Interfaces;
 

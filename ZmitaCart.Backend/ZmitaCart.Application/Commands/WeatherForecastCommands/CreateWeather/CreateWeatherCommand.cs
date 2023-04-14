@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using ZmitaCart.Domain.Entities;
 
-namespace ZmitaCart.Application.WeatherForecasts.Commands.CreateWeather;
+namespace ZmitaCart.Application.Commands.WeatherForecastCommands.CreateWeather;
 
 public record CreateWeatherCommand : IRequest<Weather>
 {

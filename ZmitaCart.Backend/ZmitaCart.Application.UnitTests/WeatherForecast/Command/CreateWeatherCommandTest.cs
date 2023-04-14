@@ -1,5 +1,5 @@
-﻿using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Application.WeatherForecasts.Commands.CreateWeather;
+﻿using ZmitaCart.Application.Commands.WeatherForecastCommands.CreateWeather;
+using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
 
 namespace ZmitaCart.Application.UnitTests.WeatherForecast.Command;

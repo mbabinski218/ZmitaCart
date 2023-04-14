@@ -25,5 +25,11 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.Entity<User>().OwnsOne(u => u.Address);
         modelBuilder.Entity<User>().OwnsOne(u => u.Role);
+        
+        modelBuilder.Entity<Category>()
+            .HasOne(c => c.Parent)
+            .WithMany(c => c.Children)
+            .HasForeignKey(c => c.ParentId);
+        
     }
 }

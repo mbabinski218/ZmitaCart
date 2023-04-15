@@ -7,9 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Commands\WeatherForecastCommands\" />
       <Folder Include="Exceptions\" />
-      <Folder Include="Queries\WeatherForecast\" />
+      <Folder Include="Queries\" />
     </ItemGroup>
 
     <ItemGroup>

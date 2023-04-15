@@ -1,21 +1,19 @@
 ﻿using System.Reflection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Domain.Entities;
-using ZmitaCart.Domain.Enums;
 
 namespace ZmitaCart.Infrastructure.Persistence;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
-        //Database.EnsureDeleted();
-        Database.EnsureCreated();
+        // Database.EnsureDeleted();
+        // Database.EnsureCreated();
     }
     
-    public DbSet<Weather> WeatherList { get; set; } = null!;
-    
-    public DbSet<User> Users { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Offer> Offers { get; set; } = null!;
     public DbSet<UserOffer> Favorites { get; set; } = null!;

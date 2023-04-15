@@ -1,9 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using ZmitaCart.Domain.Common.Models;
+﻿namespace ZmitaCart.Domain.Common;
 
-namespace ZmitaCart.Domain.ValueObjects;
-
-public class Role : ValueObject
+public class Role
 {
 	public static Role Administrator => new("Administrator");
 	public static Role User => new("User");
@@ -15,11 +12,6 @@ public class Role : ValueObject
 		Code = roleCode;
 	}
 
-	public Role()
-	{
-		Code = "User";
-	}
-
 	public static IEnumerable<Role> SupportedRoles
 	{
 		get
@@ -27,10 +19,5 @@ public class Role : ValueObject
 			yield return Administrator;
 			yield return User;
 		}
-	}
-	
-	protected override IEnumerable<object?> GetEqualityComponents()
-	{
-		yield return Code;
 	}
 }

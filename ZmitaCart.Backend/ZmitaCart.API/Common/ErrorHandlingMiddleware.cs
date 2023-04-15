@@ -31,6 +31,12 @@ public class ErrorHandlingMiddleware : IMiddleware
 			await context.Response.WriteAsync(JsonSerializer
 				.Serialize(ex.Errors.Select(vf => vf.ErrorMessage)));
 		}
+		catch (InvalidDataException ex)
+		{
+			context.Response.StatusCode = StatusCodes.Status400BadRequest;
+			context.Response.ContentType = "text/plain";
+			await context.Response.WriteAsync(ex.Message);
+		}
 		catch (Exception ex)
 		{
 			_logger.LogCritical("{msg}", ex.Message);

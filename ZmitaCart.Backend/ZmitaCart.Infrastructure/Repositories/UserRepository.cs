@@ -5,6 +5,7 @@ using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Common;
 using ZmitaCart.Domain.Entities;
+using ZmitaCart.Infrastructure.Exceptions;
 
 namespace ZmitaCart.Infrastructure.Repositories;
 
@@ -46,8 +47,7 @@ public class UserRepository : IUserRepository
 		
 		if (!result.Succeeded)
 		{
-			var errors = result.Errors.Select(e => e.Description).ToString();
-			throw new InvalidDataException(errors);
+			throw new InvalidLoginDataException(result.Errors.Select(e => e.Description));
 		}
 		
 		if (!await _roleManager.RoleExistsAsync(registerUserDto.Role?.Code))

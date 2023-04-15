@@ -1,6 +1,7 @@
 using ZmitaCart.API.Hubs;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application;
+using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+var scope = app.Services.CreateScope();
+var seeder = scope.ServiceProvider.GetRequiredService<IDatabaseSeeder>();
+await seeder.Seed();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseHttpsRedirection();

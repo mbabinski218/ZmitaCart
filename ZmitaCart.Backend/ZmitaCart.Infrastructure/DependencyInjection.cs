@@ -15,9 +15,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("TestDb")));
-
+        AddDatabase(services, configuration);
         AddAuth(services, configuration);
         
         services.AddScoped<IUserRepository, UserRepository>();
@@ -25,6 +23,16 @@ public static class DependencyInjection
         return services;
     }
 
+    private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("ZmitaCartDb")));
+        
+        services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
+
+        return services;
+    }
+    
     private static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddIdentity<User, IdentityRole<int>>()

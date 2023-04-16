@@ -2,7 +2,7 @@
 using MediatR;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Domain.ValueObjects;
+using ZmitaCart.Domain.Common;
 
 namespace ZmitaCart.Application.Commands.UserCommands.RegisterUser;
 

@@ -2,13 +2,10 @@
 
 public class InvalidLoginDataException : Exception
 {
-	public InvalidLoginDataException()
+	public IEnumerable<string> Errors { get; set; }
+	
+	public InvalidLoginDataException(IEnumerable<string> errors) : base("Invalid login data")
 	{
-
-	}
-       
-	public InvalidLoginDataException(string msg) : base(msg)
-	{
-
+		Errors = errors;
 	}
 }

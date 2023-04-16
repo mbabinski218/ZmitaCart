@@ -1,4 +1,5 @@
-﻿using ZmitaCart.Domain.ValueObjects;
+﻿using ZmitaCart.Domain.Common;
+using ZmitaCart.Domain.ValueObjects;
 
 namespace ZmitaCart.Application.Dtos.UserDtos;
 

@@ -1,0 +1,25 @@
+﻿using AutoMapper;
+using MediatR;
+using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Application.Services;
+
+namespace ZmitaCart.Application.Commands.UserCommands.AddRoleForUser;
+
+public class AddRoleForUserHandler : IRequestHandler<AddRoleForUserCommand>
+{
+	private readonly IUserRepository _userRepository;
+	private readonly IMapper _mapper;
+	private readonly ICurrentUserService _currentUserService;
+
+	public AddRoleForUserHandler(IUserRepository userRepository, IMapper mapper, ICurrentUserService currentUserService)
+	{
+		_userRepository = userRepository;
+		_mapper = mapper;
+		_currentUserService = currentUserService;
+	}
+	
+	public async Task Handle(AddRoleForUserCommand request, CancellationToken cancellationToken)
+	{
+		await _userRepository.AddRoleAsync(request.UserEmail!, request.Role!);
+	}
+}

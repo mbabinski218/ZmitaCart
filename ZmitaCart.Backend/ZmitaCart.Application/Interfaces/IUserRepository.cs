@@ -9,5 +9,5 @@ public interface IUserRepository
 	public Task RegisterAsync(RegisterUserDto registerUserDto);
 	public Task<string> LoginAsync(LoginUserDto loginUserDto);
 	public Task LogoutAsync();
-	public Task AddRoleAsync(string userEmail, Role newRole);
+	public Task AddRoleAsync(string userEmail, string role);
 }

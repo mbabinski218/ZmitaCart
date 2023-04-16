@@ -17,11 +17,6 @@ public class DatabaseSeeder : IDatabaseSeeder
 
     public async Task Seed()
     {
-        //var pendingMigarations = _dbContext.Database.GetPendingMigrations();
-
-        //if (pendingMigarations != null && pendingMigarations.Any())
-        //    _dbContext.Database.Migrate();
-
         if (!await _dbContext.Database.CanConnectAsync())
         {
             return;

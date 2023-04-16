@@ -35,7 +35,15 @@ public static class DependencyInjection
     
     private static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddIdentity<User, IdentityRole<int>>()
+        services.AddIdentity<User, IdentityRole<int>>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 1;
+                options.Password.RequiredUniqueChars = 0;
+            })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 

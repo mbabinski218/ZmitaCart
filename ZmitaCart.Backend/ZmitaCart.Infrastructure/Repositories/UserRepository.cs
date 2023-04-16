@@ -103,7 +103,7 @@ public class UserRepository : IUserRepository
 		await _signInManager.SignOutAsync();
 	}
 	
-	public async Task AddRoleAsync(string userEmail, Role newRole)
+	public async Task AddRoleAsync(string userEmail, string role)
 	{
 		var user = await _userManager.FindByEmailAsync(userEmail);
 		
@@ -112,13 +112,13 @@ public class UserRepository : IUserRepository
 			throw new InvalidDataException("User does not exist");
 		}
 		
-		if (!await _roleManager.RoleExistsAsync(newRole.Code))
+		if (!await _roleManager.RoleExistsAsync(role))
 		{
 			throw new InvalidDataException("Unsupported role");
 		}
 		
-		await _userManager.AddToRoleAsync(user, newRole.Code);
+		await _userManager.AddToRoleAsync(user, role);
 		
-		await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, newRole.Code));
+		await _userManager.AddClaimAsync(user, new Claim(ClaimNames.Role, role));
 	}
 }

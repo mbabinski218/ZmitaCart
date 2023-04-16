@@ -9,7 +9,7 @@ public class ApiController : ControllerBase
 {
 	protected readonly IMediator _mediator;
 
-	public ApiController(IMediator mediator)
+	protected ApiController(IMediator mediator)
 	{
 		_mediator = mediator;
 	}

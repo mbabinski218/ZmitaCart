@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
@@ -11,16 +10,14 @@ namespace ZmitaCart.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {
-	private readonly IMapper _mapper;
 	private readonly UserManager<User> _userManager;
 	private readonly SignInManager<User> _signInManager;
 	private readonly RoleManager<IdentityRole<int>> _roleManager;
 	private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-	public UserRepository(IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, 
+	public UserRepository(UserManager<User> userManager, SignInManager<User> signInManager, 
 		RoleManager<IdentityRole<int>> roleManager, IJwtTokenGenerator jwtTokenGenerator)
 	{
-		_mapper = mapper;
 		_userManager = userManager;
 		_signInManager = signInManager;
 		_roleManager = roleManager;
@@ -31,7 +28,12 @@ public class UserRepository : IUserRepository
 	{
 		if (await _userManager.FindByEmailAsync(registerUserDto.Email) != null)
 		{
-			throw new Exception("User already exists");
+			throw new InvalidDataException("User already exists");
+		}
+
+		if (registerUserDto.Role == null || !await _roleManager.RoleExistsAsync(registerUserDto.Role.Code))
+		{
+			throw new InvalidDataException("Unsupported role");
 		}
 		
 		var user = new User
@@ -49,13 +51,19 @@ public class UserRepository : IUserRepository
 		{
 			throw new InvalidLoginDataException(result.Errors.Select(e => e.Description));
 		}
-		
-		if (!await _roleManager.RoleExistsAsync(registerUserDto.Role?.Code))
+
+		await _userManager.AddToRoleAsync(user, registerUserDto.Role!.Code);
+
+		var claims = new List<Claim>
 		{
-			throw new InvalidDataException("Unsupported role");
-		}
+			new(ClaimNames.Id, user.Id.ToString()),
+			new(ClaimNames.Email, user.Email),
+			new(ClaimNames.FirstName, user.FirstName),
+			new(ClaimNames.LastName, user.LastName),
+			new(ClaimNames.Role, registerUserDto.Role!.Code)
+		};
 		
-		await _userManager.AddToRoleAsync(user, registerUserDto.Role?.Code);
+		await _userManager.AddClaimsAsync(user, claims);
 	}
 
 	public async Task<string> LoginAsync(LoginUserDto loginUserDto)
@@ -84,20 +92,8 @@ public class UserRepository : IUserRepository
 		{
 			throw new Exception("User is locked out");
 		}
-		
-		var authClaims = new List<Claim>
-		{
-			new(ClaimTypes.Sid, user.Id.ToString()),
-			new(ClaimTypes.Email, user.Email),
-			new(ClaimTypes.GivenName, user.FirstName),
-			new(ClaimTypes.Surname, user.LastName)
-		};
 
-		var userRoles = await _userManager.GetRolesAsync(user);
-		authClaims.AddRange
-		(
-			userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole))
-		);
+		var authClaims = await _userManager.GetClaimsAsync(user);
 
 		return _jwtTokenGenerator.CreateToken(authClaims);
 	}
@@ -109,6 +105,20 @@ public class UserRepository : IUserRepository
 	
 	public async Task AddRoleAsync(string userEmail, Role newRole)
 	{
-		throw new NotImplementedException();
+		var user = await _userManager.FindByEmailAsync(userEmail);
+		
+		if (user == null)
+		{
+			throw new InvalidDataException("User does not exist");
+		}
+		
+		if (!await _roleManager.RoleExistsAsync(newRole.Code))
+		{
+			throw new InvalidDataException("Unsupported role");
+		}
+		
+		await _userManager.AddToRoleAsync(user, newRole.Code);
+		
+		await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, newRole.Code));
 	}
 }

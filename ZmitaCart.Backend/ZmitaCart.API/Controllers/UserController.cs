@@ -1,10 +1,12 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.UserCommands.AddRoleForUser;
 using ZmitaCart.Application.Commands.UserCommands.RegisterUser;
 using ZmitaCart.Application.Queries.UserQueries.LoginUser;
 using ZmitaCart.Application.Queries.UserQueries.LogoutUser;
+using ZmitaCart.Domain.Common;
 
 namespace ZmitaCart.API.Controllers;
 
@@ -17,29 +19,32 @@ public class UserController : ApiController
 	}
 	
 	[HttpPost("register")]
+	[AllowAnonymous]
 	public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
 	{
-		await _mediator.Send(command);
+		await mediator.Send(command);
 		return Ok();
 	}
 
 	[HttpPost("login")]
+	[AllowAnonymous]
 	public async Task<IActionResult> Login([FromBody] LoginUserQuery query)
 	{
-		return Ok(await _mediator.Send(query));
+		return Ok(await mediator.Send(query));
 	}
 	
 	[HttpPost("logout")]
 	public async Task<IActionResult> Logout()
 	{
-		await _mediator.Send(new LogoutUserQuery());
+		await mediator.Send(new LogoutUserQuery());
 		return Ok();
 	}
 	
 	[HttpPost("addRole")]
+	[Authorize(Roles = Role.administrator)]
 	public async Task<IActionResult> AddRoleForUser([FromBody] AddRoleForUserCommand command)
 	{
-		await _mediator.Send(command);
+		await mediator.Send(command);
 		return Ok();
 	}
 }

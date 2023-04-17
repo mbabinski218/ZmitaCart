@@ -2,22 +2,15 @@
 
 public class Role
 {
-	public static Role Administrator => new("Administrator");
-	public static Role User => new("User");
+	public const string administrator = "Administrator";
+	public const string user = "User";
 
-	public string Code { get; private set; }
-
-	private Role(string roleCode)
-	{
-		Code = roleCode;
-	}
-
-	public static IEnumerable<Role> SupportedRoles
+	public static IEnumerable<string> SupportedRoles
 	{
 		get
 		{
-			yield return Administrator;
-			yield return User;
+			yield return administrator;
+			yield return user;
 		}
 	}
 }

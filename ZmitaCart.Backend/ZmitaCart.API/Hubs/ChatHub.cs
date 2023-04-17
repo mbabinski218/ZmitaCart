@@ -17,7 +17,7 @@ public class ChatHub : Hub
 		await Groups.AddToGroupAsync(Context.ConnectionId, chatName, cancellationToken);
 	}
 	
-	public async Task SendMessage(int UserId, int ChatId, string content, CancellationToken cancellationToken)
+	public async Task SendMessage(int userId, int chatId, string content, CancellationToken cancellationToken)
 	{
 		var chatName = "getChatName";
 		var authorName = "getUserName";

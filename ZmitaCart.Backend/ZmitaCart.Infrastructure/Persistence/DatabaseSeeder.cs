@@ -24,7 +24,7 @@ public class DatabaseSeeder : IDatabaseSeeder
 
         foreach (var supportedRole in Role.SupportedRoles)
         {
-            var role = new IdentityRole<int>(supportedRole.Code);
+            var role = new IdentityRole<int>(supportedRole);
             
             if (!_dbContext.Roles.Contains(role))
             {

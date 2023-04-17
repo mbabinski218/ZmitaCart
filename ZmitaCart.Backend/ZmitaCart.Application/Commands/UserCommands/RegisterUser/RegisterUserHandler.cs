@@ -20,7 +20,7 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand>
 	public async Task Handle(RegisterUserCommand request, CancellationToken cancellationToken)
 	{
 		var registerUser = _mapper.Map<RegisterUserDto>(request);
-		registerUser.Role = Role.User;
+		registerUser.Role = Role.user;
 		
 		await _userRepository.RegisterAsync(registerUser);
 	}

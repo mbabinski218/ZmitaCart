@@ -2,9 +2,9 @@
 
 public static class ClaimNames
 {
-	public static string Id => "Id";
-	public static string Email => "Email";
-	public static string FirstName => "FirstName";
-	public static string LastName => "LastName";
-	public static string Role => "Role";
+	public static string Id => "id";
+	public static string Email => "email";
+	public static string FirstName => "firstName";
+	public static string LastName => "lastName";
+	public static string Role => "role";
 }

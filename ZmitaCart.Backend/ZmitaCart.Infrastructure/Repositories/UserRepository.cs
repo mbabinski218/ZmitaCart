@@ -31,7 +31,7 @@ public class UserRepository : IUserRepository
 			throw new InvalidDataException("User already exists");
 		}
 
-		if (registerUserDto.Role == null || !await _roleManager.RoleExistsAsync(registerUserDto.Role.Code))
+		if (registerUserDto.Role == null || !await _roleManager.RoleExistsAsync(registerUserDto.Role))
 		{
 			throw new InvalidDataException("Unsupported role");
 		}
@@ -52,7 +52,7 @@ public class UserRepository : IUserRepository
 			throw new InvalidLoginDataException(result.Errors.Select(e => e.Description));
 		}
 
-		await _userManager.AddToRoleAsync(user, registerUserDto.Role!.Code);
+		await _userManager.AddToRoleAsync(user, registerUserDto.Role);
 
 		var claims = new List<Claim>
 		{
@@ -60,7 +60,7 @@ public class UserRepository : IUserRepository
 			new(ClaimNames.Email, user.Email),
 			new(ClaimNames.FirstName, user.FirstName),
 			new(ClaimNames.LastName, user.LastName),
-			new(ClaimNames.Role, registerUserDto.Role!.Code)
+			new(ClaimNames.Role, registerUserDto.Role)
 		};
 		
 		await _userManager.AddClaimsAsync(user, claims);

@@ -1,7 +1,4 @@
-﻿using ZmitaCart.Domain.Common;
-using ZmitaCart.Domain.ValueObjects;
-
-namespace ZmitaCart.Application.Dtos.UserDtos;
+﻿namespace ZmitaCart.Application.Dtos.UserDtos;
 
 public record RegisterUserDto
 {

@@ -3,7 +3,6 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using ZmitaCart.Application.Behaviors;
-using ZmitaCart.Application.Common;
 
 namespace ZmitaCart.Application;
 

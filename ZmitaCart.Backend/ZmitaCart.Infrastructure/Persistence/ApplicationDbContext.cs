@@ -13,7 +13,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, i
         // Database.EnsureDeleted();
         // Database.EnsureCreated();
     }
-    
+
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Offer> Offers { get; set; } = null!;
     public DbSet<UserOffer> Favorites { get; set; } = null!;
@@ -22,6 +22,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, i
     public DbSet<Conversation> Conversations { get; set; } = null!;
     public DbSet<UserConversation> Chats { get; set; } = null!;
     public DbSet<Message> Messages { get; set; } = null!;
+    public DbSet<CategoryOffer> CategoryOffers { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Domain.Common;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Common;
 using ZmitaCart.Infrastructure.Persistence;
@@ -22,8 +21,9 @@ public static class DependencyInjection
         AddDatabase(services, configuration);
         AddAuthentication(services, configuration);
         services.AddAuthorization();
-        
+
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
 
         return services;
     }
@@ -32,7 +32,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("ZmitaCartDb")));
-        
+
         services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 
         services.AddIdentity<User, IdentityRole<int>>(options =>
@@ -46,15 +46,15 @@ public static class DependencyInjection
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-        
+
         return services;
     }
-    
+
     private static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtSettings = new JwtSettings();
         configuration.Bind(JwtSettings.sectionName, jwtSettings);
-        
+
         services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
@@ -69,7 +69,7 @@ public static class DependencyInjection
 
         services.AddSingleton(Options.Create(jwtSettings));
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-        
+
         return services;
     }
 }

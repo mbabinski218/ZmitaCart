@@ -201,6 +201,24 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("ZmitaCart.Domain.Entities.CategoryOffer", b =>
+                {
+                    b.Property<int>("OfferId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("OfferId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("CategoryOffers");
+                });
+
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Conversation", b =>
                 {
                     b.Property<int>("Id")
@@ -514,6 +532,25 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("ZmitaCart.Domain.Entities.CategoryOffer", b =>
+                {
+                    b.HasOne("ZmitaCart.Domain.Entities.Category", "Category")
+                        .WithMany("CategoryOffers")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ZmitaCart.Domain.Entities.Offer", "Offer")
+                        .WithMany("CategoryOffers")
+                        .HasForeignKey("OfferId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Offer");
+                });
+
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Conversation", b =>
                 {
                     b.HasOne("ZmitaCart.Domain.Entities.Offer", "Offer")
@@ -647,6 +684,8 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Category", b =>
                 {
+                    b.Navigation("CategoryOffers");
+
                     b.Navigation("Children");
                 });
 
@@ -660,6 +699,8 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Offer", b =>
                 {
                     b.Navigation("Bought");
+
+                    b.Navigation("CategoryOffers");
 
                     b.Navigation("Favorites");
                 });

@@ -67,17 +67,38 @@ public class CategoryRepository : ICategoryRepository
 
     public async Task<IEnumerable<CategoryDto>> GetCategoriesBySuperiorId(int superiorId, int? childrenCount)
     {
-        var categories = _dbContext.Categories
+        var categories = await _dbContext.Categories
             .Where(c => c.Id == superiorId)
             .Include(c => c.Children)
-            .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider);
+            .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
+            .ToListAsync();
 
-        if (childrenCount is null)
+        childrenCount ??= -1; // -1 means all children
+        
+        var count = childrenCount.Value;
+        foreach (var category in categories) 
         {
-            return await categories.ToListAsync();
+            FillChildren(category.Children, ref count);
         }
 
-        throw new Exception("fdasf");
-        //GetCategoriesBySuperiorId(superiorId, childrenCount);
+        return categories;
+    }
+
+    private void FillChildren(IEnumerable<CategoryDto?>? children, ref int childrenCount)
+    {
+        childrenCount--;
+        if(childrenCount == 0 || children is null) return;
+
+        foreach (var child in children)
+        {
+            if (child is null) continue;
+            
+            child.Children = _dbContext.Categories
+                .Where(c => c.ParentId == child.Id)
+                .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
+                .ToList();
+            
+            FillChildren(child.Children, ref childrenCount);
+        }
     }
 }

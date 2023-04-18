@@ -74,31 +74,32 @@ public class CategoryRepository : ICategoryRepository
             .ToListAsync();
 
         childrenCount ??= -1; // -1 means all children
-        
-        var count = childrenCount.Value;
-        foreach (var category in categories) 
+
+        foreach (var category in categories)
         {
-            FillChildren(category.Children, ref count);
+            await FillChildren(category.Children, childrenCount.Value);
         }
 
         return categories;
     }
 
-    private void FillChildren(IEnumerable<CategoryDto?>? children, ref int childrenCount)
+    private async Task FillChildren(IEnumerable<CategoryDto?>? children, int childrenCount)
     {
+        if (childrenCount == 0 || children is null) return;
         childrenCount--;
-        if(childrenCount == 0 || children is null) return;
 
         foreach (var child in children)
         {
             if (child is null) continue;
-            
-            child.Children = _dbContext.Categories
+
+            var temp = await _dbContext.Categories
                 .Where(c => c.ParentId == child.Id)
                 .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
-                .ToList();
-            
-            FillChildren(child.Children, ref childrenCount);
+                .ToListAsync();
+
+            child.Children = temp.Any() && childrenCount != 0 ? temp : null;
+
+            await FillChildren(child.Children, childrenCount);
         }
     }
 }

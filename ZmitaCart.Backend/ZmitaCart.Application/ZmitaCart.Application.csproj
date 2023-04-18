@@ -9,7 +9,6 @@
     <ItemGroup>
       <Folder Include="Commands\CategoryCommands\DeleteCategory" />
       <Folder Include="Commands\CategoryCommands\UpdateCategory" />
-      <Folder Include="Exceptions\" />
     </ItemGroup>
 
     <ItemGroup>

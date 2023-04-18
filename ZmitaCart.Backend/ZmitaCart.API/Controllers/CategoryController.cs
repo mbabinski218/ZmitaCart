@@ -5,6 +5,7 @@ using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.CategoryCommands.CreateCategory;
 using ZmitaCart.Application.Queries.CategoryQueries.GetAllSuperiors;
 using ZmitaCart.Application.Queries.CategoryQueries.GetCategories;
+using ZmitaCart.Application.Commands.CategoryCommands.UpdateCategory;
 
 namespace ZmitaCart.API.Controllers;
 
@@ -17,7 +18,8 @@ public class CategoryController : ApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand request)
+    public async Task<IActionResult> CreateCategory(
+        [FromBody] Application.Commands.CategoryCommands.CreateCategory.CreateCategoryCommand request)
     {
         var response = await mediator.Send(request);
         return Created($"category/{response}", response);
@@ -30,14 +32,21 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getFewBySuperiorId")]
-    public async Task<IActionResult> GetCategoriesBySuperiorId([FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
+    public async Task<IActionResult> GetCategoriesBySuperiorId(
+        [FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
     {
         return Ok(await mediator.Send(request));
     }
-    
+
     [HttpGet("getAllSuperiors")]
     public async Task<IActionResult> GetCategoriesBySuperiorId()
     {
         return Ok(await mediator.Send(new GetAllSuperiorsQuery()));
+    }
+
+    [HttpPut("updateCategory")]
+    public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryCommand request)
+    {
+        return Ok(await mediator.Send(request));
     }
 }

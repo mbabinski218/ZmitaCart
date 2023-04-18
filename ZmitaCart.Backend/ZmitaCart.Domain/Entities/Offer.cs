@@ -18,7 +18,6 @@ public class Offer : AggregateRoot<int>
     public User? User { get; set; }
     public ICollection<UserOffer>? Favorites { get; set; }
     public ICollection<Bought>? Bought { get; set; }
-
     public virtual ICollection<CategoryOffer>? CategoryOffers { get; set; }
-    // public ICollection<OfferImage>? OfferImages { get; set; }
+    public virtual ICollection<OfferPicture>? OfferPictures { get; set; }
 }

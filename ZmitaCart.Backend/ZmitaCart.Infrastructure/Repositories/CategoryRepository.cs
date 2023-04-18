@@ -1,9 +1,11 @@
+using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Dtos.CategoryDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
+using ZmitaCart.Infrastructure.Exceptions;
 using ZmitaCart.Infrastructure.Persistence;
 
 namespace ZmitaCart.Infrastructure.Repositories;
@@ -47,9 +49,56 @@ public class CategoryRepository : ICategoryRepository
         return category.Id;
     }
 
-    public Task<int> Update(int id, string? name, int? parentId)
+    public async Task<int> Update(int id, string? name, int? parentId)
     {
-        throw new NotImplementedException();
+        var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id) ??
+                       throw new NotFoundException("Item does not exist");
+
+        if (name is not null)
+        {
+            category.Name = name;
+        }
+
+        if (parentId is not null)
+        {
+            var parent = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == parentId);
+            if (parent is null)
+            {
+                throw new NotFoundException("Parent category with input id doesn't exist");
+            }
+
+            var currentCategory = (await _dbContext.Categories
+                .Include(c => c.Children)
+                .ToListAsync()).FirstOrDefault(c => c.Id == id);
+
+            CheckChildrenId(currentCategory!, parentId.Value);
+
+            category.Parent = parent;
+            category.ParentId = parentId;
+        }
+        else
+        {
+            category.ParentId = null;
+            category.Parent = null;
+        }
+
+        _dbContext.Categories.Update(category);
+        await _dbContext.SaveChangesAsync();
+        return category.Id;
+    }
+
+    private void CheckChildrenId(Category category, int parentId)
+    {
+        if (category.Id == parentId)
+        {
+            throw new ArgumentException("Category cannot have itself as a child");
+        }
+
+        if (category.Children is null) return;
+        foreach (var child in category.Children)
+        {
+            CheckChildrenId(child, parentId);
+        }
     }
 
     public Task Delete(int id)
@@ -83,6 +132,7 @@ public class CategoryRepository : ICategoryRepository
         return categories;
     }
 
+    //TODO można spróbwać z includem
     private async Task FillChildren(IEnumerable<CategoryDto?>? children, int childrenCount)
     {
         if (childrenCount == 0 || children is null) return;

@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.CategoryCommands.CreateCategory;
-using ZmitaCart.Application.Queries.CategoryQueries;
+using ZmitaCart.Application.Queries.CategoryQueries.GetAllSuperiors;
+using ZmitaCart.Application.Queries.CategoryQueries.GetCategories;
 
 namespace ZmitaCart.API.Controllers;
 
@@ -25,15 +26,18 @@ public class CategoryController : ApiController
     [HttpGet("getBySuperiorId")]
     public async Task<IActionResult> GetCategoriesBySuperiorId([FromQuery] GetCategoriesBySuperiorIdQuery request)
     {
-        var response = await mediator.Send(request);
-        return Ok(response);
+        return Ok(await mediator.Send(request));
     }
 
     [HttpGet("getFewBySuperiorId")]
-    public async Task<IActionResult> GetCategoriesBySuperiorId(
-        [FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
+    public async Task<IActionResult> GetCategoriesBySuperiorId([FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
     {
-        var response = await mediator.Send(request);
-        return Ok(response);
+        return Ok(await mediator.Send(request));
+    }
+    
+    [HttpGet("getAllSuperiors")]
+    public async Task<IActionResult> GetCategoriesBySuperiorId()
+    {
+        return Ok(await mediator.Send(new GetAllSuperiorsQuery()));
     }
 }

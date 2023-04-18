@@ -57,7 +57,7 @@ public class CategoryRepository : ICategoryRepository
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<SuperiorCategoryDto>> GetAllSuperiorsNames()
+    public async Task<IEnumerable<SuperiorCategoryDto>> GetAllSuperiors()
     {
         return await _dbContext.Categories
             .Where(c => c.ParentId == null)

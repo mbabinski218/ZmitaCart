@@ -1,7 +1,7 @@
 using MediatR;
 using ZmitaCart.Application.Dtos.CategoryDtos;
 
-namespace ZmitaCart.Application.Queries.CategoryQueries;
+namespace ZmitaCart.Application.Queries.CategoryQueries.GetCategories;
 
 public record GetCategoriesWithChildrenBySuperiorIdQuery : IRequest<IEnumerable<CategoryDto>>
 {

@@ -3,7 +3,7 @@ using MediatR;
 using ZmitaCart.Application.Dtos.CategoryDtos;
 using ZmitaCart.Application.Interfaces;
 
-namespace ZmitaCart.Application.Queries.CategoryQueries;
+namespace ZmitaCart.Application.Queries.CategoryQueries.GetCategories;
 
 public class GetCategoriesHandler : IRequestHandler<GetCategoriesBySuperiorIdQuery, IEnumerable<CategoryDto>>,
     IRequestHandler<GetCategoriesWithChildrenBySuperiorIdQuery, IEnumerable<CategoryDto>>

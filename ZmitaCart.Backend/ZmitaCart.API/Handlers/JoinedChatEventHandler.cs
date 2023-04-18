@@ -2,7 +2,7 @@
 using ZmitaCart.API.Hubs;
 using ZmitaCart.Domain.Events;
 
-namespace ZmitaCart.API.RealTime;
+namespace ZmitaCart.API.Handlers;
 
 public class JoinedChatEventHandler : INotificationHandler<JoinedChatEvent>
 {

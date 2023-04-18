@@ -14,5 +14,6 @@ public class AutoMapperProfile : Profile
         CreateMap<RegisterUserCommand, RegisterUserDto>();
         CreateMap<LoginUserQuery, LoginUserDto>();
         CreateMap<Category, CategoryDto>();
+        CreateMap<Category, SuperiorCategoryDto>();
     }
 }

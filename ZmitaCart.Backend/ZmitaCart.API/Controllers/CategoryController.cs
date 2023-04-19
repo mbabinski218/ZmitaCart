@@ -19,7 +19,7 @@ public class CategoryController : ApiController
 
     [HttpPost]
     public async Task<IActionResult> CreateCategory(
-        [FromBody] Application.Commands.CategoryCommands.CreateCategory.CreateCategoryCommand request)
+        [FromBody] CreateCategoryCommand request)
     {
         var response = await mediator.Send(request);
         return Created($"category/{response}", response);

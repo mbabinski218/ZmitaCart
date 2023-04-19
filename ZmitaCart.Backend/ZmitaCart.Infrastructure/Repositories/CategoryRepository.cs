@@ -21,14 +21,14 @@ public class CategoryRepository : ICategoryRepository
         _mapper = mapper;
     }
 
-    public async Task<int> Create(string name, int? parentId)
+    public async Task<int> Create(string name, int? parentId, string? iconName)
     {
         if (await _dbContext.Categories.AnyAsync(c => c.Name == name))
         {
             throw new ArgumentException("Category with input name already exists");
         }
 
-        var category = new Category { Name = name };
+        var category = new Category { Name = name, IconName = iconName };
         if (parentId is null)
         {
             await _dbContext.Categories.AddAsync(category);
@@ -49,7 +49,7 @@ public class CategoryRepository : ICategoryRepository
         return category.Id;
     }
 
-    public async Task<int> Update(int id, string? name, int? parentId)
+    public async Task<int> Update(int id, string? name, int? parentId, string? iconName)
     {
         var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id) ??
                        throw new NotFoundException("Item does not exist");
@@ -57,6 +57,11 @@ public class CategoryRepository : ICategoryRepository
         if (name is not null)
         {
             category.Name = name;
+        }
+
+        if (iconName is not null)
+        {
+            category.IconName = iconName;
         }
 
         if (parentId is not null)

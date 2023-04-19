@@ -19,6 +19,6 @@ public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, int>
 
     public async Task<int> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        return await _categoryRepository.Create(request.Name!, request.ParentId);
+        return await _categoryRepository.Create(request.Name!, request.ParentId, request.IconName);
     }
 }

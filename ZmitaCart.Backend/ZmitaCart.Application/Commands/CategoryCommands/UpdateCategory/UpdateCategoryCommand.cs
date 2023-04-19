@@ -7,4 +7,5 @@ public record UpdateCategoryCommand : IRequest<int>
     public int Id { get; init; }
     public string? Name { get; init; }
     public int? ParentId { get; init; }
+    public string? IconName { get; init; }
 }

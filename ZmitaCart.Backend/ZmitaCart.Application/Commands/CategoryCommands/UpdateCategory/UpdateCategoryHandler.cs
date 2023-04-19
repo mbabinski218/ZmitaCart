@@ -17,6 +17,6 @@ public class UpdateCategoryHandler : IRequestHandler<UpdateCategoryCommand, int>
 
     public async Task<int> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
-        return await _categoryRepository.Update(request.Id, request.Name, request.ParentId);
+        return await _categoryRepository.Update(request.Id, request.Name, request.ParentId, request.IconName);
     }
 }

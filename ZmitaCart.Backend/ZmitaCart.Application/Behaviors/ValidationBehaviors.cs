@@ -4,7 +4,7 @@ using MediatR;
 namespace ZmitaCart.Application.Behaviors;
 
 public class ValidationBehaviors<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-	where TRequest : IRequest<TResponse>
+	where TRequest : notnull
 	where TResponse : notnull
 {
 	private readonly IEnumerable<IValidator<TRequest>> _validators;

@@ -46,9 +46,7 @@ app.MapControllers();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapHub<ChatHub>("/ChatHub");
-});
+
+app.MapHub<ChatHub>("/ChatHub");
 
 app.Run();

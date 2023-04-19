@@ -55,14 +55,14 @@ public static class DependencyInjection
         var jwtSettings = new JwtSettings();
         configuration.Bind(JwtSettings.sectionName, jwtSettings);
         services.AddSingleton(Options.Create(jwtSettings));
-        
+
         var googleSettings = new GoogleSettings();
         configuration.Bind(GoogleSettings.sectionName, googleSettings);
         services.AddSingleton(Options.Create(googleSettings));
 
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IGoogleAuthentication, GoogleAuthentication>();
-        
+
         services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -78,8 +78,8 @@ public static class DependencyInjection
             })
             .AddGoogle(options =>
             {
-                options.ClientId = configuration[googleSettings.ClientId];
-                options.ClientSecret = configuration[googleSettings.ClientSecret];
+                options.ClientId = googleSettings.ClientId;
+                options.ClientSecret = googleSettings.ClientSecret;
             });
 
         return services;

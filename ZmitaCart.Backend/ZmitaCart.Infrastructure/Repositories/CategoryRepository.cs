@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Dtos.CategoryDtos;
 using ZmitaCart.Application.Interfaces;
@@ -106,9 +107,17 @@ public class CategoryRepository : ICategoryRepository
         }
     }
 
-    public Task Delete(int id)
+    public async Task Delete(int id)
     {
-        throw new NotImplementedException();
+        var categoryToRemove = await _dbContext.Categories
+            .FirstOrDefaultAsync(c => c.Id == id) ?? throw new InvalidDataException("nie ma ");
+
+        await _dbContext.Categories
+            .Where(c => c.ParentId == id)
+            .ForEachAsync(c => c.ParentId = null);
+
+        _dbContext.Categories.Remove(categoryToRemove);
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<SuperiorCategoryDto>> GetAllSuperiors()

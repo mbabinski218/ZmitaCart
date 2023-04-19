@@ -1,0 +1,22 @@
+using AutoMapper;
+using MediatR;
+using ZmitaCart.Application.Interfaces;
+
+namespace ZmitaCart.Application.Commands.CategoryCommands.DeleteCategory;
+
+public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand>
+{
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
+
+    public DeleteCategoryHandler(ICategoryRepository categoryRepository, IMapper mapper)
+    {
+        _categoryRepository = categoryRepository;
+        _mapper = mapper;
+    }
+
+    public async Task Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
+    {
+        await _categoryRepository.Delete(request.Id);
+    }
+}

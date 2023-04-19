@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.CategoryCommands.CreateCategory;
+using ZmitaCart.Application.Commands.CategoryCommands.DeleteCategory;
 using ZmitaCart.Application.Queries.CategoryQueries.GetAllSuperiors;
 using ZmitaCart.Application.Queries.CategoryQueries.GetCategories;
 using ZmitaCart.Application.Commands.CategoryCommands.UpdateCategory;
@@ -48,5 +49,12 @@ public class CategoryController : ApiController
     public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryCommand request)
     {
         return Ok(await mediator.Send(request));
+    }
+
+    [HttpDelete("{Id}")]
+    public async Task<IActionResult> DeleteCategory([FromRoute] DeleteCategoryCommand request)
+    {
+        await mediator.Send(request);
+        return Ok();
     }
 }

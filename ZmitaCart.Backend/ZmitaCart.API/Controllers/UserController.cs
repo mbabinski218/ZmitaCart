@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.UserCommands.AddRoleForUser;
+using ZmitaCart.Application.Commands.UserCommands.ExternalAuthentication;
 using ZmitaCart.Application.Commands.UserCommands.RegisterUser;
 using ZmitaCart.Application.Queries.UserQueries.LoginUser;
 using ZmitaCart.Application.Queries.UserQueries.LogoutUser;
@@ -46,5 +47,11 @@ public class UserController : ApiController
 	{
 		await mediator.Send(command);
 		return Ok();
+	}
+	
+	[HttpPost("externalAuthentication")]
+	public async Task<IActionResult> ExternalAuthentication([FromBody] ExternalAuthenticationCommand command)
+	{
+		return Ok(await mediator.Send(command));
 	}
 }

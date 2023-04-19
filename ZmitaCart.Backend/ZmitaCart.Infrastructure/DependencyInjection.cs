@@ -54,21 +54,33 @@ public static class DependencyInjection
     {
         var jwtSettings = new JwtSettings();
         configuration.Bind(JwtSettings.sectionName, jwtSettings);
-
-        services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = configuration[jwtSettings.Issuer],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration[jwtSettings.Secret]))
-            };
-        });
-
         services.AddSingleton(Options.Create(jwtSettings));
+        
+        var googleSettings = new GoogleSettings();
+        configuration.Bind(GoogleSettings.sectionName, googleSettings);
+        services.AddSingleton(Options.Create(googleSettings));
+
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<IGoogleAuthentication, GoogleAuthentication>();
+        
+        services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration[jwtSettings.Issuer],
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration[jwtSettings.Secret]))
+                };
+            })
+            .AddGoogle(options =>
+            {
+                options.ClientId = configuration[googleSettings.ClientId];
+                options.ClientSecret = configuration[googleSettings.ClientSecret];
+            });
 
         return services;
     }

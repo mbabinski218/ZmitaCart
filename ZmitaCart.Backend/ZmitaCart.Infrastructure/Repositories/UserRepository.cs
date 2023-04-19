@@ -1,9 +1,12 @@
 ﻿using System.Security.Claims;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Common;
 using ZmitaCart.Domain.Entities;
+using ZmitaCart.Infrastructure.Common;
 using ZmitaCart.Infrastructure.Exceptions;
 
 namespace ZmitaCart.Infrastructure.Repositories;
@@ -14,14 +17,16 @@ public class UserRepository : IUserRepository
 	private readonly SignInManager<User> _signInManager;
 	private readonly RoleManager<IdentityRole<int>> _roleManager;
 	private readonly IJwtTokenGenerator _jwtTokenGenerator;
+	private readonly IGoogleAuthentication _googleAuthentication;
 
 	public UserRepository(UserManager<User> userManager, SignInManager<User> signInManager, 
-		RoleManager<IdentityRole<int>> roleManager, IJwtTokenGenerator jwtTokenGenerator)
+		RoleManager<IdentityRole<int>> roleManager, IJwtTokenGenerator jwtTokenGenerator, IGoogleAuthentication googleAuthentication)
 	{
 		_userManager = userManager;
 		_signInManager = signInManager;
 		_roleManager = roleManager;
 		_jwtTokenGenerator = jwtTokenGenerator;
+		_googleAuthentication = googleAuthentication;
 	}
 
 	public async Task RegisterAsync(RegisterUserDto registerUserDto)
@@ -29,11 +34,6 @@ public class UserRepository : IUserRepository
 		if (await _userManager.FindByEmailAsync(registerUserDto.Email) != null)
 		{
 			throw new InvalidDataException("User already exists");
-		}
-
-		if (registerUserDto.Role == null || !await _roleManager.RoleExistsAsync(registerUserDto.Role))
-		{
-			throw new InvalidDataException("Unsupported role");
 		}
 		
 		var user = new User
@@ -52,7 +52,7 @@ public class UserRepository : IUserRepository
 			throw new InvalidLoginDataException(result.Errors.Select(e => e.Description));
 		}
 
-		await _userManager.AddToRoleAsync(user, registerUserDto.Role);
+		await _userManager.AddToRoleAsync(user, Role.user);
 
 		var claims = new List<Claim>
 		{
@@ -60,7 +60,7 @@ public class UserRepository : IUserRepository
 			new(ClaimNames.Email, user.Email),
 			new(ClaimNames.FirstName, user.FirstName),
 			new(ClaimNames.LastName, user.LastName),
-			new(ClaimNames.Role, registerUserDto.Role)
+			new(ClaimNames.Role, Role.user)
 		};
 		
 		await _userManager.AddClaimsAsync(user, claims);
@@ -120,5 +120,14 @@ public class UserRepository : IUserRepository
 		await _userManager.AddToRoleAsync(user, role);
 		
 		await _userManager.AddClaimAsync(user, new Claim(ClaimNames.Role, role));
+	}
+
+	public async Task<string> ExternalAuthenticationAsync(ExternalAuthDto externalAuthDto)
+	{
+		return externalAuthDto.Provider switch
+		{
+			"Google" => await _googleAuthentication.AuthenticateAsync(externalAuthDto),
+			_ => throw new InvalidDataException("Failed to authenticate")
+		};
 	}
 }

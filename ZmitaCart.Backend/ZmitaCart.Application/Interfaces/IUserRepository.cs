@@ -8,4 +8,5 @@ public interface IUserRepository
 	public Task<string> LoginAsync(LoginUserDto loginUserDto);
 	public Task LogoutAsync();
 	public Task AddRoleAsync(string userEmail, string role);
+	public Task<string> ExternalAuthenticationAsync(ExternalAuthDto externalAuthDto);
 }

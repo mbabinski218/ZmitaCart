@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ZmitaCart.Application.Commands.UserCommands.ExternalAuthentication;
 using ZmitaCart.Application.Commands.UserCommands.RegisterUser;
 using ZmitaCart.Application.Dtos.CategoryDtos;
 using ZmitaCart.Application.Dtos.UserDtos;
@@ -15,5 +16,6 @@ public class AutoMapperProfile : Profile
         CreateMap<LoginUserQuery, LoginUserDto>();
         CreateMap<Category, CategoryDto>();
         CreateMap<Category, SuperiorCategoryDto>();
+        CreateMap<ExternalAuthenticationCommand, ExternalAuthDto>();
     }
 }

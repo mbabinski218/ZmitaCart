@@ -56,6 +56,12 @@ public class ErrorHandlingMiddleware : IMiddleware
             context.Response.ContentType = "text/plain";
             await context.Response.WriteAsync(ex.Message);
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "text/plain";
+            await context.Response.WriteAsync(ex.Message);
+        }
         catch (Exception ex)
         {
             _logger.LogCritical("{msg}", ex.Message);

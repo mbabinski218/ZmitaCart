@@ -1,12 +1,9 @@
 ﻿using System.Security.Claims;
-using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Common;
 using ZmitaCart.Domain.Entities;
-using ZmitaCart.Infrastructure.Common;
 using ZmitaCart.Infrastructure.Exceptions;
 
 namespace ZmitaCart.Infrastructure.Repositories;
@@ -120,6 +117,23 @@ public class UserRepository : IUserRepository
 		await _userManager.AddToRoleAsync(user, role);
 		
 		await _userManager.AddClaimAsync(user, new Claim(ClaimNames.Role, role));
+	}
+	
+	public async Task SetPhoneNumberAsync(string userId, string phoneNumber)
+	{
+		var user = await _userManager.FindByIdAsync(userId);
+		
+		if (user == null)
+		{
+			throw new InvalidDataException("User does not exist");
+		}
+		
+		var result = await _userManager.SetPhoneNumberAsync(user, phoneNumber);
+		
+		if(!result.Succeeded)
+		{
+			throw new InvalidDataException("Could not set phone number");
+		}
 	}
 
 	public async Task<string> ExternalAuthenticationAsync(ExternalAuthDto externalAuthDto)

@@ -20,5 +20,6 @@ public class AutoMapperProfile : Profile
         CreateMap<Category, SuperiorCategoryDto>();
         CreateMap<ExternalAuthenticationCommand, ExternalAuthDto>();
         CreateMap<CreateOfferCommand, CreateOfferDto>();
+        CreateMap<CreateOfferDto, Offer>();
     }
 }

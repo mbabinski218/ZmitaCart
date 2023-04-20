@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZmitaCart.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using ZmitaCart.Infrastructure.Persistence;
 namespace ZmitaCart.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230420141940_PrecisionFix")]
+    partial class PrecisionFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -345,7 +348,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                     b.ToTable("Offers");
                 });
 
-            modelBuilder.Entity("ZmitaCart.Domain.Entities.Picture", b =>
+            modelBuilder.Entity("ZmitaCart.Domain.Entities.OfferPicture", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -353,18 +356,22 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<int>("OfferId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PictureName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OfferId")
-                        .HasColumnType("int");
+                    b.Property<string>("PictureUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OfferId");
 
-                    b.ToTable("Pictures");
+                    b.ToTable("OfferPictures");
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.User", b =>
@@ -637,10 +644,10 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ZmitaCart.Domain.Entities.Picture", b =>
+            modelBuilder.Entity("ZmitaCart.Domain.Entities.OfferPicture", b =>
                 {
                     b.HasOne("ZmitaCart.Domain.Entities.Offer", "Offer")
-                        .WithMany("Pictures")
+                        .WithMany("OfferPictures")
                         .HasForeignKey("OfferId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -745,7 +752,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     b.Navigation("Favorites");
 
-                    b.Navigation("Pictures");
+                    b.Navigation("OfferPictures");
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.User", b =>

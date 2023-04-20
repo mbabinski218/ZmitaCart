@@ -10,13 +10,13 @@ namespace ZmitaCart.API.Controllers;
 [AllowAnonymous]
 public class OfferController : ApiController
 {
-	public OfferController(IMediator mediator) : base(mediator)
-	{
-	}
-	
-	[HttpPost]
-	public async Task<IActionResult> CreateOffer([FromBody] CreateOfferCommand command)
-	{
-		return Ok(await mediator.Send(command));
-	}
+    public OfferController(IMediator mediator) : base(mediator)
+    {
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateOffer([FromForm] CreateOfferCommand command)
+    {
+        return Ok(await mediator.Send(command));
+    }
 }

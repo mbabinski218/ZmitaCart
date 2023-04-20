@@ -36,7 +36,7 @@ public class OfferRepository : IOfferRepository
 		offer.User = user;
 		offer.Category = category;
 
-		_dbContext.Offers.Add(offer);
+		await _dbContext.Offers.AddAsync(offer);
 		await _dbContext.SaveChangesAsync();
 
 		return offer.Id;

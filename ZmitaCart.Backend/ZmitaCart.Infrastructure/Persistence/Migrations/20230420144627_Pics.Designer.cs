@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZmitaCart.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using ZmitaCart.Infrastructure.Persistence;
 namespace ZmitaCart.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230420144627_Pics")]
+    partial class Pics
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -364,7 +367,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("OfferId");
 
-                    b.ToTable("Pictures");
+                    b.ToTable("OfferPictures");
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.User", b =>

@@ -5,7 +5,7 @@ using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.UserCommands.AddRoleForUser;
 using ZmitaCart.Application.Commands.UserCommands.ExternalAuthentication;
 using ZmitaCart.Application.Commands.UserCommands.RegisterUser;
-using ZmitaCart.Application.Commands.UserCommands.SetPhoneNumber;
+using ZmitaCart.Application.Commands.UserCommands.UpdateCredentials;
 using ZmitaCart.Application.Queries.UserQueries.LoginUser;
 using ZmitaCart.Application.Queries.UserQueries.LogoutUser;
 using ZmitaCart.Domain.Common;
@@ -56,8 +56,8 @@ public class UserController : ApiController
 		return Ok(await mediator.Send(command));
 	}
 	
-	[HttpPut("phoneNumber")]
-	public async Task<IActionResult> SetPhoneNumber([FromBody] SetPhoneNumberCommand command)
+	[HttpPut("updateCredentials")]
+	public async Task<IActionResult> UpdateCredentials([FromBody] UpdateCredentialsCommand command)
 	{
 		await mediator.Send(command);
 		return Ok();

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace ZmitaCart.Application.Dtos.OfferDtos;
+﻿namespace ZmitaCart.Application.Dtos.OfferDtos;
 
 public class CreateOfferDto
 {

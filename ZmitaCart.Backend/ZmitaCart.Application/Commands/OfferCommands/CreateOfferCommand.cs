@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using ZmitaCart.Domain.Enums;
 
 namespace ZmitaCart.Application.Commands.OfferCommands;
 

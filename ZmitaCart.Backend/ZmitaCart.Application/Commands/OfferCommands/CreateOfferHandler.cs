@@ -3,7 +3,6 @@ using MediatR;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
-using ZmitaCart.Domain.Enums;
 
 namespace ZmitaCart.Application.Commands.OfferCommands;
 

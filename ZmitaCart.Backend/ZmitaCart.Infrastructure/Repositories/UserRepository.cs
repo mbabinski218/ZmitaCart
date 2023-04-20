@@ -4,6 +4,7 @@ using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Common;
 using ZmitaCart.Domain.Entities;
+using ZmitaCart.Domain.ValueObjects;
 using ZmitaCart.Infrastructure.Exceptions;
 
 namespace ZmitaCart.Infrastructure.Repositories;
@@ -119,20 +120,35 @@ public class UserRepository : IUserRepository
 		await _userManager.AddClaimAsync(user, new Claim(ClaimNames.Role, role));
 	}
 	
-	public async Task SetPhoneNumberAsync(string userId, string phoneNumber)
+	public async Task UpdateCredentialsAsync(string userId, string? phoneNumber, Address? address)
 	{
 		var user = await _userManager.FindByIdAsync(userId);
 		
-		if (user == null)
+		if (user is null)
 		{
 			throw new InvalidDataException("User does not exist");
 		}
 		
-		var result = await _userManager.SetPhoneNumberAsync(user, phoneNumber);
-		
-		if(!result.Succeeded)
+		if (phoneNumber is not null)
 		{
-			throw new InvalidDataException("Could not set phone number");
+			var result = await _userManager.SetPhoneNumberAsync(user, phoneNumber);
+
+			if (!result.Succeeded)
+			{
+				throw new InvalidDataException("Could not set phone number");
+			}
+		}
+		
+		if (address is not null && address != user.Address)
+		{
+			user.Address = address;
+			
+			var result = await _userManager.UpdateAsync(user);
+
+			if (!result.Succeeded)
+			{
+				throw new InvalidDataException("Could not set address");
+			}
 		}
 	}
 

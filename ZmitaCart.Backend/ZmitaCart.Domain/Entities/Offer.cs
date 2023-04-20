@@ -1,5 +1,4 @@
 ﻿using ZmitaCart.Domain.Common.Models;
-using ZmitaCart.Domain.Enums;
 
 namespace ZmitaCart.Domain.Entities;
 

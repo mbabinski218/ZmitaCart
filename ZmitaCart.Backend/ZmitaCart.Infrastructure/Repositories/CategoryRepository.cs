@@ -1,7 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Dtos.CategoryDtos;
 using ZmitaCart.Application.Interfaces;

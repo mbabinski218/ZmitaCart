@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace ZmitaCart.Domain.Enums;
+﻿namespace ZmitaCart.Domain.Enums;
 
 public static class Condition
 {

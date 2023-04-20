@@ -13,7 +13,9 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20230414171627_entities")]
+#pragma warning disable CS8981
     partial class entities
+#pragma warning restore CS8981
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -18,8 +18,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        AddDatabase(services, configuration);
-        AddAuthentication(services, configuration);
+        _ = AddDatabase(services, configuration);
+        _ = AddAuthentication(services, configuration);
         services.AddAuthorization();
 
         services.AddScoped<IUserRepository, UserRepository>();
@@ -73,7 +73,7 @@ public static class DependencyInjection
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = configuration[jwtSettings.Issuer],
                     IssuerSigningKey =
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration[jwtSettings.Secret]))
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
                 };
             })
             .AddGoogle(options =>

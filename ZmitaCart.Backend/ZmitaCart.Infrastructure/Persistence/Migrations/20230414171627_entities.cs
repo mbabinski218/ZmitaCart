@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ZmitaCart.Infrastructure.Persistence.Migrations
 {
+#pragma warning disable CS8981
     public partial class entities : Migration
+#pragma warning restore CS8981
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

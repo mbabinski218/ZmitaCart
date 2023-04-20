@@ -56,7 +56,7 @@ public class UserController : ApiController
 		return Ok(await mediator.Send(command));
 	}
 	
-	[HttpPost("phoneNumber")]
+	[HttpPut("phoneNumber")]
 	public async Task<IActionResult> SetPhoneNumber([FromBody] SetPhoneNumberCommand command)
 	{
 		await mediator.Send(command);

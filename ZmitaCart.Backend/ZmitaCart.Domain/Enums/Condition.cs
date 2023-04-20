@@ -1,8 +1,20 @@
-﻿namespace ZmitaCart.Domain.Enums;
+﻿using System.ComponentModel;
 
-public enum Condition
+namespace ZmitaCart.Domain.Enums;
+
+public static class Condition
 {
-	New,
-	Good,
-	Used,
+	public const string brandNew = "New";
+	public const string used = "Used";
+	public const string good = "Good";
+	
+	public static IEnumerable<string> SupportedConditions
+	{
+		get
+		{
+			yield return brandNew;
+			yield return used;
+			yield return good;
+		}
+	}
 }

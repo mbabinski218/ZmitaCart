@@ -11,13 +11,13 @@ public class Offer : AggregateRoot<int>
     public int Quantity { get; set; }
     public bool IsAvailable { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
-    public Condition Condition { get; set; }
-    public int? CategoryId { get; set; }
-    public Category? Category { get; set; }
-    public int? UserId { get; set; }
-    public User? User { get; set; }
-    public ICollection<UserOffer>? Favorites { get; set; }
-    public ICollection<Bought>? Bought { get; set; }
-    public virtual ICollection<CategoryOffer>? CategoryOffers { get; set; }
-    public virtual ICollection<OfferPicture>? OfferPictures { get; set; }
+    public string Condition { get; set; } = null!;
+    public int CategoryId { get; set; }
+    public virtual Category Category { get; set; } = null!;
+    public int UserId { get; set; }
+    public virtual User User { get; set; } = null!;
+    public virtual ICollection<UserOffer>? Favorites { get; set; }
+    public virtual ICollection<Bought>? Bought { get; set; }
+    public virtual ICollection<CategoryOffer>? CategoryOffers { get; set; } //TODO remove
+    public virtual ICollection<OfferPicture>? OfferPictures { get; set; } //TODO change to Pictures
 }

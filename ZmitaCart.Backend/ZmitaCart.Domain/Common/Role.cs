@@ -1,6 +1,6 @@
 ﻿namespace ZmitaCart.Domain.Common;
 
-public class Role
+public static class Role
 {
 	public const string administrator = "Administrator";
 	public const string user = "User";

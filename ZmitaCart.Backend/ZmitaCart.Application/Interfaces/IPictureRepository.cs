@@ -4,5 +4,6 @@ namespace ZmitaCart.Application.Interfaces;
 
 public interface IPictureRepository
 {
-    public Task AddAsync(int offerId, IEnumerable<IFormFile> images);
+    public Task AddAsync(int userId, int offerId, IEnumerable<IFormFile> images);
+    public Task RemoveAsync(int userId, int offerId, IEnumerable<int> imagesIds);
 }

@@ -4,7 +4,7 @@ using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
 
-namespace ZmitaCart.Application.Commands.OfferCommands;
+namespace ZmitaCart.Application.Commands.OfferCommands.CreateOfferCommand;
 
 public class CreateOfferHandler : IRequestHandler<CreateOfferCommand, int>
 {
@@ -38,7 +38,7 @@ public class CreateOfferHandler : IRequestHandler<CreateOfferCommand, int>
 
 		if (request.Pictures is not null)
 		{
-			await _pictureRepository.AddAsync(offerId, request.Pictures);
+			await _pictureRepository.AddAsync(offer.UserId, offerId, request.Pictures);
 		}
 
 		return offerId;

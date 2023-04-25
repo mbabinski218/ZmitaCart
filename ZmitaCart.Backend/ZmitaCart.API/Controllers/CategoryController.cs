@@ -19,10 +19,9 @@ public class CategoryController : ApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory(
-        [FromBody] CreateCategoryCommand request)
+    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
     {
-        var response = await mediator.Send(request);
+        var response = await mediator.Send(command);
         return Created($"category/{response}", response);
     }
 
@@ -46,15 +45,15 @@ public class CategoryController : ApiController
     }
 
     [HttpPut("updateCategory")]
-    public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryCommand request)
+    public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryCommand command)
     {
-        return Ok(await mediator.Send(request));
+        return Ok(await mediator.Send(command));
     }
 
     [HttpDelete("{Id}")]
-    public async Task<IActionResult> DeleteCategory([FromRoute] DeleteCategoryCommand request)
+    public async Task<IActionResult> DeleteCategory([FromRoute] DeleteCategoryCommand command)
     {
-        await mediator.Send(request);
+        await mediator.Send(command);
         return Ok();
     }
 }

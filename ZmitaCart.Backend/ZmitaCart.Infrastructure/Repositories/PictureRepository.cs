@@ -68,4 +68,24 @@ public class PictureRepository : IPictureRepository
         _dbContext.Pictures.RemoveRange(pictures);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task RemoveAllAsync(int userId, int offerId)
+    {
+        var offer = await _dbContext.Offers
+                        .Include(o => o.Pictures)
+                        .FirstOrDefaultAsync(o => o.Id == offerId)
+                        ?? throw new InvalidDataException("Offer does not exist");
+        
+        if (offer.UserId != userId) throw new UnauthorizedAccessException("User does not have access to this offer");
+
+        if (offer.Pictures is null) return;
+        
+        foreach (var filePath in offer.Pictures.Select(picture => Path.Combine(Path.GetFullPath("wwwroot"), picture.Name)).Where(File.Exists))
+        {
+            File.Delete(filePath);
+        }
+        
+        _dbContext.Pictures.RemoveRange(offer.Pictures);
+        await _dbContext.SaveChangesAsync();
+    }
 }

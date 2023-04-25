@@ -18,5 +18,5 @@ public class Offer : AggregateRoot<int>
     public virtual ICollection<UserOffer>? Favorites { get; set; }
     public virtual ICollection<Bought>? Bought { get; set; }
     public virtual ICollection<CategoryOffer>? CategoryOffers { get; set; } //TODO remove
-    public virtual ICollection<Picture>? Pictures { get; set; } //TODO change to Pictures
+    public virtual ICollection<Picture>? Pictures { get; set; }
 }

@@ -53,4 +53,15 @@ public class OfferRepository : IOfferRepository
 		await _dbContext.SaveChangesAsync();
 		return offer.Id;
 	}
+
+	public async Task DeleteAsync(int userId, int offerId)
+	{
+		var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId) 
+		            ?? throw new InvalidDataException("Offer does not exist");
+		
+		if(offer.UserId != userId) throw new UnauthorizedAccessException("User does not have access to this offer");
+		
+		_dbContext.Offers.Remove(offer);
+		await _dbContext.SaveChangesAsync();
+	}
 }

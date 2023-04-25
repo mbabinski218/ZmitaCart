@@ -1,5 +1,5 @@
 # ZmitaCart
-
+## Klon Allegro lokalnie
 
 
 # Figma link:

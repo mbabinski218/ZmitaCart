@@ -1,67 +1,112 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
+using ZmitaCart.Infrastructure.Exceptions;
 using ZmitaCart.Infrastructure.Persistence;
 
 namespace ZmitaCart.Infrastructure.Repositories;
 
 public class OfferRepository : IOfferRepository
 {
-	private readonly ApplicationDbContext _dbContext;
-	private readonly IMapper _mapper;
+    private readonly ApplicationDbContext _dbContext;
+    private readonly IMapper _mapper;
 
-	public OfferRepository(ApplicationDbContext dbContext, IMapper mapper)
-	{
-		_dbContext = dbContext;
-		_mapper = mapper;
-	}
+    public OfferRepository(ApplicationDbContext dbContext, IMapper mapper)
+    {
+        _dbContext = dbContext;
+        _mapper = mapper;
+    }
 
-	public async Task<int> CreateAsync(CreateOfferDto offerDto)
-	{
-		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == offerDto.UserId) ??
-		           throw new InvalidDataException("User does not exist");
+    public async Task<int> CreateAsync(CreateOfferDto offerDto)
+    {
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == offerDto.UserId) ??
+                   throw new InvalidDataException("User does not exist");
 
-		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == offerDto.CategoryId) ??
-		               throw new InvalidDataException("Category does not exist");
+        var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == offerDto.CategoryId) ??
+                       throw new InvalidDataException("Category does not exist");
 
-		var offer = _mapper.Map<Offer>(offerDto);
-		offer.User = user;
-		offer.Category = category;
+        var offer = _mapper.Map<Offer>(offerDto);
+        offer.User = user;
+        offer.Category = category;
 
-		await _dbContext.Offers.AddAsync(offer);
-		await _dbContext.SaveChangesAsync();
+        await _dbContext.Offers.AddAsync(offer);
+        await _dbContext.SaveChangesAsync();
 
-		return offer.Id;
-	}
+        return offer.Id;
+    }
 
-	public async Task<int> UpdateAsync(UpdateOfferDto offerDto)
-	{
-		var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerDto.Id) 
-		            ?? throw new InvalidDataException("Offer does not exist");
-		
-		if(offer.UserId != offerDto.UserId) throw new UnauthorizedAccessException("User does not have access to this offer");
-		
-		offer.Title = offerDto.Title ?? offer.Title;
-		offer.Description = offerDto.Description ?? offer.Description;
-		offer.Price = offerDto.Price ?? offer.Price;
-		offer.Quantity = offerDto.Quantity ?? offer.Quantity;
-		offer.Condition = offerDto.Condition ?? offer.Condition;
-		offer.IsAvailable = offerDto.IsAvailable ?? offer.IsAvailable;
-		
-		await _dbContext.SaveChangesAsync();
-		return offer.Id;
-	}
+    public async Task<int> UpdateAsync(UpdateOfferDto offerDto)
+    {
+        var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerDto.Id)
+                    ?? throw new InvalidDataException("Offer does not exist");
 
-	public async Task DeleteAsync(int userId, int offerId)
-	{
-		var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId) 
-		            ?? throw new InvalidDataException("Offer does not exist");
-		
-		if(offer.UserId != userId) throw new UnauthorizedAccessException("User does not have access to this offer");
-		
-		_dbContext.Offers.Remove(offer);
-		await _dbContext.SaveChangesAsync();
-	}
+        if (offer.UserId != offerDto.UserId) throw new UnauthorizedAccessException("User does not have access to this offer");
+
+        offer.Title = offerDto.Title ?? offer.Title;
+        offer.Description = offerDto.Description ?? offer.Description;
+        offer.Price = offerDto.Price ?? offer.Price;
+        offer.Quantity = offerDto.Quantity ?? offer.Quantity;
+        offer.Condition = offerDto.Condition ?? offer.Condition;
+        offer.IsAvailable = offerDto.IsAvailable ?? offer.IsAvailable;
+
+        await _dbContext.SaveChangesAsync();
+        return offer.Id;
+    }
+
+    public async Task DeleteAsync(int userId, int offerId)
+    {
+        var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId)
+                    ?? throw new NotFoundException("Offer does not exist");
+
+        if (offer.UserId != userId) throw new UnauthorizedAccessException("User does not have access to this offer");
+
+        _dbContext.Offers.Remove(offer);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<OfferInfoDto>> GetOffersByCategoryAsync(int categoryId)
+    {
+        return await GetOffersFromSubCategories(categoryId);
+    }
+
+    public async Task<OfferDto> GetOfferAsync(int id)
+    {
+        return await _dbContext.Offers
+                   .Where(o => o.Id == id)
+                   .Include(o => o.User)
+                   .Include(o => o.Pictures)
+                   .AsNoTracking()
+                   .ProjectTo<OfferDto>(_mapper.ConfigurationProvider)
+                   .FirstOrDefaultAsync()
+               ?? throw new NotFoundException("Offer does not exist");
+    }
+
+    private async Task<IEnumerable<OfferInfoDto>> GetOffersFromSubCategories(int categoryId)
+    {
+        var offers = new List<OfferInfoDto>();
+        var category = await _dbContext.Categories
+                           .Include(c => c.Children)
+                           .FirstOrDefaultAsync(c => c.Id == categoryId)
+                       ?? throw new NotFoundException("Category does not exist");
+
+        offers.AddRange(await _dbContext.Offers
+            .Where(o => o.CategoryId == categoryId && o.IsAvailable)
+            .Include(o => o.User)
+            .Include(o => o.Pictures)
+            .AsNoTracking()
+            .ProjectTo<OfferInfoDto>(_mapper.ConfigurationProvider)
+            .ToListAsync());
+
+        if (category.Children is null) return offers;
+
+        foreach (var child in category.Children)
+        {
+            offers.AddRange(await GetOffersFromSubCategories(child.Id));
+        }
+
+        return offers;
+    }
 }

@@ -4,7 +4,9 @@ namespace ZmitaCart.Application.Interfaces;
 
 public interface IOfferRepository
 {
-	public Task<int> CreateAsync(CreateOfferDto offerDto);
-	public Task<int> UpdateAsync(UpdateOfferDto offerDto);
-	public Task DeleteAsync(int userId, int offerId);
+    Task<int> CreateAsync(CreateOfferDto offerDto);
+    Task<int> UpdateAsync(UpdateOfferDto offerDto);
+    Task DeleteAsync(int userId, int offerId);
+    Task<IEnumerable<OfferInfoDto>> GetOffersByCategoryAsync(int categoryId);
+    Task<OfferDto> GetOfferAsync(int id);
 }

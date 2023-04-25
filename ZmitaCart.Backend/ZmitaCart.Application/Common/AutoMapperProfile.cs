@@ -24,5 +24,18 @@ public class AutoMapperProfile : Profile
         CreateMap<CreateOfferCommand, CreateOfferDto>();
         CreateMap<CreateOfferDto, Offer>();
         CreateMap<UpdateOfferCommand, UpdateOfferDto>();
+        CreateMap<User, UserDto>();
+        
+        CreateMap<Offer, OfferInfoDto>()
+            .ForMember(dto => dto.Address, op => op.MapFrom(
+                o => o.User.Address))
+            .ForMember(dto => dto.ImageUrl, op => op.MapFrom(
+                o => o.Pictures!.OrderBy(p => p.CreationTime).FirstOrDefault()!.PictureUrl));
+        
+        CreateMap<Offer, OfferDto>()
+            .ForMember(dto => dto.Address, op => op.MapFrom(
+                o => o.User.Address))
+            .ForMember(dto => dto.PicturesUrls, op => op.MapFrom(
+                o => o.Pictures!.Select(p => p.PictureUrl)));
     }
 }

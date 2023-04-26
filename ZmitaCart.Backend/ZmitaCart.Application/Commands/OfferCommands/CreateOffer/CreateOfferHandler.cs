@@ -4,7 +4,7 @@ using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
 
-namespace ZmitaCart.Application.Commands.OfferCommands.CreateOfferCommand;
+namespace ZmitaCart.Application.Commands.OfferCommands.CreateOffer;
 
 public class CreateOfferHandler : IRequestHandler<CreateOfferCommand, int>
 {

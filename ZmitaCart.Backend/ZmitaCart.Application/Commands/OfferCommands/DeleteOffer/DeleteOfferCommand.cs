@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace ZmitaCart.Application.Commands.OfferCommands.DeleteOfferCommand;
+namespace ZmitaCart.Application.Commands.OfferCommands.DeleteOffer;
 
 public record DeleteOfferCommand : IRequest
 {

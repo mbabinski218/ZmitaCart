@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using ZmitaCart.Application.Commands.OfferCommands;
-using ZmitaCart.Application.Commands.OfferCommands.CreateOfferCommand;
-using ZmitaCart.Application.Commands.OfferCommands.UpdateOfferCommand;
+using ZmitaCart.Application.Commands.OfferCommands.CreateOffer;
+using ZmitaCart.Application.Commands.OfferCommands.UpdateOffer;
 using ZmitaCart.Application.Commands.UserCommands.ExternalAuthentication;
 using ZmitaCart.Application.Commands.UserCommands.RegisterUser;
 using ZmitaCart.Application.Dtos.CategoryDtos;

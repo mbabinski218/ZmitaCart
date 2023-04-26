@@ -2,11 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
-using ZmitaCart.Application.Commands.OfferCommands;
-using ZmitaCart.Application.Commands.OfferCommands.CreateOfferCommand;
-using ZmitaCart.Application.Commands.OfferCommands.DeleteOfferCommand;
-using ZmitaCart.Application.Commands.OfferCommands.UpdateOfferCommand;
-using ZmitaCart.Application.Queries.OfferQueries.GetOfferQuery;
+using ZmitaCart.Application.Commands.OfferCommands.CreateOffer;
+using ZmitaCart.Application.Commands.OfferCommands.DeleteOffer;
+using ZmitaCart.Application.Commands.OfferCommands.UpdateOffer;
+using ZmitaCart.Application.Queries.OfferQueries.GetOffer;
 using ZmitaCart.Application.Queries.OfferQueries.GetOffersByCategory;
 
 namespace ZmitaCart.API.Controllers;

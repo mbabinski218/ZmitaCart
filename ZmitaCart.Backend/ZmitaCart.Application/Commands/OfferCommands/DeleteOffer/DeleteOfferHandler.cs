@@ -2,7 +2,7 @@
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
 
-namespace ZmitaCart.Application.Commands.OfferCommands.DeleteOfferCommand;
+namespace ZmitaCart.Application.Commands.OfferCommands.DeleteOffer;
 
 public class DeleteOfferHandler : IRequestHandler<DeleteOfferCommand>
 {
@@ -27,7 +27,7 @@ public class DeleteOfferHandler : IRequestHandler<DeleteOfferCommand>
 
 		var userId = int.Parse(user);
 		
-		await _pictureRepository.RemoveAllAsync(userId, request.Id);
+		await _pictureRepository.RemoveAsync(userId, request.Id);
 		await _offerRepository.DeleteAsync(userId, request.Id);
 	}
 }

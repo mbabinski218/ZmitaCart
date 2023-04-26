@@ -1,7 +1,7 @@
 using MediatR;
 using ZmitaCart.Application.Dtos.OfferDtos;
 
-namespace ZmitaCart.Application.Queries.OfferQueries.GetOfferQuery;
+namespace ZmitaCart.Application.Queries.OfferQueries.GetOffer;
 
 public record GetOfferQuery : IRequest<OfferDto>
 {

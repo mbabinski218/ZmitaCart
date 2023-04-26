@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace ZmitaCart.Application.Commands.OfferCommands.UpdateOfferCommand;
+namespace ZmitaCart.Application.Commands.OfferCommands.UpdateOffer;
 
 public record UpdateOfferCommand : IRequest<int>
 {

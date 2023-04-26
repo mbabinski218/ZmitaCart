@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using ZmitaCart.Domain.Enums;
 
-namespace ZmitaCart.Application.Commands.OfferCommands.CreateOfferCommand;
+namespace ZmitaCart.Application.Commands.OfferCommands.CreateOffer;
 
 public class CreateOfferValidator : AbstractValidator<CreateOfferCommand>
 {

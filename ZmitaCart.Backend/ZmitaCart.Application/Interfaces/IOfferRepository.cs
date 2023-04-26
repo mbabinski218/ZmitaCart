@@ -9,4 +9,5 @@ public interface IOfferRepository
     Task DeleteAsync(int userId, int offerId);
     Task<IEnumerable<OfferInfoDto>> GetOffersByCategoryAsync(int categoryId);
     Task<OfferDto> GetOfferAsync(int id);
+    Task AddToFavoritesAsync(int userId, int offerId);
 }

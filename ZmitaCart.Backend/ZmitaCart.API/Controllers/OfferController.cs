@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
+using ZmitaCart.Application.Commands.OfferCommands.AddToFavorites;
 using ZmitaCart.Application.Commands.OfferCommands.CreateOffer;
 using ZmitaCart.Application.Commands.OfferCommands.DeleteOffer;
 using ZmitaCart.Application.Commands.OfferCommands.UpdateOffer;
@@ -47,5 +48,12 @@ public class OfferController : ApiController
     public async Task<IActionResult> GetOffer([FromRoute] GetOfferQuery query)
     {
         return Ok(await mediator.Send(query));
+    }
+
+    [HttpPost("addToFavorites/{Id}")]
+    public async Task<IActionResult> AddToFavorites([FromRoute] AddToFavoritesCommand command)
+    {
+        await mediator.Send(command);
+        return Ok();
     }
 }

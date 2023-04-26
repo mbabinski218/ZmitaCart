@@ -9,5 +9,5 @@ public class OfferInfoDto
     public Address Address { get; set; } = null!;
     public string Condition { get; set; } = null!;
     public int Quantity { get; set; }
-    public string? ImageUrl { get; set; } = null!;
+    public string? ImageUrl { get; set; }
 }

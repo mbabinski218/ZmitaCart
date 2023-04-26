@@ -12,7 +12,7 @@ public class OfferDto
     public bool IsAvailable { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public string Condition { get; set; } = null!;
-    public virtual UserDto User { get; set; } = null!;
+    public UserDto User { get; set; } = null!;
     public Address Address { get; set; } = null!;
-    public virtual ICollection<string>? PicturesUrls { get; set; }
+    public ICollection<string>? PicturesUrls { get; set; }
 }

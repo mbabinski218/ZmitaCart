@@ -74,14 +74,18 @@ public class OfferRepository : IOfferRepository
 
     public async Task<OfferDto> GetOfferAsync(int id)
     {
-        return await _dbContext.Offers
-                   .Where(o => o.Id == id)
-                   .Include(o => o.User)
-                   .Include(o => o.Pictures)
-                   .AsNoTracking()
-                   .ProjectTo<OfferDto>(_mapper.ConfigurationProvider)
-                   .FirstOrDefaultAsync()
-               ?? throw new NotFoundException("Offer does not exist");
+        var offer = await _dbContext.Offers
+            .Where(o => o.Id == id)
+            .Include(o => o.User)
+            .Include(o => o.Pictures)
+            .FirstOrDefaultAsync() ?? throw new NotFoundException("Offer does not exist");
+
+        var offerDto = _mapper.Map<OfferDto>(offer);
+
+        if (offerDto.PicturesUrls!.Count == 0)
+            offerDto.PicturesUrls = null;
+
+        return offerDto;
     }
 
     private async Task<IEnumerable<OfferInfoDto>> GetOffersFromSubCategories(int categoryId)

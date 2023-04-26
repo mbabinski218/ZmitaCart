@@ -8,70 +8,69 @@ namespace ZmitaCart.Infrastructure.Repositories;
 
 public class PictureRepository : IPictureRepository
 {
-	private readonly ApplicationDbContext _dbContext;
+    private readonly ApplicationDbContext _dbContext;
 
-	public PictureRepository(ApplicationDbContext dbContext)
-	{
-		_dbContext = dbContext;
-	}
+    public PictureRepository(ApplicationDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
-	public async Task AddAsync(int userId, int offerId, IEnumerable<IFormFile> images)
-	{
-		var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId)
-		            ?? throw new InvalidDataException("Offer does not exist");
+    public async Task AddAsync(int userId, int offerId, IEnumerable<IFormFile> images)
+    {
+        var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId)
+                    ?? throw new InvalidDataException("Offer does not exist");
 
-		if (offer.UserId != userId) throw new UnauthorizedAccessException("User does not have access to this offer");
+        if (offer.UserId != userId) throw new UnauthorizedAccessException("User does not have access to this offer");
 
-		foreach (var image in images)
-		{
-			if (image.Length <= 0) return;
+        foreach (var image in images)
+        {
+            if (image.Length <= 0) return;
 
-			var creationTime = DateTimeOffset.Now;
-			var imageName =
-				$"{offerId}_{creationTime:ddMMyyyyhhmmssfff}_{new Random().Next(0, 10000000)}.{image.FileName.Split('.').Last()}";
-			var filePath = Path.Combine(Path.GetFullPath("wwwroot"), imageName);
+            var creationTime = DateTimeOffset.Now;
+            var imageName =
+                $"{offerId}_{creationTime:ddMMyyyyhhmmssfff}_{new Random().Next(0, 10000000)}.{image.FileName.Split('.').Last()}";
+            var filePath = Path.Combine(Path.GetFullPath("wwwroot"), imageName);
 
-			await using (var stream = new FileStream(filePath, FileMode.Append))
-			{
-				await image.CopyToAsync(stream);
-			}
+            await using (var stream = new FileStream(filePath, FileMode.Append))
+            {
+                await image.CopyToAsync(stream);
+            }
 
-			var picture = new Picture
-			{
-				OfferId = offerId,
-				Offer = offer,
-				Name = imageName,
-				PictureUrl = filePath,
-				CreationTime = creationTime
-			};
+            var picture = new Picture
+            {
+                OfferId = offerId,
+                Offer = offer,
+                Name = imageName,
+                CreationTime = creationTime
+            };
 
-			await _dbContext.Pictures.AddAsync(picture);
-		}
+            await _dbContext.Pictures.AddAsync(picture);
+        }
 
-		await _dbContext.SaveChangesAsync();
-	}
+        await _dbContext.SaveChangesAsync();
+    }
 
-	public async Task RemoveAsync(int userId, int offerId, IEnumerable<int>? imagesIds = null)
-	{
-		var offer = await _dbContext.Offers
-			            .Include(o => o.Pictures)
-			            .FirstOrDefaultAsync(o => o.Id == offerId)
-		            ?? throw new InvalidDataException("Offer does not exist");
+    public async Task RemoveAsync(int userId, int offerId, IEnumerable<int>? imagesIds = null)
+    {
+        var offer = await _dbContext.Offers
+                        .Include(o => o.Pictures)
+                        .FirstOrDefaultAsync(o => o.Id == offerId)
+                    ?? throw new InvalidDataException("Offer does not exist");
 
-		if (offer.UserId != userId) throw new UnauthorizedAccessException("User does not have access to this offer");
+        if (offer.UserId != userId) throw new UnauthorizedAccessException("User does not have access to this offer");
 
-		if (offer.Pictures is null) return;
-		
-		var pictures = offer.Pictures.Where(picture => imagesIds?.Contains(picture.Id) ?? true).ToList();
+        if (offer.Pictures is null) return;
 
-		if (!pictures.Any()) return;
-			
-		foreach (var filePath in pictures.Select(picture => Path.Combine(Path.GetFullPath("wwwroot"), picture.Name)).Where(File.Exists))
-		{
-			File.Delete(filePath);
-		}
+        var pictures = offer.Pictures.Where(picture => imagesIds?.Contains(picture.Id) ?? true).ToList();
 
-		_dbContext.Pictures.RemoveRange(pictures);
-		await _dbContext.SaveChangesAsync();
-	}
+        if (!pictures.Any()) return;
+
+        foreach (var filePath in pictures.Select(picture => Path.Combine(Path.GetFullPath("wwwroot"), picture.Name)).Where(File.Exists))
+        {
+            File.Delete(filePath);
+        }
+
+        _dbContext.Pictures.RemoveRange(pictures);
+        await _dbContext.SaveChangesAsync();
+    }
 }

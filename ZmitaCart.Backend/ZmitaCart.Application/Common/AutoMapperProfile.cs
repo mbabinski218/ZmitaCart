@@ -24,17 +24,21 @@ public class AutoMapperProfile : Profile
         CreateMap<CreateOfferDto, Offer>();
         CreateMap<UpdateOfferCommand, UpdateOfferDto>();
         CreateMap<User, UserDto>();
-        
+
         CreateMap<Offer, OfferInfoDto>()
             .ForMember(dto => dto.Address, op => op.MapFrom(
                 o => o.User.Address))
             .ForMember(dto => dto.ImageUrl, op => op.MapFrom(
-                o => o.Pictures!.OrderBy(p => p.CreationTime).FirstOrDefault()!.PictureUrl));
-        
+                o => o.Pictures == null || !o.Pictures.Any()
+                    ? null
+                    : Path.Combine(Path.GetFullPath("wwwroot"), o.Pictures.OrderBy(p => p.CreationTime).First().Name)));
+
         CreateMap<Offer, OfferDto>()
             .ForMember(dto => dto.Address, op => op.MapFrom(
                 o => o.User.Address))
             .ForMember(dto => dto.PicturesUrls, op => op.MapFrom(
-                o => o.Pictures!.Select(p => p.PictureUrl)));
+                o => o.Pictures == null || o.Pictures.Count == 0
+                    ? null //TODO ?????????????????????
+                    : o.Pictures.Select(p => Path.Combine(Path.GetFullPath("wwwroot"), p.Name))));
     }
 }

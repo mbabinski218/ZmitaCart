@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections;
+using Microsoft.EntityFrameworkCore;
 
 namespace ZmitaCart.Application.Common;
 
@@ -25,6 +26,25 @@ public class PaginatedList<T>
         return new PaginatedList<T>
         {
             Items = items,
+            PageNumber = pageNumber,
+            TotalPages = pageSize == null ? null : (int)Math.Ceiling(count / (double)pageSize.Value),
+            TotalCount = count
+        };
+    }
+    
+    public static PaginatedList<T> Create(IEnumerable<T> source, int? pageNumber, int? pageSize)
+    {
+        var temp = source.ToList();
+        var count = temp.Count;
+        
+        if (pageSize.HasValue && pageNumber.HasValue)
+        {
+            temp = temp.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value).ToList();
+        }
+        
+        return new PaginatedList<T>
+        {
+            Items = temp,
             PageNumber = pageNumber,
             TotalPages = pageSize == null ? null : (int)Math.Ceiling(count / (double)pageSize.Value),
             TotalCount = count

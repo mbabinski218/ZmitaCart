@@ -1,10 +1,11 @@
 using MediatR;
+using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;
 
 namespace ZmitaCart.Application.Queries.OfferQueries.GetOffersByCategory;
 
-public class GetOffersByCategoryHandler : IRequestHandler<GetOffersByCategoryQuery, IEnumerable<OfferInfoDto>>
+public class GetOffersByCategoryHandler : IRequestHandler<GetOffersByCategoryQuery, PaginatedList<OfferInfoDto>>
 {
     private readonly IOfferRepository _offerRepository;
 
@@ -13,8 +14,8 @@ public class GetOffersByCategoryHandler : IRequestHandler<GetOffersByCategoryQue
         _offerRepository = offerRepository;
     }
 
-    public async Task<IEnumerable<OfferInfoDto>> Handle(GetOffersByCategoryQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedList<OfferInfoDto>> Handle(GetOffersByCategoryQuery request, CancellationToken cancellationToken)
     {
-        return await _offerRepository.GetOffersByCategoryAsync(request.CategoryId);
+        return await _offerRepository.GetOffersByCategoryAsync(request.CategoryId, request.PageNumber, request.PageSize);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
@@ -67,9 +68,10 @@ public class OfferRepository : IOfferRepository
 		await _dbContext.SaveChangesAsync();
 	}
 
-	public async Task<IEnumerable<OfferInfoDto>> GetOffersByCategoryAsync(int categoryId)
+	public async Task<PaginatedList<OfferInfoDto>> GetOffersByCategoryAsync(int categoryId, int? pageNumber = null, int? pageSize = null)
 	{
-		return await GetOffersFromSubCategories(categoryId);
+		return (await GetOffersFromSubCategories(categoryId, pageNumber, pageSize))
+			.ToPaginatedList(pageNumber, pageSize);
 	}
 
 	public async Task<OfferDto> GetOfferAsync(int id)
@@ -116,7 +118,7 @@ public class OfferRepository : IOfferRepository
 		await _dbContext.SaveChangesAsync();
 	}
 
-	private async Task<IEnumerable<OfferInfoDto>> GetOffersFromSubCategories(int categoryId)
+	private async Task<List<OfferInfoDto>> GetOffersFromSubCategories(int categoryId, int? pageNumber, int? pageSize)
 	{
 		var offers = new List<OfferInfoDto>();
 		var category = await _dbContext.Categories
@@ -136,7 +138,7 @@ public class OfferRepository : IOfferRepository
 
 		foreach (var child in category.Children)
 		{
-			offers.AddRange(await GetOffersFromSubCategories(child.Id));
+			offers.AddRange((await GetOffersFromSubCategories(child.Id, pageNumber, pageSize)));
 		}
 
 		return offers;

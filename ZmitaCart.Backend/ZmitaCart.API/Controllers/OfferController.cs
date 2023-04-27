@@ -38,8 +38,8 @@ public class OfferController : ApiController
         return Ok();
     }
 
-    [HttpGet("byCategory/{CategoryId}")]
-    public async Task<IActionResult> GetOffersByCategory([FromRoute] GetOffersByCategoryQuery query)
+    [HttpGet("byCategory")]
+    public async Task<IActionResult> GetOffersByCategory([FromQuery] GetOffersByCategoryQuery query)
     {
         return Ok(await mediator.Send(query));
     }

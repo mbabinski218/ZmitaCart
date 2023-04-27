@@ -6,6 +6,7 @@ using ZmitaCart.Application.Commands.OfferCommands.AddToFavorites;
 using ZmitaCart.Application.Commands.OfferCommands.CreateOffer;
 using ZmitaCart.Application.Commands.OfferCommands.DeleteOffer;
 using ZmitaCart.Application.Commands.OfferCommands.UpdateOffer;
+using ZmitaCart.Application.Queries.OfferQueries.GetFavouritesOffers;
 using ZmitaCart.Application.Queries.OfferQueries.GetOffer;
 using ZmitaCart.Application.Queries.OfferQueries.GetOffersByCategory;
 
@@ -55,5 +56,11 @@ public class OfferController : ApiController
     {
         await mediator.Send(command);
         return Ok();
+    }
+    
+    [HttpGet("favorites")]
+    public async Task<IActionResult> GetFavoritesOffers([FromQuery] GetFavouritesOffersQuery query)
+    {
+        return Ok(await mediator.Send(query));
     }
 }

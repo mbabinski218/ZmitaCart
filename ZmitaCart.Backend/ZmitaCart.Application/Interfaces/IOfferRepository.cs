@@ -11,4 +11,5 @@ public interface IOfferRepository
     Task<PaginatedList<OfferInfoDto>> GetOffersByCategoryAsync(int categoryId, int? pageNumber = null, int? pageSize = null);
     Task<OfferDto> GetOfferAsync(int id);
     Task AddToFavoritesAsync(int userId, int offerId);
+    Task<PaginatedList<OfferInfoDto>> GetFavoritesOffersAsync(int userId, int? pageNumber = null, int? pageSize = null);
 }

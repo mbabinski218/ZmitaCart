@@ -118,6 +118,20 @@ public class OfferRepository : IOfferRepository
 		await _dbContext.SaveChangesAsync();
 	}
 
+	public async Task<PaginatedList<OfferInfoDto>> GetFavoritesOffersAsync(int userId, int? pageNumber = null, int? pageSize = null)
+	{
+		return await _dbContext.Favorites
+			.Where(f => f.UserId == userId)
+			.Include(f => f.Offer)
+				.ThenInclude(o => o.User)
+			.Include(f => f.Offer)
+				.ThenInclude(o => o.Pictures)
+			.Select(f => f.Offer)
+			.AsNoTracking()
+			.ProjectTo<OfferInfoDto>(_mapper.ConfigurationProvider)
+			.ToPaginatedListAsync(pageNumber, pageSize);
+	}
+
 	private async Task<List<OfferInfoDto>> GetOffersFromSubCategories(int categoryId, int? pageNumber, int? pageSize)
 	{
 		var offers = new List<OfferInfoDto>();

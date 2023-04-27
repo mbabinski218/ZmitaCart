@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace ZmitaCart.Application.Common;
+﻿namespace ZmitaCart.Application.Common;
 
 public static class MappingExtensions
 {

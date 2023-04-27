@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.ObjectModel;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common;
@@ -70,7 +71,7 @@ public class OfferRepository : IOfferRepository
 
 	public async Task<PaginatedList<OfferInfoDto>> GetOffersByCategoryAsync(int categoryId, int? pageNumber = null, int? pageSize = null)
 	{
-		return (await GetOffersFromSubCategories(categoryId, pageNumber, pageSize))
+		return (await GetOffersFromSubCategories(categoryId))
 			.ToPaginatedList(pageNumber, pageSize);
 	}
 
@@ -123,16 +124,62 @@ public class OfferRepository : IOfferRepository
 		return await _dbContext.Favorites
 			.Where(f => f.UserId == userId)
 			.Include(f => f.Offer)
-				.ThenInclude(o => o.User)
+			.ThenInclude(o => o.User)
 			.Include(f => f.Offer)
-				.ThenInclude(o => o.Pictures)
+			.ThenInclude(o => o.Pictures)
 			.Select(f => f.Offer)
 			.AsNoTracking()
 			.ProjectTo<OfferInfoDto>(_mapper.ConfigurationProvider)
 			.ToPaginatedListAsync(pageNumber, pageSize);
 	}
 
-	private async Task<List<OfferInfoDto>> GetOffersFromSubCategories(int categoryId, int? pageNumber, int? pageSize)
+	public async Task BuyAsync(int userId, int offerId, int quantity)
+	{
+		var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId)
+		            ?? throw new NotFoundException("Offer does not exist");
+
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId)
+		           ?? throw new NotFoundException("User does not exist");
+
+		if (offer.UserId == userId) throw new InvalidDataException("You cannot buy your own offer");
+		if (offer.Quantity == 0) throw new InvalidDataException("Offer is not available");
+		if (offer.Quantity < quantity) throw new InvalidDataException("Not enough quantity");
+
+		offer.Quantity -= quantity;
+		if (offer.Quantity == 0) offer.IsAvailable = false;
+
+		await _dbContext.Bought.AddAsync(new Bought
+		{
+			UserId = user.Id,
+			User = user,
+			OfferId = offer.Id,
+			Offer = offer,
+			Quantity = quantity,
+			BoughtAt = DateTimeOffset.Now,
+			TotalPrice = offer.Price * quantity
+		});
+
+		await _dbContext.SaveChangesAsync();
+	}
+
+	public async Task<PaginatedList<BoughtOfferDto>> GetBoughtAsync(int userId, int? pageNumber = null, int? pageSize = null)
+	{
+		return await _dbContext.Bought
+			.Where(b => b.UserId == userId)
+			.Include(b => b.Offer)
+			.ProjectTo<BoughtOfferDto>(_mapper.ConfigurationProvider)
+			.ToPaginatedListAsync(pageNumber, pageSize);
+
+		// return await _dbContext.Users
+		// 	.Where(u => u.Id == userId)
+		// 	.Include(u => u.Bought ?? new Collection<Bought>())
+		// 	.ThenInclude(b => b.Offer)
+		// 	.Select(u => u.Bought)
+		// 	.ProjectTo<BoughtOfferDto>(_mapper.ConfigurationProvider)
+		// 	.ToPaginatedListAsync(pageNumber, pageSize);
+	}
+
+	private async Task<List<OfferInfoDto>> GetOffersFromSubCategories(int categoryId)
 	{
 		var offers = new List<OfferInfoDto>();
 		var category = await _dbContext.Categories
@@ -152,7 +199,7 @@ public class OfferRepository : IOfferRepository
 
 		foreach (var child in category.Children)
 		{
-			offers.AddRange((await GetOffersFromSubCategories(child.Id, pageNumber, pageSize)));
+			offers.AddRange(await GetOffersFromSubCategories(child.Id));
 		}
 
 		return offers;

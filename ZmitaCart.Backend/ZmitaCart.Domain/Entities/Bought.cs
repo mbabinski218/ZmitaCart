@@ -10,4 +10,5 @@ public class Bought : Entity<int>
 	public virtual User User { get; set; } = null!;
 	public int Quantity { get; set; }
 	public DateTimeOffset BoughtAt { get; set; }
+	public decimal TotalPrice { get; set; }
 }

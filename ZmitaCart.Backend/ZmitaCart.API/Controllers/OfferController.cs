@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.OfferCommands.AddToFavorites;
+using ZmitaCart.Application.Commands.OfferCommands.BuyOffer;
 using ZmitaCart.Application.Commands.OfferCommands.CreateOffer;
 using ZmitaCart.Application.Commands.OfferCommands.DeleteOffer;
 using ZmitaCart.Application.Commands.OfferCommands.UpdateOffer;
+using ZmitaCart.Application.Queries.OfferQueries.GetBoughtOffers;
 using ZmitaCart.Application.Queries.OfferQueries.GetFavouritesOffers;
 using ZmitaCart.Application.Queries.OfferQueries.GetOffer;
 using ZmitaCart.Application.Queries.OfferQueries.GetOffersByCategory;
@@ -60,6 +62,19 @@ public class OfferController : ApiController
     
     [HttpGet("favorites")]
     public async Task<IActionResult> GetFavoritesOffers([FromQuery] GetFavouritesOffersQuery query)
+    {
+        return Ok(await mediator.Send(query));
+    }
+    
+    [HttpPost("buy")]
+    public async Task<IActionResult> BuyOffer([FromBody] BuyOfferCommand command)
+    {
+        await mediator.Send(command);
+        return Ok();
+    }
+    
+    [HttpGet("bought")]
+    public async Task<IActionResult> GetBoughtOffers([FromQuery] GetBoughtOffersQuery query)
     {
         return Ok(await mediator.Send(query));
     }

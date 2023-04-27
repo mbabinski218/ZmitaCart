@@ -39,6 +39,7 @@ public static class DependencyInjection
 
         services.AddIdentity<User, IdentityRole<int>>(options =>
             {
+                //TODO Remove password requirements
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;

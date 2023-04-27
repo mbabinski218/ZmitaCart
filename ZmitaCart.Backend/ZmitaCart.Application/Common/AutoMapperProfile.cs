@@ -38,7 +38,16 @@ public class AutoMapperProfile : Profile
                 o => o.User.Address))
             .ForMember(dto => dto.PicturesUrls, op => op.MapFrom(
                 o => o.Pictures == null || o.Pictures.Count == 0
-                    ? null //TODO ?????????????????????
+                    ? null
                     : o.Pictures.Select(p => Path.Combine(Path.GetFullPath("wwwroot"), p.Name))));
+
+        CreateMap<Bought, BoughtOfferDto>()
+            .ForMember(dto => dto.Id, op => op.MapFrom(
+                b => b.Offer.Id))
+            .ForMember(dto => dto.Price, op => op.MapFrom(
+                b => b.Offer.Price))
+            .ForMember(dto => dto.Title, op => op.MapFrom(
+                b => b.Offer.Title));
     }
 }
+

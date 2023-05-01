@@ -12,6 +12,7 @@ public class BoughtConfiguration : IEntityTypeConfiguration<Bought>
 		boughtModelBuilder.Property(b => b.BoughtAt).IsRequired();
 		boughtModelBuilder.Property(b => b.UserId).IsRequired();
 		boughtModelBuilder.Property(b => b.OfferId).IsRequired();
+		boughtModelBuilder.Property(o => o.TotalPrice).IsRequired().HasPrecision(8, 2);
 		
 		boughtModelBuilder
 			.HasKey(f => new { f.OfferId, f.UserId });

@@ -1,9 +1,10 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using ZmitaCart.API.Hubs;
 using ZmitaCart.API.Common;
+using ZmitaCart.API.Hubs;
 using ZmitaCart.API.Services;
 using ZmitaCart.Application;
+using ZmitaCart.Application.Hubs;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
 using ZmitaCart.Infrastructure;
@@ -27,6 +28,7 @@ builder.Services.AddSignalR();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IChatHub, ChatHub>();
 
 if (builder.Environment.IsDevelopment())
 {

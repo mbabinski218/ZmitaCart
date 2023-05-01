@@ -9,12 +9,12 @@ public class UserConversationConfiguration : IEntityTypeConfiguration<UserConver
 	public void Configure(EntityTypeBuilder<UserConversation> userConversationModelBuilder)
 	{
 		userConversationModelBuilder
-			.HasKey(uc => new { uc.ChatId, uc.UserId });
+			.HasKey(uc => new { uc.ConversationId, uc.UserId });
 		
 		userConversationModelBuilder
 			.HasOne(uc => uc.Conversation)
 			.WithMany(o => o.Users)
-			.HasForeignKey(uc => uc.ChatId)
+			.HasForeignKey(uc => uc.ConversationId)
 			.OnDelete(DeleteBehavior.NoAction);
 		
 		userConversationModelBuilder

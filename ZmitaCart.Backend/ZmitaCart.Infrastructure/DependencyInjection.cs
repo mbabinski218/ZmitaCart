@@ -10,6 +10,7 @@ using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Common;
 using ZmitaCart.Infrastructure.Persistence;
+using ZmitaCart.Infrastructure.Persistence.Interceptors;
 using ZmitaCart.Infrastructure.Repositories;
 
 namespace ZmitaCart.Infrastructure;
@@ -22,10 +23,12 @@ public static class DependencyInjection
         _ = AddAuthentication(services, configuration);
         services.AddAuthorization();
 
+        services.AddScoped<PublishDomainEventsInterceptor>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IOfferRepository, OfferRepository>();
         services.AddScoped<IPictureRepository, PictureRepository>();
+        services.AddScoped<IConversationRepository, ConversationRepository>();
 
         return services;
     }

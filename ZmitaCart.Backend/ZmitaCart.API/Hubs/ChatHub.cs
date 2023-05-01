@@ -1,28 +1,17 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using ZmitaCart.Application.Hubs;
 
 namespace ZmitaCart.API.Hubs;
 
-public class ChatHub : Hub
+public class ChatHub : Hub, IChatHub
 {
-	// public readonly IChatService _chatService;
-	//
-	// public ChatHub(IChatService chatService)
-	// {
-	// 	_chatService = chatService;
-	// }
-
-	public async Task JoinGroup(int chatId, CancellationToken cancellationToken)
+	public async Task JoinGroup(string chat, CancellationToken cancellationToken)
 	{
-		var chatName = "getChatName";
-		await Groups.AddToGroupAsync(Context.ConnectionId, chatName, cancellationToken);
+		await Groups.AddToGroupAsync(Context.ConnectionId, chat, cancellationToken);
 	}
 	
-	public async Task SendMessage(int userId, int chatId, string content, CancellationToken cancellationToken)
+	public async Task SendMessage(string user, string chat, string text, DateTimeOffset time, CancellationToken cancellationToken)
 	{
-		var chatName = "getChatName";
-		var authorName = "getUserName";
-		var date = DateTime.Now.ToString("HH:mm");
-		
-		await Clients.Group(chatName).SendAsync("ReceiveMessage", authorName, date, content, cancellationToken);
+		await Clients.Group(chat).SendAsync("ReceiveMessage", user, time, text, cancellationToken);
 	}
 }

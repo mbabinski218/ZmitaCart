@@ -2,16 +2,21 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ZmitaCart.Domain.Common;
 using ZmitaCart.Domain.Entities;
+using ZmitaCart.Infrastructure.Persistence.Interceptors;
 
 namespace ZmitaCart.Infrastructure.Persistence;
 
 public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    private readonly PublishDomainEventsInterceptor _publishDomainEventsInterceptor;
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, PublishDomainEventsInterceptor publishDomainEventsInterceptor) : base(options)
     {
+        _publishDomainEventsInterceptor = publishDomainEventsInterceptor;
+        
         // Database.EnsureDeleted();
-         Database.EnsureCreated();
+        // Database.EnsureCreated();
     }
 
     public DbSet<Category> Categories { get; set; } = null!;
@@ -27,7 +32,16 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, i
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        modelBuilder
+            .Ignore<List<IDomainEvent>>()
+            .ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        
         base.OnModelCreating(modelBuilder);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.AddInterceptors(_publishDomainEventsInterceptor);
+        base.OnConfiguring(optionsBuilder);
     }
 }

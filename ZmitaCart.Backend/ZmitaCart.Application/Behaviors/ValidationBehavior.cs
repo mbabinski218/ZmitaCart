@@ -3,13 +3,13 @@ using MediatR;
 
 namespace ZmitaCart.Application.Behaviors;
 
-public class ValidationBehaviors<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 	where TRequest : notnull
 	where TResponse : notnull
 {
 	private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-	public ValidationBehaviors(IEnumerable<IValidator<TRequest>> validators)
+	public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
 	{
 		_validators = validators;
 	}

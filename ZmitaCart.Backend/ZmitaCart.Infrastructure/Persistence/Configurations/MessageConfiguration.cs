@@ -11,6 +11,6 @@ public class MessageConfiguration: IEntityTypeConfiguration<Message>
 		messageModelBuilder.Property(m => m.Text).IsRequired();
 		messageModelBuilder.Property(m => m.Date).IsRequired();
 		messageModelBuilder.Property(m => m.UserId).IsRequired();
-		messageModelBuilder.Property(m => m.ChatId).IsRequired();
+		messageModelBuilder.Property(m => m.ConversationId).IsRequired();
 	}
 }

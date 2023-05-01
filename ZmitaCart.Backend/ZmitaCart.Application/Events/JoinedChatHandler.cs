@@ -1,20 +1,27 @@
 ﻿using MediatR;
 using ZmitaCart.Application.Hubs;
-using ZmitaCart.Domain.Events;
+using ZmitaCart.Application.Interfaces;
 
 namespace ZmitaCart.Application.Events;
 
 public class JoinedChatHandler : INotificationHandler<JoinedChat>
 {
 	private readonly IChatHub _chatHub;
+	private readonly IConversationRepository _conversationRepository;
 
-	public JoinedChatHandler(IChatHub chatHub)
+	public JoinedChatHandler(IChatHub chatHub, IConversationRepository conversationRepository)
 	{
 		_chatHub = chatHub;
+		_conversationRepository = conversationRepository;
 	}
-
-	public Task Handle(JoinedChat notification, CancellationToken cancellationToken)
+	
+	public async Task Handle(JoinedChat notification, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var messages = await _conversationRepository.GetMessagesAsync(notification.Chat);
+		
+		foreach (var message in messages)
+		{
+			await _chatHub.RestoreMessagesAsync(message.UserName, notification.Chat, message.Text, message.Date, cancellationToken);
+		}
 	}
 }

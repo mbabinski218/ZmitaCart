@@ -8,5 +8,5 @@ public interface IConversationRepository
 	public Task<int> CreateConversationAsync(int userId, int offerId);
 	public Task<int> SendMessageAsync(int userId, int conversationId, string text);
 	public Task<PaginatedList<ConversationInfoDto>> GetConversationsAsync(int userId, int? pageNumber = null, int? pageSize = null);
-	public Task<IEnumerable<MessageDto>> GetMessagesAsync(int conversationId);
+	public Task<IEnumerable<MessageDto>> GetMessagesAsync(string chat);
 }

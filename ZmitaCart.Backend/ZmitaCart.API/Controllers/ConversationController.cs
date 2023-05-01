@@ -15,21 +15,9 @@ public class ConversationController : ApiController
 	{
 	}
 	
-	// [HttpPost]
-	// public async Task<IActionResult> JoinGroup([FromBody] JoinGroupCommand command)
-	// {
-	// 	return Ok(await mediator.Send(command));
-	// }
-	
 	[HttpPost("message")]
 	public async Task<IActionResult> SendMessage([FromBody] SendMessageCommand command)
 	{
 		return Ok(await mediator.Send(command));
-	}
-	
-	[HttpGet]
-	public async Task<IActionResult> GetAllConversations([FromQuery] GetAllConversationsQuery query)
-	{
-		return Ok(await mediator.Send(query));
 	}
 }

@@ -69,8 +69,14 @@ public class ConversationRepository : IConversationRepository
 		// 	.ToPaginatedListAsync(pageNumber, pageSize);
 	}
 
-	public Task<IEnumerable<MessageDto>> GetMessagesAsync(int conversationId)
+	public async Task<IEnumerable<MessageDto>> GetMessagesAsync(string chat)
 	{
+		// return await _dbContext.Messages
+		// 	.Where(m => m.Conversation.Chat == int.Parse(chat))
+		// 	.Include(m => m.User)
+		// 	.ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
+		// 	.ToListAsync();
+		
 		throw new NotImplementedException();
 	}
 }

@@ -21,7 +21,7 @@ public class LoggingBehavior<TRequest> : IRequestPreProcessor<TRequest>
 		var requestName = typeof(TRequest).Name;
 		var user = _currentUserService.UserId ?? "Anonymous";
 		
-		_logger.LogInformation("Request: {UserId} {RequestName} {@Request}", user, requestName, request);
+		_logger.LogInformation("Request: {User} {RequestName} {@Request}", user, requestName, request);
 		
 		return Task.CompletedTask;
 	}

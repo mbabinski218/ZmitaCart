@@ -180,7 +180,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Bought");
+                    b.ToTable("Bought", (string)null);
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Category", b =>
@@ -205,7 +205,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.CategoryOffer", b =>
@@ -223,7 +223,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("CategoryOffers");
+                    b.ToTable("CategoryOffers", (string)null);
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Conversation", b =>
@@ -241,7 +241,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("OfferId");
 
-                    b.ToTable("Conversations");
+                    b.ToTable("Conversations", (string)null);
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Feedback", b =>
@@ -265,7 +265,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("RaterId");
 
-                    b.ToTable("Feedbacks");
+                    b.ToTable("Feedbacks", (string)null);
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Message", b =>
@@ -295,7 +295,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Offer", b =>
@@ -343,7 +343,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Offers");
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Picture", b =>
@@ -372,7 +372,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("OfferId");
 
-                    b.ToTable("Pictures");
+                    b.ToTable("Pictures", (string)null);
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.User", b =>
@@ -466,7 +466,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Chats");
+                    b.ToTable("Chats", (string)null);
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.UserOffer", b =>
@@ -484,7 +484,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Favorites");
+                    b.ToTable("Favorites", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -658,7 +658,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.User", b =>
                 {
-                    b.OwnsOne("ZmitaCart.Domain.ValueObjects.Address", "Address", b1 =>
+                    b.OwnsOne("ZmitaCart.Domain.Entities.User.Address#ZmitaCart.Domain.ValueObjects.Address", "Address", b1 =>
                         {
                             b1.Property<int>("UserId")
                                 .HasColumnType("int");
@@ -683,7 +683,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("AspNetUsers");
+                            b1.ToTable("AspNetUsers", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");

@@ -13,7 +13,7 @@ public class JoinedChatHandler : INotificationHandler<JoinedChat>
 		_chatHub = chatHub;
 	}
 
-	public async Task Handle(JoinedChat notification, CancellationToken cancellationToken)
+	public Task Handle(JoinedChat notification, CancellationToken cancellationToken)
 	{
 		throw new NotImplementedException();
 	}

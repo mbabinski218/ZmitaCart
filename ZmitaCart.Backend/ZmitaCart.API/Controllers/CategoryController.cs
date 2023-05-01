@@ -10,7 +10,7 @@ using ZmitaCart.Application.Commands.CategoryCommands.UpdateCategory;
 
 namespace ZmitaCart.API.Controllers;
 
-[Microsoft.AspNetCore.Components.Route("category")]
+[Route("category")]
 [AllowAnonymous]
 public class CategoryController : ApiController
 {

@@ -3,14 +3,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.ConversationCommands.SendMessage;
+using ZmitaCart.Application.Queries.ConversationQueries.GetAllConversations;
 
 namespace ZmitaCart.API.Controllers;
 
-[Microsoft.AspNetCore.Components.Route("conversation")]
+[Route("conversation")]
 [AllowAnonymous]
 public class ConversationController : ApiController
 {
-	protected ConversationController(IMediator mediator) : base(mediator)
+	public ConversationController(IMediator mediator) : base(mediator)
 	{
 	}
 	
@@ -20,9 +21,15 @@ public class ConversationController : ApiController
 	// 	return Ok(await mediator.Send(command));
 	// }
 	
-	[HttpPost]
+	[HttpPost("message")]
 	public async Task<IActionResult> SendMessage([FromBody] SendMessageCommand command)
 	{
 		return Ok(await mediator.Send(command));
+	}
+	
+	[HttpGet]
+	public async Task<IActionResult> GetAllConversations([FromQuery] GetAllConversationsQuery query)
+	{
+		return Ok(await mediator.Send(query));
 	}
 }

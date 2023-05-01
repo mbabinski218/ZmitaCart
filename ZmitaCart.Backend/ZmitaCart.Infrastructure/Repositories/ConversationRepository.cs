@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
+using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.ConversationDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
@@ -10,10 +13,12 @@ namespace ZmitaCart.Infrastructure.Repositories;
 public class ConversationRepository : IConversationRepository
 {
 	private readonly ApplicationDbContext _dbContext;
+	private readonly IMapper _mapper;
 
-	public ConversationRepository(ApplicationDbContext dbContext)
+	public ConversationRepository(ApplicationDbContext dbContext, IMapper mapper)
 	{
 		_dbContext = dbContext;
+		_mapper = mapper;
 	}
 
 	public Task<int> CreateConversationAsync(int userId, int offerId)
@@ -33,13 +38,35 @@ public class ConversationRepository : IConversationRepository
 
 		await _dbContext.Messages.AddAsync(message);
 		await _dbContext.SaveChangesAsync();
-		
+
 		return message.Id;
 	}
 
-	public Task<IEnumerable<ConversationInfoDto>> GetConversationsAsync(int userId)
+	public async Task<PaginatedList<ConversationInfoDto>> GetConversationsAsync(int userId, int? pageNumber = null, int? pageSize = null)
 	{
-		throw new NotImplementedException();
+		_ = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId)
+		           ?? throw new NotFoundException("User does not exist");
+
+		return await _dbContext.Chats
+			.Where(uc => uc.UserId == userId)
+			.Include(uc => uc.Conversation)
+			.Include(uc => uc.User)
+			.ProjectTo<ConversationInfoDto>(_mapper.ConfigurationProvider)
+			.ToPaginatedListAsync(pageNumber, pageSize);
+		
+		// if (user.Chats is null) return new PaginatedList<ConversationInfoDto>();
+		//
+		// return await _dbContext.Users
+		// 	.Where(u => u.Id == userId)
+		// 	.Include(u => u.Chats)
+		// 	!.ThenInclude(uc => uc.Conversation)
+		// 	.ThenInclude(c => c.Messages)
+		// 	.Include(u => u.Chats)
+		// 	!.ThenInclude(uc => uc.Conversation)
+		// 	.ThenInclude(c => c.Offer)
+		// 	.SelectMany(u => u.Chats ?? new List<UserConversation>())
+		// 	.ProjectTo<ConversationInfoDto>(_mapper.ConfigurationProvider)
+		// 	.ToPaginatedListAsync(pageNumber, pageSize);
 	}
 
 	public Task<IEnumerable<MessageDto>> GetMessagesAsync(int conversationId)

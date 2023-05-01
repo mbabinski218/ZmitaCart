@@ -4,5 +4,5 @@ public class MessageDto
 {
 	public string UserName { get; set; } = null!;
 	public string Text { get; set; } = null!;
-	public DateTimeOffset CreatedAt { get; set; }
+	public DateTimeOffset Date { get; set; }
 }

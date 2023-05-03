@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using ZmitaCart.Application.Services;
 
 namespace ZmitaCart.Application.Behaviors;
 
@@ -26,9 +25,9 @@ public class PerformanceBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
 
 		_timer.Stop();
 
-		var elapsedMilliseconds = _timer.ElapsedMilliseconds;
+		var elapsedTicks = _timer.ElapsedTicks;
 
-		_logger.LogDebug("Time: {ElapsedMilliseconds} milliseconds", elapsedMilliseconds);
+		_logger.LogInformation("Time: {ElapsedTicks} ticks", elapsedTicks);
 
 		return response;
 	}

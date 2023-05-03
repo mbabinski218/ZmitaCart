@@ -3,7 +3,7 @@ using MediatR;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
 
-namespace ZmitaCart.Application.Commands.UserCommands.AddRoleForUser;
+namespace ZmitaCart.Application.Commands.UserCommands.AddRole;
 
 public class AddRoleForUserHandler : IRequestHandler<AddRoleForUserCommand>
 {

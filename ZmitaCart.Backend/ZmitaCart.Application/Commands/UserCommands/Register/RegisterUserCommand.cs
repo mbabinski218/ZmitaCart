@@ -1,5 +1,6 @@
 ﻿using MediatR;
-namespace ZmitaCart.Application.Commands.UserCommands.RegisterUser;
+
+namespace ZmitaCart.Application.Commands.UserCommands.Register;
 
 public record RegisterUserCommand : IRequest
 {

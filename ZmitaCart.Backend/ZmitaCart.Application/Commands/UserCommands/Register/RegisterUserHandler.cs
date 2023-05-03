@@ -3,7 +3,7 @@ using MediatR;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
 
-namespace ZmitaCart.Application.Commands.UserCommands.RegisterUser;
+namespace ZmitaCart.Application.Commands.UserCommands.Register;
 
 public class RegisterUserHandler : IRequestHandler<RegisterUserCommand>
 {

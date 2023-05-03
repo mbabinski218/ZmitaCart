@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common;

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace ZmitaCart.Application.Commands.UserCommands.AddRoleForUser;
+namespace ZmitaCart.Application.Commands.UserCommands.AddRole;
 
 public class AddRoleForUserValidator : AbstractValidator<AddRoleForUserCommand>
 {

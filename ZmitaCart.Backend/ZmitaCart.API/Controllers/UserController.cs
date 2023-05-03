@@ -2,10 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
-using ZmitaCart.Application.Commands.UserCommands.AddRoleForUser;
+using ZmitaCart.Application.Commands.UserCommands.AddRole;
+using ZmitaCart.Application.Commands.UserCommands.DeleteFeedback;
 using ZmitaCart.Application.Commands.UserCommands.ExternalAuthentication;
-using ZmitaCart.Application.Commands.UserCommands.RegisterUser;
+using ZmitaCart.Application.Commands.UserCommands.GiveFeedback;
+using ZmitaCart.Application.Commands.UserCommands.Register;
 using ZmitaCart.Application.Commands.UserCommands.UpdateCredentials;
+using ZmitaCart.Application.Commands.UserCommands.UpdateFeedback;
+using ZmitaCart.Application.Queries.UserQueries.GetFeedback;
 using ZmitaCart.Application.Queries.UserQueries.LoginUser;
 using ZmitaCart.Application.Queries.UserQueries.LogoutUser;
 using ZmitaCart.Domain.Common;
@@ -61,5 +65,30 @@ public class UserController : ApiController
 	{
 		await mediator.Send(command);
 		return Ok();
+	}
+	
+	[HttpPost("feedback")]
+	public async Task<IActionResult> GiveFeedback([FromBody] GiveFeedbackCommand command)
+	{
+		return Ok(await mediator.Send(command));
+	}
+	
+	[HttpPut("feedback")]
+	public async Task<IActionResult> UpdateFeedback([FromBody] UpdateFeedbackCommand command)
+	{
+		return Ok(await mediator.Send(command));
+	}
+	
+	[HttpDelete("feedback/{Id}")]
+	public async Task<IActionResult> DeleteFeedback([FromRoute] DeleteFeedbackCommand command)
+	{
+		await mediator.Send(command);
+		return Ok();
+	}
+	
+	[HttpGet("feedback")]
+	public async Task<IActionResult> GetFeedback([FromQuery] GetFeedbackQuery query)
+	{
+		return Ok(await mediator.Send(query));
 	}
 }

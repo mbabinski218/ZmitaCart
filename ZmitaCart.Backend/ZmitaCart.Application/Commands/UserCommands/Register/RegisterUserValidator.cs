@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace ZmitaCart.Application.Commands.UserCommands.RegisterUser;
+namespace ZmitaCart.Application.Commands.UserCommands.Register;
 
 public class RegisterUserValidator : AbstractValidator<RegisterUserCommand>
 {

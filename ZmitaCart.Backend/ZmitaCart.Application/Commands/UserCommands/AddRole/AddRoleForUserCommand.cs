@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace ZmitaCart.Application.Commands.UserCommands.AddRoleForUser;
+namespace ZmitaCart.Application.Commands.UserCommands.AddRole;
 
 public record AddRoleForUserCommand : IRequest
 {

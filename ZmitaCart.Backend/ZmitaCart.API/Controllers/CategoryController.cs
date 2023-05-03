@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.CategoryCommands.CreateCategory;
@@ -11,7 +10,6 @@ using ZmitaCart.Application.Commands.CategoryCommands.UpdateCategory;
 namespace ZmitaCart.API.Controllers;
 
 [Route("category")]
-[AllowAnonymous]
 public class CategoryController : ApiController
 {
     public CategoryController(IMediator mediator) : base(mediator)

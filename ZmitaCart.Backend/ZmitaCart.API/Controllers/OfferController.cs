@@ -15,7 +15,6 @@ using ZmitaCart.Application.Queries.OfferQueries.GetOffersByCategory;
 namespace ZmitaCart.API.Controllers;
 
 [Route("offer")]
-[AllowAnonymous]
 public class OfferController : ApiController
 {
     public OfferController(IMediator mediator) : base(mediator)

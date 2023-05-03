@@ -2,7 +2,7 @@
 using ZmitaCart.Application.Commands.OfferCommands.CreateOffer;
 using ZmitaCart.Application.Commands.OfferCommands.UpdateOffer;
 using ZmitaCart.Application.Commands.UserCommands.ExternalAuthentication;
-using ZmitaCart.Application.Commands.UserCommands.RegisterUser;
+using ZmitaCart.Application.Commands.UserCommands.Register;
 using ZmitaCart.Application.Dtos.CategoryDtos;
 using ZmitaCart.Application.Dtos.ConversationDtos;
 using ZmitaCart.Application.Dtos.OfferDtos;
@@ -70,8 +70,12 @@ public class AutoMapperProfile : Profile
 					? null
 					: Path.Combine(Path.GetFullPath("wwwroot"), uc.Conversation.Offer.Pictures.OrderBy(p => p.CreationTime).First().Name)))
 			.ForMember(dto => dto.LastMessageCreatedAt, op => op.MapFrom(
-					uc => uc.Conversation.Messages == null
-						? (DateTimeOffset?)null
-						: uc.Conversation.Messages.OrderByDescending(m => m.Date).First().Date));
+				uc => uc.Conversation.Messages == null
+					? (DateTimeOffset?)null
+					: uc.Conversation.Messages.OrderByDescending(m => m.Date).First().Date));
+
+		CreateMap<Feedback, FeedbackDto>()
+			.ForMember(dto => dto.RaterName, op => op.MapFrom(
+				f => f.Rater.FirstName));
 	}
 }

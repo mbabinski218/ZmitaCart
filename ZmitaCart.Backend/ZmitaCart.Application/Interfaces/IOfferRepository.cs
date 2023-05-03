@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using ZmitaCart.Application.Common;
+﻿using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.OfferDtos;
 
 namespace ZmitaCart.Application.Interfaces;

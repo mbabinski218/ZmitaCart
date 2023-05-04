@@ -163,17 +163,26 @@ public class OfferRepository : IOfferRepository
 
 	public async Task<PaginatedList<BoughtOfferDto>> GetBoughtAsync(int userId, int? pageNumber = null, int? pageSize = null)
 	{
+		// 153381, 171556, 155032, 175650, 190625 ticks
 		return await _dbContext.Bought
 			.Where(b => b.UserId == userId)
 			.Include(b => b.Offer)
 			.ProjectTo<BoughtOfferDto>(_mapper.ConfigurationProvider)
 			.ToPaginatedListAsync(pageNumber, pageSize);
 
+		// 175247, 160285, 200827, 204948, 217772 ticks
+		// var user = await _dbContext.Users
+		// 	           .Include(u => u.Bought)
+		// 	           .FirstOrDefaultAsync(u => u.Id == userId)
+		//            ?? throw new NotFoundException("User does not exist");
+		//
+		// if (user.Bought is null) return new PaginatedList<BoughtOfferDto>();
+		//
 		// return await _dbContext.Users
 		// 	.Where(u => u.Id == userId)
-		// 	.Include(u => u.Bought ?? new Collection<Bought>())
+		// 	.Include(u => u.Bought)!
 		// 	.ThenInclude(b => b.Offer)
-		// 	.Select(u => u.Bought)
+		// 	.SelectMany(u => u.Bought!)
 		// 	.ProjectTo<BoughtOfferDto>(_mapper.ConfigurationProvider)
 		// 	.ToPaginatedListAsync(pageNumber, pageSize);
 	}

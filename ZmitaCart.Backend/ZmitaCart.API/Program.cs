@@ -32,7 +32,7 @@ builder.Services.AddScoped<IChatHub, ChatHub>();
 
 if (builder.Environment.IsDevelopment())
 {
-    builder.Services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
+   //builder.Services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
 }
 
 var app = builder.Build();

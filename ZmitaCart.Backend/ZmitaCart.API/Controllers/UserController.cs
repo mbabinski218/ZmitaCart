@@ -32,9 +32,9 @@ public class UserController : ApiController
 		return Ok();
 	}
 
-	[HttpPost("login")]
+	[HttpGet("login")]
 	[AllowAnonymous]
-	public async Task<IActionResult> Login([FromBody] LoginUserQuery query)
+	public async Task<IActionResult> Login([FromQuery] LoginUserQuery query)
 	{
 		return Ok(await mediator.Send(query));
 	}

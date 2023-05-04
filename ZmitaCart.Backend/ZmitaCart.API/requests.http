@@ -1,0 +1,16 @@
+﻿### login
+GET https://localhost:44333/user/login?Email={{email}}&Password={{password}}
+Authorization: Bearer {{token}}
+
+### request
+GET https://localhost:44333/user/feedback?userId=2
+
+#### example
+#POST https://localhost:44333/offer/buy
+#accept: */*
+#Content-Type: application/json
+#   <--- ten enter jest potrzebny
+#{
+#  "offerId": 19,
+#  "quantity": 1
+#}

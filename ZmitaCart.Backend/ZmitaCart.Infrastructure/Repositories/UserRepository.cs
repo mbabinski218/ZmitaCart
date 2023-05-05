@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common;
@@ -219,7 +219,7 @@ public class UserRepository : IUserRepository
 		return await _dbContext.Feedbacks
 			.Where(f => f.RecipientId == userId)
 			.Include(f => f.Rater)
-			.ProjectTo<FeedbackDto>(_mapper.ConfigurationProvider)
+			.ProjectToType<FeedbackDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
 	}
 }

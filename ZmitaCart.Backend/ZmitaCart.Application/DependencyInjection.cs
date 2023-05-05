@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 using FluentValidation;
+using Mapster;
+using MapsterMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using ZmitaCart.Application.Behaviors;
@@ -19,10 +21,21 @@ public static class DependencyInjection
 			cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
 #endif
 		});
-
-		services.AddAutoMapper(Assembly.GetExecutingAssembly());
+		
 		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+		services.AddMapper();
 
+		return services;
+	}
+
+	private static IServiceCollection AddMapper(this IServiceCollection services)
+	{
+		var config = TypeAdapterConfig.GlobalSettings;
+		config.Scan(Assembly.GetExecutingAssembly());
+		
+		services.AddSingleton(config);
+		services.AddScoped<IMapper, ServiceMapper>();
+		
 		return services;
 	}
 }

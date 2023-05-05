@@ -1,5 +1,5 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using Mapster;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Dtos.CategoryDtos;
 using ZmitaCart.Application.Interfaces;
@@ -122,7 +122,7 @@ public class CategoryRepository : ICategoryRepository
     {
         return await _dbContext.Categories
             .Where(c => c.ParentId == null)
-            .ProjectTo<SuperiorCategoryDto>(_mapper.ConfigurationProvider)
+            .ProjectToType<SuperiorCategoryDto>()
             .ToListAsync();
     }
 
@@ -131,7 +131,7 @@ public class CategoryRepository : ICategoryRepository
         var categories = await _dbContext.Categories
             .Where(c => c.Id == superiorId)
             .Include(c => c.Children)
-            .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
+            .ProjectToType<CategoryDto>()
             .ToListAsync();
 
         childrenCount ??= -1; // -1 means all children
@@ -156,7 +156,7 @@ public class CategoryRepository : ICategoryRepository
 
             var temp = await _dbContext.Categories
                 .Where(c => c.ParentId == child.Id)
-                .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
+                .ProjectToType<CategoryDto>()
                 .ToListAsync();
 
             child.Children = temp.Any() && childrenCount != 0 ? temp : null;

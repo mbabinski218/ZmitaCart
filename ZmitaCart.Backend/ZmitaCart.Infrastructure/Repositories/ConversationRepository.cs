@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+﻿using Mapster;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.ConversationDtos;
@@ -51,7 +51,7 @@ public class ConversationRepository : IConversationRepository
 			.Where(uc => uc.UserId == userId)
 			.Include(uc => uc.Conversation)
 			.Include(uc => uc.User)
-			.ProjectTo<ConversationInfoDto>(_mapper.ConfigurationProvider)
+			.ProjectToType<ConversationInfoDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
 		
 		// if (user.Chats is null) return new PaginatedList<ConversationInfoDto>();
@@ -69,7 +69,7 @@ public class ConversationRepository : IConversationRepository
 		// 	.ToPaginatedListAsync(pageNumber, pageSize);
 	}
 
-	public async Task<IEnumerable<MessageDto>> GetMessagesAsync(string chat)
+	public Task<IEnumerable<MessageDto>> GetMessagesAsync(string chat)
 	{
 		// return await _dbContext.Messages
 		// 	.Where(m => m.Conversation.Chat == int.Parse(chat))

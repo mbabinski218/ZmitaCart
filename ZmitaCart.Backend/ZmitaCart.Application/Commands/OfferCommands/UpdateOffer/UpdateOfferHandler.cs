@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using MapsterMapper;
 using MediatR;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;

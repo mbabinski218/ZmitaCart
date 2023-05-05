@@ -30,8 +30,7 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getFewBySuperiorId")]
-    public async Task<IActionResult> GetCategoriesBySuperiorId(
-        [FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
+    public async Task<IActionResult> GetCategoriesBySuperiorId([FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
     {
         return Ok(await mediator.Send(request));
     }

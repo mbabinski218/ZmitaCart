@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+﻿using Mapster;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.OfferDtos;
@@ -128,7 +128,7 @@ public class OfferRepository : IOfferRepository
 			.ThenInclude(o => o.Pictures)
 			.Select(f => f.Offer)
 			.AsNoTracking()
-			.ProjectTo<OfferInfoDto>(_mapper.ConfigurationProvider)
+			.ProjectToType<OfferInfoDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
 	}
 
@@ -167,7 +167,7 @@ public class OfferRepository : IOfferRepository
 		return await _dbContext.Bought
 			.Where(b => b.UserId == userId)
 			.Include(b => b.Offer)
-			.ProjectTo<BoughtOfferDto>(_mapper.ConfigurationProvider)
+			.ProjectToType<BoughtOfferDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
 
 		// 175247, 160285, 200827, 204948, 217772 ticks
@@ -200,7 +200,7 @@ public class OfferRepository : IOfferRepository
 			.Include(o => o.User)
 			.Include(o => o.Pictures)
 			.AsNoTracking()
-			.ProjectTo<OfferInfoDto>(_mapper.ConfigurationProvider)
+			.ProjectToType<OfferInfoDto>()
 			.ToListAsync());
 
 		if (category.Children is null) return offers;

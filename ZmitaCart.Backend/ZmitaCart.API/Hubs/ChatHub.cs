@@ -28,10 +28,11 @@ public class ChatHub : Hub, IChatHub
 		}
 	}
 	
-	public async Task RestoreMessagesAsync(string user, string chat, string text, DateTimeOffset date, CancellationToken cancellationToken)
+	public async Task RestoreMessagesAsync(int userId, string user, string chat, string text, DateTimeOffset date, CancellationToken cancellationToken)
 	{
 		await Clients.Caller.SendAsync("ReceiveMessage", new
 		{
+			UserId = userId,
 			UserName = user, 
 			Date = date, 
 			Content = text

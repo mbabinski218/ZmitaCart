@@ -21,7 +21,7 @@ public class JoinedChatHandler : INotificationHandler<JoinedChat>
 		
 		foreach (var message in messages)
 		{
-			await _chatHub.RestoreMessagesAsync(message.UserName, notification.Chat, message.Text, message.Date, cancellationToken);
+			await _chatHub.RestoreMessagesAsync(message.UserId, message.User, notification.Chat, message.Text, message.Date, cancellationToken);
 		}
 	}
 }

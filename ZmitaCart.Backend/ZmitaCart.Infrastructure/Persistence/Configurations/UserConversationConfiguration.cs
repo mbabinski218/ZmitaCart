@@ -13,7 +13,7 @@ public class UserConversationConfiguration : IEntityTypeConfiguration<UserConver
 		
 		userConversationModelBuilder
 			.HasOne(uc => uc.Conversation)
-			.WithMany(o => o.Users)
+			.WithMany(o => o.UserConversations)
 			.HasForeignKey(uc => uc.ConversationId)
 			.OnDelete(DeleteBehavior.NoAction);
 		

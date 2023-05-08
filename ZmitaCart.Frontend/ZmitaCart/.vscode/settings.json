@@ -1,0 +1,18 @@
+{
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true,
+        "source.fixAll.eslint": true
+    },
+    "eslint.validate": [
+        "javascript"
+    ],
+    "javascript.format.enable": true,
+    "html.format.wrapAttributes": "force-expand-multiline",
+    "editor.tabSize": 2,
+    "files.autoSave": "afterDelay",
+    "editor.fontFamily": "Fira Code",
+    "editor.formatOnPaste": true,
+    "html.format.indentHandlebars": true,
+    "html.format.indentInnerHtml": true,
+}

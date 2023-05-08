@@ -1,0 +1,100 @@
+@use '@angular/material' as mat;
+@use 'variables/palette' as palette;
+
+@include mat.core();
+
+$frontend-primary: mat.define-palette(palette.$pp-myPalette, 400);
+$frontend-accent: mat.define-palette(palette.$pp-myPalette, A400);
+$frontend-warn: mat.define-palette(mat.$red-palette);
+$my-typography: mat.define-typography-config();
+
+$frontend-theme: mat.define-light-theme((color: (primary: $frontend-primary,
+        accent: $frontend-accent,
+        warn: $frontend-warn,
+      ),
+      typography: $my-typography,
+    ));
+
+@include mat.all-component-themes($frontend-theme);
+
+:root {
+  --gap-small: 15px;
+  --gap-medium: 20px;
+  --gap-big: 25px;
+  --color-primary: #674ea7;
+  --color-error: #ff6961;
+  --color-success: #77dd77;
+  --color-whitish: #e3e7ec;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+  min-height: 100vh;
+  background-color: #939597;
+  color: black;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+
+  // color: var(--color-primary);
+  font-size: 14px;
+  font-weight: normal;
+  overflow-y: scroll;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+// a {
+//   margin-bottom: 5px;
+//   color: var(--color-primary);
+
+//   &:visited {
+//     color: var(--color-primary);
+//   }
+// }
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #393d45;
+  border-radius: 20px;
+}
+
+// .mat-mdc-snack-bar-container {
+//   &.error-snackbar {
+//     --mdc-snackbar-container-color: var(--color-error);
+//     --mat-mdc-snack-bar-button-color: #fff;
+//     --mdc-snackbar-supporting-text-color: #fff;
+//   }
+
+//   &.success-snackbar {
+//     --mdc-snackbar-container-color: var(--color-success);
+//     --mat-mdc-snack-bar-button-color: #fff;
+//     --mdc-snackbar-supporting-text-color: #fff;
+//   }
+// }
+
+// .mat-mdc-raised-button:not(:disabled) {
+//   color: white !important;
+// }

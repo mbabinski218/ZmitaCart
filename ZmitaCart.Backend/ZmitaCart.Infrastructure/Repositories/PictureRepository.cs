@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp.Processing.Processors.Transforms;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Persistence;
@@ -15,25 +16,33 @@ public class PictureRepository : IPictureRepository
         _dbContext = dbContext;
     }
 
-    public async Task AddAsync(int userId, int offerId, IEnumerable<IFormFile> images)
+    public async Task AddAsync(int userId, int offerId, IEnumerable<IFormFile> files)
     {
         var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId)
                     ?? throw new InvalidDataException("Offer does not exist");
 
         if (offer.UserId != userId) throw new UnauthorizedAccessException("User does not have access to this offer");
 
-        foreach (var image in images)
+        foreach (var file in files)
         {
-            if (image.Length <= 0) return;
+            if (file.Length <= 0) continue;
 
             var creationTime = DateTimeOffset.Now;
             var imageName =
-                $"{offerId}_{creationTime:ddMMyyyyhhmmssfff}_{new Random().Next(0, 10000000)}.{image.FileName.Split('.').Last()}";
+                $"{offerId}_{creationTime:ddMMyyyyhhmmssfff}_{new Random().Next(0, 10000000)}.{file.FileName.Split('.').Last()}";
             var filePath = Path.Combine(Path.GetFullPath("wwwroot"), imageName);
-
-            await using (var stream = new FileStream(filePath, FileMode.Append))
+            
+            using (var image = await Image.LoadAsync(file.OpenReadStream()))
             {
-                await image.CopyToAsync(stream);
+                if(image.Size.Width > 2000 || image.Size.Height > 2000)
+                    image.Mutate(op => op.Resize(new ResizeOptions
+                    {
+                        Size = new Size(2000, 2000),
+                        Mode = ResizeMode.Max,
+                        Sampler = LanczosResampler.Lanczos3
+                    }));
+
+                await image.SaveAsync(filePath);
             }
 
             var picture = new Picture

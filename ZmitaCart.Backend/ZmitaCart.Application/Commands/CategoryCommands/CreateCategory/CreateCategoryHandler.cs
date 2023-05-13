@@ -1,24 +1,20 @@
-using MapsterMapper;
+using FluentResults;
 using MediatR;
 using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Application.Services;
 
 namespace ZmitaCart.Application.Commands.CategoryCommands.CreateCategory;
 
-public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, int>
+public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, Result<int>>
 {
     private readonly ICategoryRepository _categoryRepository;
-    private readonly IMapper _mapper;
 
-    public CreateCategoryHandler(ICategoryRepository categoryRepository, IMapper mapper,
-        ICurrentUserService currentUserService)
+    public CreateCategoryHandler(ICategoryRepository categoryRepository)
     {
         _categoryRepository = categoryRepository;
-        _mapper = mapper;
     }
 
-    public async Task<int> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        return await _categoryRepository.Create(request.Name!, request.ParentId, request.IconName);
+        return await _categoryRepository.Create(request.Name, request.ParentId, request.IconName);
     }
 }

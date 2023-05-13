@@ -20,7 +20,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 		{
 			return await next();
 		}
-		
+
 		var validationResults = await Task.WhenAll
 		(
 			_validators.Select(v => v.ValidateAsync(request, cancellationToken))
@@ -38,4 +38,31 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 
 		return await next();
 	}
+	
+	// TODO Na kiedyś dla FluentResults
+	// private async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	// {
+	// 	if (!_validators.Any())
+	// 	{
+	// 		return await next();
+	// 	}
+	// 	
+	// 	var validationResults = await Task.WhenAll
+	// 	(
+	// 		_validators.Select(v => v.ValidateAsync(request, cancellationToken))
+	// 	);
+	//
+	// 	var errors = validationResults
+	// 		.Where(result => !result.IsValid)
+	// 		.SelectMany(result => result.Errors
+	// 			.Select(error => new ValidationError(error.ErrorMessage)))
+	// 		.ToList();
+	//
+	// 	if (errors.Any())
+	// 	{
+	// 		return (TResponse)(object)Result.Fail(errors);
+	// 	}
+	// 	
+	// 	return await next();
+	// }
 }

@@ -1,8 +1,9 @@
+using FluentResults;
 using MediatR;
 
 namespace ZmitaCart.Application.Commands.CategoryCommands.UpdateCategory;
 
-public record UpdateCategoryCommand : IRequest<int>
+public record UpdateCategoryCommand : IRequest<Result<int>>
 {
     public int Id { get; init; }
     public string? Name { get; init; }

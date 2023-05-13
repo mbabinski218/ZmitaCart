@@ -1,10 +1,11 @@
+using FluentResults;
 using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.CategoryDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
-using ZmitaCart.Infrastructure.Exceptions;
 using ZmitaCart.Infrastructure.Persistence;
 
 namespace ZmitaCart.Infrastructure.Repositories;
@@ -20,11 +21,11 @@ public class CategoryRepository : ICategoryRepository
         _mapper = mapper;
     }
 
-    public async Task<int> Create(string name, int? parentId, string? iconName)
+    public async Task<Result<int>> Create(string name, int? parentId, string? iconName)
     {
         if (await _dbContext.Categories.AnyAsync(c => c.Name == name))
         {
-            throw new ArgumentException("Category with input name already exists");
+            return Result.Fail(new AlreadyExistsError("Category with input name already exists"));
         }
 
         var category = new Category { Name = name, IconName = iconName };
@@ -38,7 +39,7 @@ public class CategoryRepository : ICategoryRepository
         var parent = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == parentId);
         if (parent is null)
         {
-            throw new ArgumentException("Parent category with input id doesn't exist");
+            return Result.Fail(new NotFoundError("Parent category with input id doesn't exist"));
         }
 
         category.Parent = parent;
@@ -48,10 +49,14 @@ public class CategoryRepository : ICategoryRepository
         return category.Id;
     }
 
-    public async Task<int> Update(int id, string? name, int? parentId, string? iconName)
+    public async Task<Result<int>> Update(int id, string? name, int? parentId, string? iconName)
     {
-        var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id) ??
-                       throw new NotFoundException("Item does not exist");
+        var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
+
+        if (category is null)
+        {
+            return Result.Fail(new NotFoundError("Item does not exist"));
+        }
 
         if (name is not null)
         {
@@ -68,14 +73,14 @@ public class CategoryRepository : ICategoryRepository
             var parent = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == parentId);
             if (parent is null)
             {
-                throw new NotFoundException("Parent category with input id doesn't exist");
+                return Result.Fail(new NotFoundError("Parent category with input id doesn't exist"));
             }
 
             var currentCategory = (await _dbContext.Categories
                 .Include(c => c.Children)
                 .ToListAsync()).FirstOrDefault(c => c.Id == id);
 
-            CheckChildrenId(currentCategory!, parentId.Value);
+            var result = CheckChildrenId(currentCategory!, parentId.Value);
 
             category.Parent = parent;
             category.ParentId = parentId;
@@ -91,34 +96,42 @@ public class CategoryRepository : ICategoryRepository
         return category.Id;
     }
 
-    private void CheckChildrenId(Category category, int parentId)
+    private Result CheckChildrenId(Category category, int parentId)
     {
         if (category.Id == parentId)
         {
-            throw new ArgumentException("Category cannot have itself as a child");
+            return Result.Fail(new ArgumentError("Category cannot have itself as a child"));
         }
 
-        if (category.Children is null) return;
-        foreach (var child in category.Children)
+        if (category.Children is null)
         {
-            CheckChildrenId(child, parentId);
+            return Result.Ok();
         }
+        
+        return category.Children.Select(child => CheckChildrenId(child, parentId)).Any(result => result.IsFailed) 
+            ? Result.Fail(new ArgumentError("Category cannot have itself as a child")) 
+            : Result.Ok();
     }
 
-    public async Task Delete(int id)
+    public async Task<Result> Delete(int id)
     {
-        var categoryToRemove = await _dbContext.Categories
-            .FirstOrDefaultAsync(c => c.Id == id) ?? throw new InvalidDataException("nie ma ");
+        var categoryToRemove = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
+
+        if (categoryToRemove is null)
+        {
+            Result.Fail(new NotFoundError("Item does not exist"));
+        }
 
         await _dbContext.Categories
             .Where(c => c.ParentId == id)
             .ForEachAsync(c => c.ParentId = null);
 
-        _dbContext.Categories.Remove(categoryToRemove);
+        _dbContext.Categories.Remove(categoryToRemove!);
         await _dbContext.SaveChangesAsync();
+        return Result.Ok();
     }
 
-    public async Task<IEnumerable<SuperiorCategoryDto>> GetAllSuperiors()
+    public async Task<Result<IEnumerable<SuperiorCategoryDto>>> GetAllSuperiors()
     {
         return await _dbContext.Categories
             .Where(c => c.ParentId == null)
@@ -126,8 +139,13 @@ public class CategoryRepository : ICategoryRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<CategoryDto>> GetCategoriesBySuperiorId(int superiorId, int? childrenCount)
+    public async Task<Result<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId(int superiorId, int? childrenCount)
     {
+        if (await _dbContext.Categories.AnyAsync(c => c.Id == superiorId) is false)
+        {
+            return Result.Fail(new NotFoundError("Superior category with input id doesn't exist"));
+        }
+        
         var categories = await _dbContext.Categories
             .Where(c => c.Id == superiorId)
             .Include(c => c.Children)
@@ -143,8 +161,7 @@ public class CategoryRepository : ICategoryRepository
 
         return categories;
     }
-
-    //TODO można spróbwać z includem
+    
     private async Task FillChildren(IEnumerable<CategoryDto?>? children, int childrenCount)
     {
         if (childrenCount == 0 || children is null) return;

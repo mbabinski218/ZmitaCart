@@ -20,37 +20,59 @@ public class CategoryController : ApiController
     public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
     {
         var response = await mediator.Send(command);
-        return Created($"category/{response}", response);
+
+        return response.IsSuccess 
+            ? Created($"category/{response.Value}", response.Value) 
+            : ResponseHandler.HandleErrors(response.Errors);
     }
 
     [HttpGet("getBySuperiorId")]
     public async Task<IActionResult> GetCategoriesBySuperiorId([FromQuery] GetCategoriesBySuperiorIdQuery request)
     {
-        return Ok(await mediator.Send(request));
+        var response = await mediator.Send(request);
+        
+        return response.IsSuccess 
+            ? Ok(response.Value) 
+            : ResponseHandler.HandleErrors(response.Errors);
     }
 
     [HttpGet("getFewBySuperiorId")]
     public async Task<IActionResult> GetCategoriesBySuperiorId([FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
     {
-        return Ok(await mediator.Send(request));
+        var response = await mediator.Send(request);
+        
+        return response.IsSuccess 
+            ? Ok(response.Value) 
+            : ResponseHandler.HandleErrors(response.Errors);
     }
 
     [HttpGet("getAllSuperiors")]
     public async Task<IActionResult> GetCategoriesBySuperiorId()
     {
-        return Ok(await mediator.Send(new GetAllSuperiorsQuery()));
+        var response = await mediator.Send(new GetAllSuperiorsQuery());
+        
+        return response.IsSuccess 
+            ? Ok(response.Value) 
+            : ResponseHandler.HandleErrors(response.Errors);
     }
 
     [HttpPut("updateCategory")]
     public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryCommand command)
     {
-        return Ok(await mediator.Send(command));
+        var response = await mediator.Send(command);
+        
+        return response.IsSuccess 
+            ? Ok(response.Value) 
+            : ResponseHandler.HandleErrors(response.Errors);
     }
 
     [HttpDelete("{Id}")]
     public async Task<IActionResult> DeleteCategory([FromRoute] DeleteCategoryCommand command)
     {
-        await mediator.Send(command);
-        return Ok();
+        var response = await mediator.Send(command);
+        
+        return response.IsSuccess 
+            ? Ok() 
+            : ResponseHandler.HandleErrors(response.Errors);
     }
 }

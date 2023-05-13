@@ -1,10 +1,11 @@
+using FluentResults;
 using MapsterMapper;
 using MediatR;
 using ZmitaCart.Application.Interfaces;
 
 namespace ZmitaCart.Application.Commands.CategoryCommands.DeleteCategory;
 
-public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand>
+public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand, Result>
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly IMapper _mapper;
@@ -15,8 +16,8 @@ public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand>
         _mapper = mapper;
     }
 
-    public async Task Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
     {
-        await _categoryRepository.Delete(request.Id);
+        return await _categoryRepository.Delete(request.Id);
     }
 }

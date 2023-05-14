@@ -12,7 +12,6 @@ import { RoutesPath } from '@core/enums/routes-path.enum';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-
   constructor(
     private router: Router,
   ) { }

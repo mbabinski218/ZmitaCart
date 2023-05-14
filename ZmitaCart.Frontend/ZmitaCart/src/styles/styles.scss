@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@use 'variables/palette' as palette;
+@use 'variables/palette';
 
 @include mat.core();
 
@@ -25,6 +25,8 @@ $frontend-theme: mat.define-light-theme((color: (primary: $frontend-primary,
   --color-error: #ff6961;
   --color-success: #77dd77;
   --color-whitish: #e3e7ec;
+  --background-color: #f4f8fc;
+  --background-color-to-save-eyes: #71767a;
 }
 
 * {
@@ -37,7 +39,7 @@ html,
 body {
   height: 100%;
   min-height: 100vh;
-  background-color: #939597;
+  // background-color: #939597;
   color: black;
 }
 
@@ -46,18 +48,38 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 
   // color: var(--color-primary);
-  font-size: 14px;
+  font-size: 1.4rem; // ustawia font size na 10px*1.4=14px
   font-weight: normal;
   overflow-y: scroll;
 }
 
 html {
   scroll-behavior: smooth;
+  font-size: 62.5%; //ustawia base font size na 10px, więc 1rem === 10px
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    background-color: var(--background-color-to-save-eyes);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    background-color: var(--background-color);
+  }
 }
 
 .cursor-pointer {
   cursor: pointer;
 }
+
+img,
+svg,
+video {
+  max-width: 100%;
+  display: block;
+}//czy nie zepsuje mat-icons
 
 // a {
 //   margin-bottom: 5px;
@@ -70,6 +92,7 @@ html {
 
 *::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 *::-webkit-scrollbar-track {

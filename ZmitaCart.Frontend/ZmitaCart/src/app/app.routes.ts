@@ -46,4 +46,5 @@ export const routes: Route[] = [
     path: '**',
     redirectTo: RoutesPath.HOME,//TODO czy robić 404 not found page?
   },
+  //TODO czy robić lazy load na komponenty?
 ];

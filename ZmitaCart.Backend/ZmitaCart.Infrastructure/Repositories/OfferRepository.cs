@@ -196,7 +196,7 @@ public class OfferRepository : IOfferRepository
 
 		var offers = await _dbContext.Offers
 			.Where(o => EF.Functions.Like(o.Title, $"%{search.Title}%")
-			            && (categoriesId.Contains(o.CategoryId) || o.CategoryId == search.CategoryId)
+			            && (categoriesId.Contains(o.CategoryId) || o.CategoryId == (search.CategoryId ?? o.CategoryId))
 			            && o.Price >= (search.MinPrice ?? o.Price)
 			            && o.Price <= (search.MaxPrice ?? o.Price)
 			            && o.Condition == (search.Condition ?? o.Condition))

@@ -1,4 +1,4 @@
-﻿namespace ZmitaCart.Domain.Enums;
+﻿namespace ZmitaCart.Domain.Common;
 
 public static class Condition
 {

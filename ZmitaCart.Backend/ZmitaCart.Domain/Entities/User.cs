@@ -7,9 +7,9 @@ public class User : IdentityUser<int>
 	public string FirstName { get; set; } = null!;
 	public string LastName { get; set; } = null!;
 	public Address Address { get; set; } = null!;
-	public virtual ICollection<Bought>? Bought { get; set; }
-	public virtual ICollection<UserConversation>? Chats { get; set; }
-	public virtual ICollection<UserOffer>? Favorites { get; set; }
-	public virtual ICollection<Feedback>? Feedbacks { get; set; }
-	public virtual ICollection<Offer>? Offers { get; set; }
+	public virtual List<Bought> Bought { get; set; } = new();
+	public virtual List<UserConversation> Chats { get; set; } = new();
+	public virtual List<UserOffer> Favorites { get; set; } = new();
+	public virtual List<Feedback> Feedbacks { get; set; } = new();
+	public virtual List<Offer> Offers { get; set; } = new();
 }

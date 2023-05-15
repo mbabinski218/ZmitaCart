@@ -14,4 +14,5 @@ public interface IOfferRepository
     Task<PaginatedList<OfferInfoDto>> GetFavoritesOffersAsync(int userId, int? pageNumber = null, int? pageSize = null);
     Task BuyAsync(int userId, int offerId, int quantity);
     Task<PaginatedList<BoughtOfferDto>> GetBoughtAsync(int userId, int? pageNumber = null, int? pageSize = null);
+    Task<PaginatedList<OfferInfoDto>> SearchOffersAsync(SearchOfferDto search, int? pageNumber = null, int? pageSize = null);
 }

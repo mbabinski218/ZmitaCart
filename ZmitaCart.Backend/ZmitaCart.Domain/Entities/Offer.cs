@@ -15,8 +15,8 @@ public class Offer : AggregateRoot<int>
     public virtual Category Category { get; set; } = null!;
     public int UserId { get; set; }
     public virtual User User { get; set; } = null!;
-    public virtual ICollection<UserOffer>? Favorites { get; set; }
-    public virtual ICollection<Bought>? Bought { get; set; }
-    public virtual ICollection<CategoryOffer>? CategoryOffers { get; set; } //TODO remove
-    public virtual ICollection<Picture>? Pictures { get; set; }
+    public virtual List<UserOffer> Favorites { get; set; }  = new();
+    public virtual List<Bought> Bought { get; set; } = new();
+    public virtual List<Picture> Pictures { get; set; }  = new();
+    public virtual List<CategoryOffer> CategoryOffers { get; set; }  = new(); //TODO remove
 }

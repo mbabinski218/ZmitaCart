@@ -8,6 +8,6 @@ public class Category : AggregateRoot<int>
     public int? ParentId { get; set; }
     public string? IconName { get; set; }
     public virtual Category? Parent { get; set; }
-    public virtual ICollection<Category>? Children { get; set; }
-    public virtual ICollection<CategoryOffer>? CategoryOffers { get; set; }
+    public virtual List<Category> Children { get; set; } = new();
+    public virtual List<CategoryOffer> CategoryOffers { get; set; } = new();
 }

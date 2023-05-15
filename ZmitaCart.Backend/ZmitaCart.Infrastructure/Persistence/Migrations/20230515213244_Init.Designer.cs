@@ -12,8 +12,8 @@ using ZmitaCart.Infrastructure.Persistence;
 namespace ZmitaCart.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230503124740_FeedbackFix")]
-    partial class FeedbackFix
+    [Migration("20230515213244_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -370,10 +370,6 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                     b.Property<int>("OfferId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PictureUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OfferId");
@@ -702,7 +698,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("ZmitaCart.Domain.Entities.UserConversation", b =>
                 {
                     b.HasOne("ZmitaCart.Domain.Entities.Conversation", "Conversation")
-                        .WithMany("Users")
+                        .WithMany("UserConversations")
                         .HasForeignKey("ConversationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -748,7 +744,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                 {
                     b.Navigation("Messages");
 
-                    b.Navigation("Users");
+                    b.Navigation("UserConversations");
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Offer", b =>

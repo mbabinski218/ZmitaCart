@@ -695,7 +695,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("ZmitaCart.Domain.Entities.UserConversation", b =>
                 {
                     b.HasOne("ZmitaCart.Domain.Entities.Conversation", "Conversation")
-                        .WithMany("Users")
+                        .WithMany("UserConversations")
                         .HasForeignKey("ConversationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -741,7 +741,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                 {
                     b.Navigation("Messages");
 
-                    b.Navigation("Users");
+                    b.Navigation("UserConversations");
                 });
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Offer", b =>

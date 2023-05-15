@@ -1,9 +1,11 @@
 ﻿namespace ZmitaCart.Domain.Common.Models;
 
-public abstract class Entity<TId> : IEquatable<Entity<TId>>
+public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvent
 	where TId: notnull
 {
-	public TId Id { get; init; }
+	private readonly List<IDomainEvent> _domainEvents = new();
+	public TId Id { get; init; } = default!;
+	public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
 	public override bool Equals(object? obj)
 	{
@@ -28,5 +30,15 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>
 	public static bool operator !=(Entity<TId>? left, Entity<TId>? right)
 	{
 		return !Equals(left, right);
+	}
+	
+	public void ClearDomainEvents()
+	{
+		_domainEvents.Clear();
+	}
+	
+	public void AddDomainEvent(IDomainEvent domainEvent)
+	{
+		_domainEvents.Add(domainEvent);
 	}
 }

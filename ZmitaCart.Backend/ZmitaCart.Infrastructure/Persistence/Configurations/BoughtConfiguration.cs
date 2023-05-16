@@ -13,20 +13,5 @@ public class BoughtConfiguration : IEntityTypeConfiguration<Bought>
 		boughtModelBuilder.Property(b => b.UserId).IsRequired();
 		boughtModelBuilder.Property(b => b.OfferId).IsRequired();
 		boughtModelBuilder.Property(o => o.TotalPrice).IsRequired().HasPrecision(8, 2);
-		
-		boughtModelBuilder
-			.HasKey(f => new { f.OfferId, f.UserId });
-		
-		boughtModelBuilder
-			.HasOne(f => f.Offer)
-			.WithMany(o => o.Bought)
-			.HasForeignKey(f => f.OfferId)
-			.OnDelete(DeleteBehavior.NoAction);
-		
-		boughtModelBuilder
-			.HasOne(f => f.User)
-			.WithMany(u => u.Bought)
-			.HasForeignKey(f => f.UserId)
-			.OnDelete(DeleteBehavior.NoAction);
 	}
 }

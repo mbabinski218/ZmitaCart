@@ -1,8 +1,6 @@
-﻿using ZmitaCart.Domain.Common.Models;
+﻿namespace ZmitaCart.Domain.Entities;
 
-namespace ZmitaCart.Domain.Entities;
-
-public class UserConversation : Entity<int>
+public class UserConversation
 {
 	public int ConversationId { get; set; }
 	public virtual Conversation Conversation { get; set; } = null!;

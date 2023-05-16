@@ -244,26 +244,29 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                 name: "Bought",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     OfferId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     BoughtAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(8,2)", precision: 8, scale: 2, nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    TotalPrice = table.Column<decimal>(type: "decimal(8,2)", precision: 8, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bought", x => new { x.OfferId, x.UserId });
+                    table.PrimaryKey("PK_Bought", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Bought_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Bought_Offers_OfferId",
                         column: x => x.OfferId,
                         principalTable: "Offers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -271,8 +274,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    OfferId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    OfferId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -313,8 +315,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     OfferId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -357,8 +358,7 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     ConversationId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -441,6 +441,11 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bought_OfferId",
+                table: "Bought",
+                column: "OfferId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bought_UserId",

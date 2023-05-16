@@ -1,8 +1,6 @@
-using ZmitaCart.Domain.Common.Models;
-
 namespace ZmitaCart.Domain.Entities;
 
-public class CategoryOffer : Entity<int>
+public class CategoryOffer
 {
     public int CategoryId { get; set; }
     public Category Category { get; set; } = null!;

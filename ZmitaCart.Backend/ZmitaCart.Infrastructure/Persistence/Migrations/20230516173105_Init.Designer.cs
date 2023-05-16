@@ -12,7 +12,7 @@ using ZmitaCart.Infrastructure.Persistence;
 namespace ZmitaCart.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230515213244_Init")]
+    [Migration("20230516173105_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -160,16 +160,16 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ZmitaCart.Domain.Entities.Bought", b =>
                 {
-                    b.Property<int>("OfferId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("BoughtAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("OfferId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -179,7 +179,12 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                         .HasPrecision(8, 2)
                         .HasColumnType("decimal(8,2)");
 
-                    b.HasKey("OfferId", "UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OfferId");
 
                     b.HasIndex("UserId");
 
@@ -217,9 +222,6 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.HasKey("OfferId", "CategoryId");
@@ -461,9 +463,6 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.HasKey("ConversationId", "UserId");
 
                     b.HasIndex("UserId");
@@ -477,9 +476,6 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.HasKey("OfferId", "UserId");
@@ -545,13 +541,13 @@ namespace ZmitaCart.Infrastructure.Persistence.Migrations
                     b.HasOne("ZmitaCart.Domain.Entities.Offer", "Offer")
                         .WithMany("Bought")
                         .HasForeignKey("OfferId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ZmitaCart.Domain.Entities.User", "User")
                         .WithMany("Bought")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Offer");

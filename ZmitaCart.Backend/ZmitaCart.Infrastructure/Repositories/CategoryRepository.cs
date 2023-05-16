@@ -13,12 +13,10 @@ namespace ZmitaCart.Infrastructure.Repositories;
 public class CategoryRepository : ICategoryRepository
 {
     private readonly ApplicationDbContext _dbContext;
-    private readonly IMapper _mapper;
 
-    public CategoryRepository(ApplicationDbContext dbContext, IMapper mapper)
+    public CategoryRepository(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
-        _mapper = mapper;
     }
 
     public async Task<Result<int>> Create(string name, int? parentId, string? iconName)

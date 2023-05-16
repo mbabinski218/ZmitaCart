@@ -9,11 +9,11 @@ $frontend-warn: mat.define-palette(mat.$red-palette);
 $my-typography: mat.define-typography-config();
 
 $frontend-theme: mat.define-light-theme((color: (primary: $frontend-primary,
-        accent: $frontend-accent,
-        warn: $frontend-warn,
-      ),
-      typography: $my-typography,
-    ));
+  accent: $frontend-accent,
+  warn: $frontend-warn,
+),
+  typography: $my-typography,
+));
 
 @include mat.all-component-themes($frontend-theme);
 
@@ -27,6 +27,7 @@ $frontend-theme: mat.define-light-theme((color: (primary: $frontend-primary,
   --color-success: #77dd77;
   --color-whitish: #e3e7ec;
   --background-color: #f4f8fc;
+  --background-color-to-save-eyes: #71767a;
 }
 
 * {

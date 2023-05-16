@@ -9,6 +9,8 @@ using ZmitaCart.Application.Commands.UserCommands.GiveFeedback;
 using ZmitaCart.Application.Commands.UserCommands.Register;
 using ZmitaCart.Application.Commands.UserCommands.UpdateCredentials;
 using ZmitaCart.Application.Commands.UserCommands.UpdateFeedback;
+using ZmitaCart.Application.Common;
+using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Queries.UserQueries.GetFeedback;
 using ZmitaCart.Application.Queries.UserQueries.LoginUser;
 using ZmitaCart.Application.Queries.UserQueries.LogoutUser;
@@ -26,7 +28,7 @@ public class UserController : ApiController
 	
 	[HttpPost("register")]
 	[AllowAnonymous]
-	public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
+	public async Task<ActionResult> Register([FromBody] RegisterUserCommand command)
 	{
 		await mediator.Send(command);
 		return Ok();
@@ -34,13 +36,13 @@ public class UserController : ApiController
 
 	[HttpGet("login")]
 	[AllowAnonymous]
-	public async Task<IActionResult> Login([FromQuery] LoginUserQuery query)
+	public async Task<ActionResult<string>> Login([FromQuery] LoginUserQuery query)
 	{
 		return Ok(await mediator.Send(query));
 	}
 	
 	[HttpPost("logout")]
-	public async Task<IActionResult> Logout()
+	public async Task<ActionResult> Logout()
 	{
 		await mediator.Send(new LogoutUserQuery());
 		return Ok();
@@ -48,46 +50,46 @@ public class UserController : ApiController
 	
 	[HttpPost("addRole")]
 	[Authorize(Roles = Role.administrator)]
-	public async Task<IActionResult> AddRoleForUser([FromBody] AddRoleForUserCommand command)
+	public async Task<ActionResult> AddRoleForUser([FromBody] AddRoleForUserCommand command)
 	{
 		await mediator.Send(command);
 		return Ok();
 	}
 	
 	[HttpPost("externalAuthentication")]
-	public async Task<IActionResult> ExternalAuthentication([FromBody] ExternalAuthenticationCommand command)
+	public async Task<ActionResult<string>> ExternalAuthentication([FromBody] ExternalAuthenticationCommand command)
 	{
 		return Ok(await mediator.Send(command));
 	}
 	
 	[HttpPut("updateCredentials")]
-	public async Task<IActionResult> UpdateCredentials([FromBody] UpdateCredentialsCommand command)
+	public async Task<ActionResult> UpdateCredentials([FromBody] UpdateCredentialsCommand command)
 	{
 		await mediator.Send(command);
 		return Ok();
 	}
 	
 	[HttpPost("feedback")]
-	public async Task<IActionResult> GiveFeedback([FromBody] GiveFeedbackCommand command)
+	public async Task<ActionResult<int>> GiveFeedback([FromBody] GiveFeedbackCommand command)
 	{
 		return Ok(await mediator.Send(command));
 	}
 	
 	[HttpPut("feedback")]
-	public async Task<IActionResult> UpdateFeedback([FromBody] UpdateFeedbackCommand command)
+	public async Task<ActionResult<int>> UpdateFeedback([FromBody] UpdateFeedbackCommand command)
 	{
 		return Ok(await mediator.Send(command));
 	}
 	
 	[HttpDelete("feedback/{Id}")]
-	public async Task<IActionResult> DeleteFeedback([FromRoute] DeleteFeedbackCommand command)
+	public async Task<ActionResult> DeleteFeedback([FromRoute] DeleteFeedbackCommand command)
 	{
 		await mediator.Send(command);
 		return Ok();
 	}
 	
 	[HttpGet("feedback")]
-	public async Task<IActionResult> GetFeedback([FromQuery] GetFeedbackQuery query)
+	public async Task<ActionResult<PaginatedList<FeedbackDto>>> GetFeedback([FromQuery] GetFeedbackQuery query)
 	{
 		return Ok(await mediator.Send(query));
 	}

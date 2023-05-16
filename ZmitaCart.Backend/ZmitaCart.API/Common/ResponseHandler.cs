@@ -5,7 +5,7 @@ namespace ZmitaCart.API.Common;
 
 public static class ResponseHandler
 {
-	public static IActionResult HandleErrors(IEnumerable<IError> errors)
+	public static ActionResult HandleErrors(IEnumerable<IError> errors)
 	{
 		var errorsMessages = errors.Select(e => e.Message);
 		return new BadRequestObjectResult(errorsMessages);

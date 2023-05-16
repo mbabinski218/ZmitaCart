@@ -13,7 +13,7 @@ public class ConversationController : ApiController
 	}
 	
 	[HttpPost("message")]
-	public async Task<IActionResult> SendMessage([FromBody] SendMessageCommand command)
+	public async Task<ActionResult<int>> SendMessage([FromBody] SendMessageCommand command)
 	{
 		return Ok(await mediator.Send(command));
 	}

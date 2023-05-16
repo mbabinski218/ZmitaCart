@@ -6,6 +6,7 @@ using ZmitaCart.Application.Commands.CategoryCommands.DeleteCategory;
 using ZmitaCart.Application.Queries.CategoryQueries.GetAllSuperiors;
 using ZmitaCart.Application.Queries.CategoryQueries.GetCategories;
 using ZmitaCart.Application.Commands.CategoryCommands.UpdateCategory;
+using ZmitaCart.Application.Dtos.CategoryDtos;
 
 namespace ZmitaCart.API.Controllers;
 
@@ -17,7 +18,7 @@ public class CategoryController : ApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
+    public async Task<ActionResult<int>> CreateCategory([FromBody] CreateCategoryCommand command)
     {
         var response = await mediator.Send(command);
 
@@ -27,7 +28,7 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getBySuperiorId")]
-    public async Task<IActionResult> GetCategoriesBySuperiorId([FromQuery] GetCategoriesBySuperiorIdQuery request)
+    public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId([FromQuery] GetCategoriesBySuperiorIdQuery request)
     {
         var response = await mediator.Send(request);
         
@@ -37,7 +38,7 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getFewBySuperiorId")]
-    public async Task<IActionResult> GetCategoriesBySuperiorId([FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
+    public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId([FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
     {
         var response = await mediator.Send(request);
         
@@ -47,7 +48,7 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getAllSuperiors")]
-    public async Task<IActionResult> GetCategoriesBySuperiorId()
+    public async Task<ActionResult<IEnumerable<SuperiorCategoryDto>>> GetCategoriesBySuperiorId()
     {
         var response = await mediator.Send(new GetAllSuperiorsQuery());
         
@@ -57,7 +58,7 @@ public class CategoryController : ApiController
     }
 
     [HttpPut("updateCategory")]
-    public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryCommand command)
+    public async Task<ActionResult<int>> UpdateCategory([FromBody] UpdateCategoryCommand command)
     {
         var response = await mediator.Send(command);
         
@@ -67,7 +68,7 @@ public class CategoryController : ApiController
     }
 
     [HttpDelete("{Id}")]
-    public async Task<IActionResult> DeleteCategory([FromRoute] DeleteCategoryCommand command)
+    public async Task<ActionResult> DeleteCategory([FromRoute] DeleteCategoryCommand command)
     {
         var response = await mediator.Send(command);
         

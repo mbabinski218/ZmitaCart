@@ -22,11 +22,10 @@ public class UserRepository : IUserRepository
 	private readonly IJwtTokenGenerator _jwtTokenGenerator;
 	private readonly IGoogleAuthentication _googleAuthentication;
 	private readonly ApplicationDbContext _dbContext;
-	private readonly IMapper _mapper;
 
 	public UserRepository(UserManager<User> userManager, SignInManager<User> signInManager,
 		RoleManager<IdentityRole<int>> roleManager, IJwtTokenGenerator jwtTokenGenerator, IGoogleAuthentication googleAuthentication,
-		ApplicationDbContext dbContext, IMapper mapper)
+		ApplicationDbContext dbContext)
 	{
 		_userManager = userManager;
 		_signInManager = signInManager;
@@ -34,7 +33,6 @@ public class UserRepository : IUserRepository
 		_jwtTokenGenerator = jwtTokenGenerator;
 		_googleAuthentication = googleAuthentication;
 		_dbContext = dbContext;
-		_mapper = mapper;
 	}
 
 	public async Task RegisterAsync(RegisterUserDto registerUserDto)

@@ -9,11 +9,11 @@ $frontend-warn: mat.define-palette(mat.$red-palette);
 $my-typography: mat.define-typography-config();
 
 $frontend-theme: mat.define-light-theme((color: (primary: $frontend-primary,
-        accent: $frontend-accent,
-        warn: $frontend-warn,
-      ),
-      typography: $my-typography,
-    ));
+  accent: $frontend-accent,
+  warn: $frontend-warn,
+),
+  typography: $my-typography,
+));
 
 @include mat.all-component-themes($frontend-theme);
 
@@ -39,14 +39,14 @@ html,
 body {
   height: 100%;
   min-height: 100vh;
-  // background-color: #939597;
+  background-color: #f4f8fc;
   color: black;
 }
 
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-
+  //font: 1.4rem/1.45 Open Sans,Helvetica Neue,Helvetica,Arial,sans-serif;
   // color: var(--color-primary);
   font-size: 1.4rem; // ustawia font size na 10px*1.4=14px
   font-weight: normal;
@@ -79,7 +79,9 @@ svg,
 video {
   max-width: 100%;
   display: block;
-}//czy nie zepsuje mat-icons
+}
+
+//czy nie zepsuje mat-icons
 
 // a {
 //   margin-bottom: 5px;

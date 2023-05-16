@@ -1,0 +1,40 @@
+.container {
+  background-color: #fff;
+  width: 50%;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 0.8rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
+}
+
+.addPhotosInfo {
+  width: 100%;
+  min-height: 11.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+
+  &--side {
+    margin-left: 30px;
+  }
+}
+
+.addPhotoLabel {
+  font-size: 2rem;
+  font-weight: 550;
+  margin-left: 30px;
+}
+
+.subInfoLabel {
+  font-weight: lighter;
+  font-size: 0.9em;
+  color: #767676;
+}
+
+.addPhotos {
+  //min-height: 23.2rem;
+}

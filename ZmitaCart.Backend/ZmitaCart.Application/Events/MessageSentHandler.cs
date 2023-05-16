@@ -15,7 +15,7 @@ public class MessageSentHandler : INotificationHandler<MessageSent>
 
 	public async Task Handle(MessageSent notification, CancellationToken cancellationToken)
 	{
-		await _chatHub.SendMessageAsync(notification.Message.User.FirstName, notification.Message.ConversationId.ToString(),
+		await _chatHub.SendMessageAsync(notification.Message.User.FirstName, notification.Message.ConversationId,
 			notification.Message.Text, notification.Message.Date, cancellationToken);
 	}
 }

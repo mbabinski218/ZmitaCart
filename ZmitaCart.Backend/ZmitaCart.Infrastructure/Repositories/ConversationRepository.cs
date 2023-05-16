@@ -106,12 +106,20 @@ public class ConversationRepository : IConversationRepository
 		// return chats;
 	}
 
-	public async Task<IEnumerable<MessageDto>> GetMessagesAsync(string chat)
+	public async Task<IEnumerable<MessageDto>> GetMessagesAsync(int chat)
 	{
 		return await _dbContext.Conversations
-			.Where(c => c.Id == int.Parse(chat) && c.Messages.Any())
-			.SelectMany(c => c.Messages!)
+			.Where(c => c.Id == chat && c.Messages.Any())
+			.SelectMany(c => c.Messages)
 			.ProjectToType<MessageDto>()
+			.ToListAsync();
+	}
+
+	public async Task<IEnumerable<int>> GetConversationUserIds(int chat)
+	{
+		return await _dbContext.Chats
+			.Where(uc => uc.ConversationId == chat)
+			.Select(uc => uc.UserId)
 			.ToListAsync();
 	}
 }

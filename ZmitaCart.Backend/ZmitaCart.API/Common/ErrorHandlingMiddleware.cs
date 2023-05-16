@@ -32,12 +32,6 @@ public class ErrorHandlingMiddleware : IMiddleware
             await context.Response.WriteAsync(JsonSerializer
                 .Serialize(ex.Errors.Select(vf => vf.ErrorMessage)));
         }
-        catch (InvalidDataException ex)
-        {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            context.Response.ContentType = "text/plain";
-            await context.Response.WriteAsync(ex.Message);
-        }
         catch (InvalidLoginDataException ex)
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
@@ -50,15 +44,15 @@ public class ErrorHandlingMiddleware : IMiddleware
             context.Response.ContentType = "text/plain";
             await context.Response.WriteAsync(ex.Message);
         }
-        catch (ArgumentException ex)
-        {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            context.Response.ContentType = "text/plain";
-            await context.Response.WriteAsync(ex.Message);
-        }
         catch (UnauthorizedAccessException ex)
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "text/plain";
+            await context.Response.WriteAsync(ex.Message);
+        }
+        catch (Exception ex) when (ex is ArgumentException or InvalidDataException)
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
             context.Response.ContentType = "text/plain";
             await context.Response.WriteAsync(ex.Message);
         }

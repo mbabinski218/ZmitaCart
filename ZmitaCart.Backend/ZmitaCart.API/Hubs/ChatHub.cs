@@ -14,21 +14,22 @@ public class ChatHub : Hub, IChatHub
 		_mediator = mediator;
 	}
 
-	public async Task JoinAsync(string chat, CancellationToken cancellationToken)
+	public async Task JoinAsync(int chat, CancellationToken cancellationToken)
 	{
 		try
 		{
-			await Groups.AddToGroupAsync(Context.ConnectionId, chat, cancellationToken);
+			await Groups.AddToGroupAsync(Context.ConnectionId, chat.ToString(), cancellationToken);
 			await ConnectAsync();
 			await _mediator.Publish(new JoinedChat(chat), cancellationToken);
 		}
 		catch
 		{
 			await DisconnectAsync();
+			throw;
 		}
 	}
 	
-	public async Task RestoreMessagesAsync(int userId, string user, string chat, string text, DateTimeOffset date, CancellationToken cancellationToken)
+	public async Task RestoreMessagesAsync(int userId, string user, int chat, string text, DateTimeOffset date, CancellationToken cancellationToken)
 	{
 		await Clients.Caller.SendAsync("ReceiveMessage", new
 		{
@@ -39,9 +40,9 @@ public class ChatHub : Hub, IChatHub
 		}, cancellationToken);
 	}
 	
-	public async Task SendMessageAsync(string user, string chat, string text, DateTimeOffset date, CancellationToken cancellationToken)
+	public async Task SendMessageAsync(string user, int chat, string text, DateTimeOffset date, CancellationToken cancellationToken)
 	{
-		await Clients.Group(chat).SendAsync("ReceiveMessage", new
+		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", new
 		{
 			UserName = user, 
 			Date = date, 

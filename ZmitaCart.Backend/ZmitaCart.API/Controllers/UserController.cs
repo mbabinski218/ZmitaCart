@@ -57,6 +57,7 @@ public class UserController : ApiController
 	}
 	
 	[HttpPost("externalAuthentication")]
+	[AllowAnonymous]
 	public async Task<ActionResult<string>> ExternalAuthentication([FromBody] ExternalAuthenticationCommand command)
 	{
 		return Ok(await mediator.Send(command));

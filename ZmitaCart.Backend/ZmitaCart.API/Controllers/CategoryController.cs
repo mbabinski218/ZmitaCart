@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.CategoryCommands.CreateCategory;
@@ -7,6 +8,7 @@ using ZmitaCart.Application.Queries.CategoryQueries.GetAllSuperiors;
 using ZmitaCart.Application.Queries.CategoryQueries.GetCategories;
 using ZmitaCart.Application.Commands.CategoryCommands.UpdateCategory;
 using ZmitaCart.Application.Dtos.CategoryDtos;
+using ZmitaCart.Domain.Common;
 
 namespace ZmitaCart.API.Controllers;
 
@@ -18,6 +20,7 @@ public class CategoryController : ApiController
     }
 
     [HttpPost]
+    [Authorize(Roles = Role.administrator)]
     public async Task<ActionResult<int>> CreateCategory([FromBody] CreateCategoryCommand command)
     {
         var response = await mediator.Send(command);
@@ -58,6 +61,7 @@ public class CategoryController : ApiController
     }
 
     [HttpPut("updateCategory")]
+    [Authorize(Roles = Role.administrator)]
     public async Task<ActionResult<int>> UpdateCategory([FromBody] UpdateCategoryCommand command)
     {
         var response = await mediator.Send(command);
@@ -68,6 +72,7 @@ public class CategoryController : ApiController
     }
 
     [HttpDelete("{Id}")]
+    [Authorize(Roles = Role.administrator)]
     public async Task<ActionResult> DeleteCategory([FromRoute] DeleteCategoryCommand command)
     {
         var response = await mediator.Send(command);

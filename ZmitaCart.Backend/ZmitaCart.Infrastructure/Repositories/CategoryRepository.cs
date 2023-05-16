@@ -1,6 +1,5 @@
 using FluentResults;
 using Mapster;
-using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.CategoryDtos;

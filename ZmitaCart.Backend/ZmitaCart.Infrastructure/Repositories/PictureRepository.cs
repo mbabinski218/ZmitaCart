@@ -68,7 +68,7 @@ public class PictureRepository : IPictureRepository
 
         if (offer.UserId != userId) throw new UnauthorizedAccessException("User does not have access to this offer");
 
-        if (offer.Pictures is null) return;
+        if (!offer.Pictures.Any()) return;
 
         var pictures = offer.Pictures.Where(picture => imagesIds?.Contains(picture.Id) ?? true).ToList();
 

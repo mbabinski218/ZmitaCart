@@ -109,7 +109,7 @@ public class ConversationRepository : IConversationRepository
 	public async Task<IEnumerable<MessageDto>> GetMessagesAsync(string chat)
 	{
 		return await _dbContext.Conversations
-			.Where(c => c.Id == int.Parse(chat) && c.Messages != null && c.Messages.Any())
+			.Where(c => c.Id == int.Parse(chat) && c.Messages.Any())
 			.SelectMany(c => c.Messages!)
 			.ProjectToType<MessageDto>()
 			.ToListAsync();

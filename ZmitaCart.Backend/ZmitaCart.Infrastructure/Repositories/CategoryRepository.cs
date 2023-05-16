@@ -103,7 +103,7 @@ public class CategoryRepository : ICategoryRepository
             return Result.Fail(new ArgumentError("Category cannot have itself as a child"));
         }
 
-        if (category.Children is null)
+        if (!category.Children.Any())
         {
             return Result.Ok();
         }

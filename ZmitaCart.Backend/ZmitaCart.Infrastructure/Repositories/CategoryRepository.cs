@@ -13,12 +13,10 @@ namespace ZmitaCart.Infrastructure.Repositories;
 public class CategoryRepository : ICategoryRepository
 {
     private readonly ApplicationDbContext _dbContext;
-    private readonly IMapper _mapper;
 
-    public CategoryRepository(ApplicationDbContext dbContext, IMapper mapper)
+    public CategoryRepository(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
-        _mapper = mapper;
     }
 
     public async Task<Result<int>> Create(string name, int? parentId, string? iconName)
@@ -103,7 +101,7 @@ public class CategoryRepository : ICategoryRepository
             return Result.Fail(new ArgumentError("Category cannot have itself as a child"));
         }
 
-        if (category.Children is null)
+        if (!category.Children.Any())
         {
             return Result.Ok();
         }

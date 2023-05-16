@@ -146,7 +146,7 @@ public class OfferRepository : IOfferRepository
 		offer.Quantity -= quantity;
 		if (offer.Quantity == 0) offer.IsAvailable = false;
 
-		await _dbContext.Bought.AddAsync(new Bought
+		var bought = new Bought
 		{
 			UserId = user.Id,
 			User = user,
@@ -155,21 +155,19 @@ public class OfferRepository : IOfferRepository
 			Quantity = quantity,
 			BoughtAt = DateTimeOffset.Now,
 			TotalPrice = offer.Price * quantity
-		});
-
+		};
+		
+		await _dbContext.Bought.AddAsync(bought);
 		await _dbContext.SaveChangesAsync();
 	}
 
 	public async Task<PaginatedList<BoughtOfferDto>> GetBoughtAsync(int userId, int? pageNumber = null, int? pageSize = null)
 	{
-		// 153381, 171556, 155032, 175650, 190625 ticks
 		return await _dbContext.Bought
 			.Where(b => b.UserId == userId)
 			.Include(b => b.Offer)
 			.ProjectToType<BoughtOfferDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
-
-		//  ticks
 	}
 
 	public async Task<PaginatedList<OfferInfoDto>> SearchOffersAsync(SearchOfferDto search, int? pageNumber = null, int? pageSize = null)

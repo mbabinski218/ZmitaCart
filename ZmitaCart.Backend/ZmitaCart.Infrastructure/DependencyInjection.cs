@@ -21,9 +21,14 @@ public static class DependencyInjection
     {
         _ = AddDatabase(services, configuration);
         _ = AddAuthentication(services, configuration);
+        _ = AddRepositories(services);
         services.AddAuthorization();
 
-        services.AddScoped<PublishDomainEventsInterceptor>();
+        return services;
+    }
+
+    private static IServiceCollection AddRepositories(IServiceCollection services)
+    {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IOfferRepository, OfferRepository>();
@@ -32,7 +37,7 @@ public static class DependencyInjection
 
         return services;
     }
-
+    
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
@@ -53,6 +58,8 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
+        services.AddScoped<PublishDomainEventsInterceptor>();
+        
         return services;
     }
 

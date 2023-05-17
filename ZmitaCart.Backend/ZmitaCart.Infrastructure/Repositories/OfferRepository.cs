@@ -80,14 +80,12 @@ public class OfferRepository : IOfferRepository
 			.Where(o => o.Id == id)
 			.Include(o => o.User)
 			.Include(o => o.Pictures)
+			.Include(o => o.Favorites)
+			.AsNoTracking()
+			.ProjectToType<OfferDto>()
 			.FirstOrDefaultAsync() ?? throw new NotFoundException("Offer does not exist");
 
-		var offerDto = _mapper.Map<OfferDto>(offer);
-
-		if (offerDto.PicturesUrls!.Count == 0)
-			offerDto.PicturesUrls = null;
-
-		return offerDto;
+		return offer;
 	}
 
 	public async Task AddToFavoritesAsync(int userId, int offerId)
@@ -129,6 +127,14 @@ public class OfferRepository : IOfferRepository
 			.AsNoTracking()
 			.ProjectToType<OfferInfoDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
+	}
+
+	public async Task<IEnumerable<int>> GetFavoritesOffersIdsAsync(int userId)
+	{
+		return await _dbContext.Favorites
+			.Where(uc => uc.UserId == userId)
+			.Select(uc => uc.OfferId)
+			.ToListAsync();
 	}
 
 	public async Task BuyAsync(int userId, int offerId, int quantity)
@@ -200,6 +206,7 @@ public class OfferRepository : IOfferRepository
 			            && o.Condition == (search.Condition ?? o.Condition))
 			.Include(o => o.User)
 			.Include(o => o.Pictures)
+			.Include(o => o.Favorites)
 			.OrderByIf(o => o.Price, search.PriceAscending)
 			.OrderByIf(o => o.CreatedAt, search.CreatedAscending)
 			.AsNoTracking()

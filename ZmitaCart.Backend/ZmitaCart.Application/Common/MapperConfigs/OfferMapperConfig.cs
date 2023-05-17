@@ -14,7 +14,6 @@ public class OfferMapperConfig : IRegister
 				? null
 				: Path.Combine(Path.GetFullPath("wwwroot"), src.Pictures.OrderBy(p => p.CreationTime).First().Name));
 
-
 		config.ForType<Offer, OfferDto>()
 			.Map(dest => dest.Address, src => src.User.Address)
 			.Map(dest => dest.PicturesUrls, src => !src.Pictures.Any()

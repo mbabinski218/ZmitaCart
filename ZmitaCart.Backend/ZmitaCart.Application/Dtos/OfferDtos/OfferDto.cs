@@ -5,6 +5,7 @@ namespace ZmitaCart.Application.Dtos.OfferDtos;
 
 public class OfferDto
 {
+    public int Id { get; set; }
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
     public decimal Price { get; set; }
@@ -15,4 +16,5 @@ public class OfferDto
     public UserDto User { get; set; } = null!;
     public Address Address { get; set; } = null!;
     public ICollection<string>? PicturesUrls { get; set; }
+    public bool IsFavourite { get; set; }
 }

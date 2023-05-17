@@ -4,7 +4,7 @@ namespace ZmitaCart.Application.Common;
 
 public class PaginatedList<T>
 {
-    public IReadOnlyCollection<T> Items { get; init; } = null!;
+    public List<T> Items { get; init; } = null!;
     public int? PageNumber { get; init; }
     public int? TotalPages { get; init; }
     public int TotalCount { get; init; }

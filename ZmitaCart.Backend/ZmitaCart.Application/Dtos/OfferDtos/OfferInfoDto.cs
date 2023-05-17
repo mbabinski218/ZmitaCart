@@ -11,4 +11,5 @@ public class OfferInfoDto
     public string Condition { get; set; } = null!;
     public int Quantity { get; set; }
     public string? ImageUrl { get; set; }
+    public bool IsFavourite { get; set; } = false;
 }

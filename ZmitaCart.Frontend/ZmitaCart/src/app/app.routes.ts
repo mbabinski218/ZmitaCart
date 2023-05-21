@@ -1,7 +1,7 @@
 import { Route } from '@angular/router';
 import { RoutesPath } from '@core/enums/routes-path.enum';
-import { AddOfferComponent } from '@modules/add-offer/add-offer.component';
-import { HomeComponent } from '@modules/home/home.component';
+import { AddOfferComponent } from '@components/add-offer/add-offer.component';
+import { HomeComponent } from '@components/home/home.component';
 
 export const routes: Route[] = [
   {

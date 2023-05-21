@@ -21,65 +21,58 @@ $frontend-theme: mat.define-light-theme((color: (primary: $frontend-primary,
   --gap-small: 15px;
   --gap-medium: 20px;
   --gap-big: 25px;
-  --color-primary: #674ea7;
+
+  --color-primary: #6256b1;
   --color-error: #ff6961;
   --color-success: #77dd77;
   --color-whitish: #e3e7ec;
   --background-color: #f4f8fc;
-  --background-color-to-save-eyes: #71767a;
 }
 
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  // scrollbar-width: thin; //scrollbar w firefox
+  // scrollbar-color: rgba(var(--color-primary), .3);
 }
 
 html,
 body {
   height: 100%;
   min-height: 100vh;
-  // background-color: #939597;
-  color: black;
+  scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background-color: #f4f8fc;
 
-  // color: var(--color-primary);
+  color: #222;
+  font-family: "Open Sans", Roboto, "Helvetica Neue", sans-serif;
   font-size: 1.4rem; // ustawia font size na 10px*1.4=14px
   font-weight: normal;
-  overflow-y: scroll;
+  -webkit-font-smoothing: antialiased;
 }
 
 html {
-  scroll-behavior: smooth;
   font-size: 62.5%; //ustawia base font size na 10px, więc 1rem === 10px
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    background-color: var(--background-color-to-save-eyes);
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    background-color: var(--background-color);
-  }
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
 }
 
 .cursor-pointer {
   cursor: pointer;
 }
 
-img,
-svg,
-video {
-  max-width: 100%;
-  display: block;
-}//czy nie zepsuje mat-icons
+// img,
+// svg,
+// video {
+//   max-width: 100%;
+//   display: block;
+// }
+//czy nie zepsuje mat-icons
 
 // a {
 //   margin-bottom: 5px;
@@ -90,19 +83,19 @@ video {
 //   }
 // }
 
-*::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
+// *::-webkit-scrollbar {
+//   width: 8px;
+//   height: 8px;
+// }
 
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
+// *::-webkit-scrollbar-track {
+//   background: transparent;
+// }
 
-*::-webkit-scrollbar-thumb {
-  background-color: #393d45;
-  border-radius: 20px;
-}
+// *::-webkit-scrollbar-thumb {
+//   background-color: #393d45;
+//   border-radius: 20px;
+// }
 
 // .mat-mdc-snack-bar-container {
 //   &.error-snackbar {

@@ -1,0 +1,72 @@
+<div class="header">
+  <div class="content">
+    <button
+      mat-icon-button
+      class="menu"
+    >
+      <mat-icon svgIcon="menu"></mat-icon>
+    </button>
+
+    <div class="image">
+      <img
+        class="img"
+        src="https://allegrolokalnie.pl/images/lokalnie-logo.svg"
+      >
+    </div>
+
+    <form class="form">
+      <div class="search-form">
+        <input
+          placeholder="czego szukasz?"
+          class="input"
+        >
+      </div>
+      <div
+        class="categories-form"
+        data-suffix="/lb"
+      >
+        <select class="select">
+          <option
+            value=""
+            selected
+          >
+            --brak--
+          </option>
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="hamster">Hamster</option>
+          <option value="parrot">Parrot</option>
+          <option value="spider">Spider</option>
+          <option value="goldfish">Goldfish</option>
+        </select>
+      </div>
+    </form>
+
+    <div class="actions">
+      <button
+        *ngIf="!isBig"
+        mat-icon-button
+        (click)="goToAddOffer()"
+      >
+        <mat-icon svgIcon="add"></mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon svgIcon="heart"></mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon svgIcon="chat"></mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon svgIcon="user"></mat-icon>
+      </button>
+    </div>
+
+    <a
+      *ngIf="isBig"
+      class="button"
+      (click)="goToAddOffer()"
+    >
+      Wystaw
+    </a>
+  </div>
+</div>

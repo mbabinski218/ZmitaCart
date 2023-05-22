@@ -1,1 +1,23 @@
-<p>add-offer works!</p>
+<div class="container">
+  <div class="addPhotosInfo">
+    <div class="addPhotosInfo--side ">
+      <!--    jak coś to nie działało z lokalnych plików ściaganie tego svg ZAMIENIC NA MAT ICON-->
+      <img src="https://lokalnie-prod-assets.storage.googleapis.com/ui/versions/12515bbe/assets/camera.5577f27d.svg"/>
+    </div>
+    <div class="addPhotoLabel">
+      <p>Dodaj zdjęcia</p>
+      <p class="subInfoLabel">Możesz dodać do 15 zdjęć w dowolnym formacie</p>
+    </div>
+  </div>
+  <hr>
+  <button mat-raised-button class="selectFromDrive">Wybierz zdjęcia z dysku</button>
+  <div class="addPhotos">
+    <input
+      type="file"
+      id="fileInput"
+      accept="image/*" multiple
+    />
+    <p class="subInfoLabel">Możesz dodać do 15 zdjęć w dowolnym formacie</p>
+  </div>
+  <div class="addOfferProps"></div>
+</div>

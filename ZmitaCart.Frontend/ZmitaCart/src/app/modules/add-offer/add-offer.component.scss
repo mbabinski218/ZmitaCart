@@ -33,8 +33,26 @@
   font-weight: lighter;
   font-size: 0.9em;
   color: #767676;
+  margin-top: 10px;
+}
+
+hr {
+  width: 100%;
+  border: none;
+  height: 1px;
+  color: #767676;
+  background-color: #767676;
+  opacity: 0.25;
 }
 
 .addPhotos {
   //min-height: 23.2rem;
+}
+
+#fileInput {
+  display: none;
+}
+
+.selectFromDrive {
+  color: red;
 }

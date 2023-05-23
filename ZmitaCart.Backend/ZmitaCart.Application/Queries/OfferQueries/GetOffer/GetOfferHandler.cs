@@ -1,3 +1,4 @@
+using FluentResults;
 using MediatR;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;
@@ -5,7 +6,7 @@ using ZmitaCart.Application.Services;
 
 namespace ZmitaCart.Application.Queries.OfferQueries.GetOffer;
 
-public class GetOfferHandler : IRequestHandler<GetOfferQuery, OfferDto>
+public class GetOfferHandler : IRequestHandler<GetOfferQuery, Result<OfferDto>>
 {
     private readonly  IOfferRepository _offerRepository;
     private readonly ICurrentUserService _currentUserService;
@@ -16,7 +17,7 @@ public class GetOfferHandler : IRequestHandler<GetOfferQuery, OfferDto>
         _currentUserService = currentUserService;
     }
 
-    public async Task<OfferDto> Handle(GetOfferQuery request, CancellationToken cancellationToken)
+    public async Task<Result<OfferDto>> Handle(GetOfferQuery request, CancellationToken cancellationToken)
     {
         if (_currentUserService.UserId is null)
         {
@@ -26,11 +27,20 @@ public class GetOfferHandler : IRequestHandler<GetOfferQuery, OfferDto>
         var userId = int.Parse(_currentUserService.UserId);
         
         var favorites = await _offerRepository.GetFavoritesOffersIdsAsync(userId);
-        var offer = await _offerRepository.GetOfferAsync(request.Id);
-        
-        if (favorites.Contains(offer.Id))
+        if (favorites.IsFailed)
         {
-            offer.IsFavourite = true;
+            return Result.Fail(favorites.Errors);
+        }
+        
+        var offer = await _offerRepository.GetOfferAsync(request.Id);
+        if (offer.IsFailed)
+        {
+            return Result.Fail(offer.Errors);
+        }
+        
+        if (favorites.Value.Contains(offer.Value.Id))
+        {
+            offer.Value.IsFavourite = true;
         }
 
         return offer;

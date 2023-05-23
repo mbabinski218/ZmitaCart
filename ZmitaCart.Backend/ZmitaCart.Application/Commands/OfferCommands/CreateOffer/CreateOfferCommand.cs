@@ -1,9 +1,10 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 
 namespace ZmitaCart.Application.Commands.OfferCommands.CreateOffer;
 
-public record CreateOfferCommand : IRequest<int>
+public record CreateOfferCommand : IRequest<Result<int>>
 {
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;

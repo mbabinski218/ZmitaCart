@@ -1,4 +1,5 @@
-﻿using MapsterMapper;
+﻿using FluentResults;
+using MapsterMapper;
 using MediatR;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.OfferDtos;
@@ -7,7 +8,7 @@ using ZmitaCart.Application.Services;
 
 namespace ZmitaCart.Application.Queries.OfferQueries.SearchOffers;
 
-public class SearchOffersHandler : IRequestHandler<SearchOffersQuery, PaginatedList<OfferInfoDto>>
+public class SearchOffersHandler : IRequestHandler<SearchOffersQuery, Result<PaginatedList<OfferInfoDto>>>
 {
 	private readonly IOfferRepository _offerRepository;
 	private readonly IMapper _mapper;
@@ -20,7 +21,7 @@ public class SearchOffersHandler : IRequestHandler<SearchOffersQuery, PaginatedL
 		_currentUserService = currentUserService;
 	}
 
-	public async Task<PaginatedList<OfferInfoDto>> Handle(SearchOffersQuery request, CancellationToken cancellationToken)
+	public async Task<Result<PaginatedList<OfferInfoDto>>> Handle(SearchOffersQuery request, CancellationToken cancellationToken)
 	{
 		var dto = _mapper.Map<SearchOfferDto>(request);
 		
@@ -32,11 +33,20 @@ public class SearchOffersHandler : IRequestHandler<SearchOffersQuery, PaginatedL
 		var userId = int.Parse(_currentUserService.UserId);
 		
 		var favorites = await _offerRepository.GetFavoritesOffersIdsAsync(userId);
-		var offers = await _offerRepository.SearchOffersAsync(dto, request.PageNumber, request.PageSize);
-
-		offers.Items.ForEach(o =>
+		if(favorites.IsFailed)
 		{
-			o.IsFavourite = favorites.Contains(o.Id);
+			return Result.Fail(favorites.Errors);
+		}
+		
+		var offers = await _offerRepository.SearchOffersAsync(dto, request.PageNumber, request.PageSize);
+		if(offers.IsFailed)
+		{
+			return Result.Fail(offers.Errors);
+		}
+
+		offers.Value.Items.ForEach(o =>
+		{
+			o.IsFavourite = favorites.Value.Contains(o.Id);
 		});
 		
 		return offers;

@@ -14,4 +14,8 @@ public class CurrentUserService : ICurrentUserService
 	}
 
 	public string? UserId => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.Id);
+	public string? UserEmail => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.Email);
+	public string? UserFirstName => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.FirstName);
+	public string? UserLastName => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.LastName);
+	public string? UserRole => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.Role);
 }

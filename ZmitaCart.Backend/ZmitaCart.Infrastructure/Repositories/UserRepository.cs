@@ -1,14 +1,15 @@
 ﻿using System.Security.Claims;
+using FluentResults;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common;
+using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Common;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Domain.ValueObjects;
-using ZmitaCart.Infrastructure.Exceptions;
 using ZmitaCart.Infrastructure.Persistence;
 
 namespace ZmitaCart.Infrastructure.Repositories;
@@ -34,11 +35,11 @@ public class UserRepository : IUserRepository
 		_dbContext = dbContext;
 	}
 
-	public async Task RegisterAsync(RegisterUserDto registerUserDto)
+	public async Task<Result> RegisterAsync(RegisterUserDto registerUserDto)
 	{
 		if (await _userManager.FindByEmailAsync(registerUserDto.Email) != null)
 		{
-			throw new InvalidDataException("User already exists");
+			return Result.Fail(new AlreadyExistsError("User already exists"));
 		}
 
 		var user = new User
@@ -54,7 +55,8 @@ public class UserRepository : IUserRepository
 
 		if (!result.Succeeded)
 		{
-			throw new InvalidLoginDataException(result.Errors.Select(e => e.Description));
+			var reasons = result.Errors.Select(e => e.Description);
+			return Result.Fail(new InvalidDataError("Invalid register data", reasons));
 		}
 
 		await _userManager.AddToRoleAsync(user, Role.user);
@@ -69,20 +71,22 @@ public class UserRepository : IUserRepository
 		};
 
 		await _userManager.AddClaimsAsync(user, claims);
+		
+		return Result.Ok();
 	}
 
-	public async Task<string> LoginAsync(LoginUserDto loginUserDto)
+	public async Task<Result<string>> LoginAsync(LoginUserDto loginUserDto)
 	{
 		var user = await _userManager.FindByEmailAsync(loginUserDto.Email);
 
 		if (user == null)
 		{
-			throw new InvalidDataException("User does not exist");
+			return Result.Fail(new NotFoundError("User does not exist"));
 		}
 
 		if (!await _userManager.CheckPasswordAsync(user, loginUserDto.Password))
 		{
-			throw new InvalidDataException("Invalid password");
+			return Result.Fail(new InvalidDataError("Invalid password"));
 		}
 
 		var signInResult = await _signInManager.PasswordSignInAsync(user, loginUserDto.Password,
@@ -90,50 +94,53 @@ public class UserRepository : IUserRepository
 
 		if (!signInResult.Succeeded)
 		{
-			throw new InvalidDataException("Could not sign in");
+			return Result.Fail(new InvalidDataError("Could not sign in"));
 		}
 
 		if (signInResult.IsLockedOut)
 		{
-			throw new Exception("User is locked out");
+			return Result.Fail(new InvalidDataError("User is locked out"));
 		}
 
 		var authClaims = await _userManager.GetClaimsAsync(user);
-
-		return _jwtTokenGenerator.CreateToken(authClaims);
+		var token = _jwtTokenGenerator.CreateToken(authClaims);
+		
+		return Result.Ok(token);
 	}
 
-	public async Task LogoutAsync()
+	public async Task<Result> LogoutAsync()
 	{
 		await _signInManager.SignOutAsync();
+		return Result.Ok();
 	}
 
-	public async Task AddRoleAsync(string userEmail, string role)
+	public async Task<Result> AddRoleAsync(string userEmail, string role)
 	{
 		var user = await _userManager.FindByEmailAsync(userEmail);
 
 		if (user == null)
 		{
-			throw new InvalidDataException("User does not exist");
+			return Result.Fail(new NotFoundError("User does not exist"));
 		}
 
 		if (!await _roleManager.RoleExistsAsync(role))
 		{
-			throw new InvalidDataException("Unsupported role");
+			return Result.Fail(new NotFoundError("Role does not exist"));
 		}
 
 		await _userManager.AddToRoleAsync(user, role);
-
 		await _userManager.AddClaimAsync(user, new Claim(ClaimNames.Role, role));
+		
+		return Result.Ok();
 	}
 
-	public async Task UpdateCredentialsAsync(string userId, string? phoneNumber, Address? address)
+	public async Task<Result> UpdateCredentialsAsync(string userId, string? phoneNumber, Address? address)
 	{
 		var user = await _userManager.FindByIdAsync(userId);
 
 		if (user is null)
 		{
-			throw new InvalidDataException("User does not exist");
+			return Result.Fail(new NotFoundError("User does not exist"));
 		}
 
 		if (phoneNumber is not null)
@@ -142,7 +149,7 @@ public class UserRepository : IUserRepository
 
 			if (!result.Succeeded)
 			{
-				throw new InvalidDataException("Could not set phone number");
+				return Result.Fail(new InvalidDataError("Could not set phone number"));
 			}
 		}
 
@@ -154,25 +161,31 @@ public class UserRepository : IUserRepository
 
 			if (!result.Succeeded)
 			{
-				throw new InvalidDataException("Could not set address");
+				return Result.Fail(new InvalidDataError("Could not set address"));
 			}
 		}
+		
+		return Result.Ok();
 	}
 
-	public async Task<string> ExternalAuthenticationAsync(ExternalAuthDto externalAuthDto)
+	public async Task<Result<string>> ExternalAuthenticationAsync(ExternalAuthDto externalAuthDto)
 	{
 		return externalAuthDto.Provider switch
 		{
 			"Google" => await _googleAuthentication.AuthenticateAsync(externalAuthDto),
-			_ => throw new InvalidDataException("Failed to authenticate")
+			_ => Result.Fail(new InvalidDataError("Invalid provider"))
 		};
 	}
 
 
-	public async Task<int> GiveFeedbackAsync(int raterId, int recipientId, int rating, string? comment)
+	public async Task<Result<int>> GiveFeedbackAsync(int raterId, int recipientId, int rating, string? comment)
 	{
-		var rater = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == raterId)
-		            ?? throw new NotFoundException("Rater does not exist");
+		var rater = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == raterId);
+
+		if (rater is null)
+		{
+			return Result.Fail(new NotFoundError("Rater does not exist"));
+		}
 
 		var feedback = new Feedback
 		{
@@ -185,38 +198,52 @@ public class UserRepository : IUserRepository
 
 		await _dbContext.Feedbacks.AddAsync(feedback);
 		await _dbContext.SaveChangesAsync();
-		return feedback.Id;
+		return Result.Ok(feedback.Id);
 	}
 
-	public async Task<int> UpdateFeedbackAsync(int feedbackId, int raterId, int? rating, string? comment)
+	public async Task<Result<int>> UpdateFeedbackAsync(int feedbackId, int raterId, int? rating, string? comment)
 	{
-		var feedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(f => f.Id == feedbackId)
-		               ?? throw new NotFoundException("Feedback does not exist");
-		
-		if (feedback.RaterId != raterId) throw new UnauthorizedAccessException("You are not allowed to update this feedback");
+		var feedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(f => f.Id == feedbackId);
 
+		if (feedback is null)
+		{
+			return Result.Fail(new NotFoundError("Feedback does not exist"));
+		}
+			
+		if (feedback.RaterId != raterId)
+		{
+			return Result.Fail(new UnauthorizedError("You are not allowed to update this feedback"));
+		}
+		
 		feedback.Rating = rating ?? feedback.Rating;
 		feedback.Comment = comment ?? feedback.Comment;
 
 		await _dbContext.SaveChangesAsync();
-		return feedback.Id;
+		return Result.Ok(feedback.Id);
 	}
 
-	public async Task DeleteFeedbackAsync(int feedbackId)
+	public async Task<Result> DeleteFeedbackAsync(int feedbackId)
 	{
-		var feedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(f => f.Id == feedbackId)
-		               ?? throw new NotFoundException("Feedback does not exist");
+		var feedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(f => f.Id == feedbackId);
 
+		if (feedback is null)
+		{
+			return Result.Fail(new NotFoundError("Feedback does not exist"));
+		}
+			
 		_dbContext.Feedbacks.Remove(feedback);
 		await _dbContext.SaveChangesAsync();
+		return Result.Ok();
 	}
 
-	public async Task<PaginatedList<FeedbackDto>> GetFeedbackAsync(int userId, int? pageNumber, int? pageSize)
+	public async Task<Result<PaginatedList<FeedbackDto>>> GetFeedbackAsync(int userId, int? pageNumber, int? pageSize)
 	{
-		return await _dbContext.Feedbacks
+		var feedback = await _dbContext.Feedbacks
 			.Where(f => f.RecipientId == userId)
 			.Include(f => f.Rater)
 			.ProjectToType<FeedbackDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
+		
+		return Result.Ok(feedback);
 	}
 }

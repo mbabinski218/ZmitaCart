@@ -1,10 +1,12 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
+using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
 
 namespace ZmitaCart.Application.Commands.UserCommands.GiveFeedback;
 
-public class GiveFeedbackHandler : IRequestHandler<GiveFeedbackCommand, int>
+public class GiveFeedbackHandler : IRequestHandler<GiveFeedbackCommand, Result<int>>
 {
 	private readonly IUserRepository _userRepository;
 	private readonly ICurrentUserService _currentUserService;
@@ -15,11 +17,11 @@ public class GiveFeedbackHandler : IRequestHandler<GiveFeedbackCommand, int>
 		_currentUserService = currentUserService;
 	}
 
-	public async Task<int> Handle(GiveFeedbackCommand request, CancellationToken cancellationToken)
+	public async Task<Result<int>> Handle(GiveFeedbackCommand request, CancellationToken cancellationToken)
 	{
 		if (_currentUserService.UserId is null)
 		{
-			throw new UnauthorizedAccessException("You must be logged in to give feedback");
+			return Result.Fail(new UnauthorizedError("You must be logged in to give feedback"));
 		}
 		
 		var raterId = int.Parse(_currentUserService.UserId);

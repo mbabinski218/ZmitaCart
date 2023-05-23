@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.OfferCommands.AddToFavorites;
@@ -35,6 +36,7 @@ public class OfferController : ApiController
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<PaginatedList<OfferInfoDto>>> SearchOffers([FromQuery] SearchOffersQuery query)
     {
         return Ok(await mediator.Send(query));
@@ -48,6 +50,7 @@ public class OfferController : ApiController
     }
 
     [HttpGet("{Id}")]
+    [AllowAnonymous]
     public async Task<ActionResult<OfferDto>> GetOffer([FromRoute] GetOfferQuery query)
     {
         return Ok(await mediator.Send(query));

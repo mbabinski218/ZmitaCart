@@ -1,11 +1,12 @@
-﻿using MapsterMapper;
+﻿using FluentResults;
+using MapsterMapper;
 using MediatR;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
 
 namespace ZmitaCart.Application.Commands.UserCommands.Register;
 
-public class RegisterUserHandler : IRequestHandler<RegisterUserCommand>
+public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Result>
 {
 	private readonly IUserRepository _userRepository;
 	private readonly IMapper _mapper;
@@ -16,10 +17,10 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand>
 		_mapper = mapper;
 	}
 
-	public async Task Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+	public async Task<Result> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
 	{
 		var registerUser = _mapper.Map<RegisterUserDto>(request);
 
-		await _userRepository.RegisterAsync(registerUser);
+		return await _userRepository.RegisterAsync(registerUser);
 	}
 }

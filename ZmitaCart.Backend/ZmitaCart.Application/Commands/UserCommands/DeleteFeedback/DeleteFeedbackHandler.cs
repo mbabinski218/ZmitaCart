@@ -1,9 +1,10 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using ZmitaCart.Application.Interfaces;
 
 namespace ZmitaCart.Application.Commands.UserCommands.DeleteFeedback;
 
-public class DeleteFeedbackHandler : IRequestHandler<DeleteFeedbackCommand>
+public class DeleteFeedbackHandler : IRequestHandler<DeleteFeedbackCommand, Result>
 {
 	private readonly IUserRepository _userRepository;
 
@@ -12,8 +13,8 @@ public class DeleteFeedbackHandler : IRequestHandler<DeleteFeedbackCommand>
 		_userRepository = userRepository;
 	}
 
-	public async Task Handle(DeleteFeedbackCommand request, CancellationToken cancellationToken)
+	public async Task<Result> Handle(DeleteFeedbackCommand request, CancellationToken cancellationToken)
 	{
-		await _userRepository.DeleteFeedbackAsync(request.Id);
+		return await _userRepository.DeleteFeedbackAsync(request.Id);
 	}
 }

@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 
 namespace ZmitaCart.Application.Commands.UserCommands.Register;
 
-public record RegisterUserCommand : IRequest
+public record RegisterUserCommand : IRequest<Result>
 {
 	public string Email { get; init; } = null!;
 	public string FirstName { get; init; } = null!;

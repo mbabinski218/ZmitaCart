@@ -1,11 +1,6 @@
 <div class="header">
   <div class="content">
-    <button
-      mat-icon-button
-      class="menu"
-    >
-      <mat-icon svgIcon="menu"></mat-icon>
-    </button>
+    <div class="menu icon icon-menu"></div>
 
     <div class="image">
       <img
@@ -21,11 +16,9 @@
           class="input"
         >
       </div>
-      <div
-        class="categories-form"
-        data-suffix="/lb"
-      >
-        <select class="select">
+
+      <div class="categories-form">
+        <select class="select cursor-text">
           <option
             value=""
             selected
@@ -39,26 +32,20 @@
           <option value="spider">Spider</option>
           <option value="goldfish">Goldfish</option>
         </select>
+        <div class="icon icon-find fix cursor-pointer"></div>
       </div>
     </form>
 
     <div class="actions">
-      <button
+      <div
         *ngIf="!isBig"
-        mat-icon-button
         (click)="goToAddOffer()"
+        class="icon icon-add"
       >
-        <mat-icon svgIcon="add"></mat-icon>
-      </button>
-      <button mat-icon-button>
-        <mat-icon svgIcon="heart"></mat-icon>
-      </button>
-      <button mat-icon-button>
-        <mat-icon svgIcon="chat"></mat-icon>
-      </button>
-      <button mat-icon-button>
-        <mat-icon svgIcon="user"></mat-icon>
-      </button>
+      </div>
+      <div class="icon icon-heart"></div>
+      <div class="icon icon-chat"></div>
+      <div class="icon icon-user"></div>
     </div>
 
     <a

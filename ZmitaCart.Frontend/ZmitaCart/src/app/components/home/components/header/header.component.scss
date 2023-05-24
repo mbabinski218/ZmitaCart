@@ -1,6 +1,43 @@
 @import 'variables/breakpoints';
 
 pp-header {
+  .icon {
+    width: 30px;
+    height: 28px;
+    background-size: cover;
+
+    &-menu {
+      width: 35px;
+      height: 33px;
+      background-image: url(/assets/images/menu.svg);
+    }
+
+    &-user {
+      background-image: url(/assets/images/user.svg);
+    }
+
+    &-add {
+      background-image: url(/assets/images/add.svg);
+    }
+
+    &-chat {
+      background-image: url(/assets/images/chat.svg);
+    }
+
+    &-find {
+      background-image: url(/assets/images/find.svg);
+    }
+
+    &-heart {
+      background-image: url(/assets/images/heart.svg);
+    }
+
+    &:hover,
+    &:focus {
+      filter: sepia(100%) saturate(317%) hue-rotate(123deg) brightness(95%) contrast(95%);
+    }
+  }
+
   .header {
     z-index: 500;
     background: #fff;
@@ -54,8 +91,7 @@ pp-header {
       grid-area: menu;
 
       cursor: pointer;
-      margin-right: 8px;
-      width: min-content;
+      margin-right: 4px;
     }
 
     .image {
@@ -93,11 +129,6 @@ pp-header {
         min-width: 180px;
         flex: 1;
 
-        :focus-within {
-          box-shadow: 0 0 1px 3px rgba(59, 153, 252, .7);
-          z-index: 2;
-        }
-
         :focus-visible {
           outline: none !important;
         }
@@ -128,11 +159,8 @@ pp-header {
         width: 272px;
         max-width: 40%;
         min-width: 180px;
-
-        :focus-within {
-          box-shadow: 0 0 1px 3px rgba(59, 153, 252, .7);
-          z-index: 2;
-        }
+        border: 1px solid #aaa;
+        border-radius: 0 10px 10px 0;
 
         :focus-visible {
           outline: none !important;
@@ -143,11 +171,26 @@ pp-header {
           right: 1px;
           display: block;
           width: 100%;
-          border: 1px solid #aaa;
-          border-radius: 0 10px 10px 0;
+          border: 1px solid #fff;
           background: 0 0;
-          padding: 8px 24px;
+          padding: 8px 38px;
           font-size: 16px;
+
+          background-image: url(/assets/images/arrow.svg);
+
+          background-repeat: no-repeat;
+          background-size: 28px;
+          background-position: 95%;
+
+          -moz-appearance: none;
+          -webkit-appearance: none;
+          appearance: none;
+        }
+
+        .fix {
+          position: relative;
+          top: 5px;
+          right: 10px;
         }
       }
     }
@@ -156,11 +199,8 @@ pp-header {
       grid-area: actions;
 
       display: flex;
-      justify-content: flex-start;
-
-      @media (width >=$screen-768) {
-        justify-content: flex-end;
-      }
+      gap: 22px;
+      justify-content: flex-end;
     }
 
     .button {

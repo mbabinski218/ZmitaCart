@@ -1,10 +1,14 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using ZmitaCart.Application.Events;
 using ZmitaCart.Application.Hubs;
+using ZmitaCart.Domain.Common;
 
 namespace ZmitaCart.API.Hubs;
 
+[Authorize(Roles = Role.user + "," + Role.administrator)]
 public class ChatHub : Hub, IChatHub
 {
 	private readonly IPublisher _mediator;
@@ -48,6 +52,8 @@ public class ChatHub : Hub, IChatHub
 			Date = date, 
 			Content = text
 		}, cancellationToken);
+		
+		await _mediator.Publish(new MessageSent(user, chat, text), cancellationToken);
 	}
 	
 	private async Task ConnectAsync() => await Clients.Client(Context.ConnectionId).SendAsync("Connected");

@@ -1,5 +1,4 @@
 ﻿using ZmitaCart.Domain.Common.Models;
-using ZmitaCart.Domain.Events;
 
 namespace ZmitaCart.Domain.Entities;
 
@@ -23,9 +22,7 @@ public class Message : Entity<int>
 			Conversation = conversation,
 			Date = DateTimeOffset.Now
 		};
-		
-		message.AddDomainEvent(new MessageSent(message));
-		
+
 		return message;
 	}
 }

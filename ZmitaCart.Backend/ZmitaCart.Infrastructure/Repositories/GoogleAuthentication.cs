@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
+using FluentResults;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Common;
@@ -27,22 +29,32 @@ public class GoogleAuthentication : IGoogleAuthentication
 		_googleSettings = googleSettings.Value;
 	}
 
-	public async Task<string> AuthenticateAsync(ExternalAuthDto externalAuthDto)
+	public async Task<Result<string>> AuthenticateAsync(ExternalAuthDto externalAuthDto)
 	{
 		var payload = await VerifyTokenAsync(externalAuthDto.Token);
 
-		if (payload == null)
-			throw new InvalidDataException("Failed to authenticate user");
+		if (payload.IsFailed)
+		{
+			return payload.ToResult<string>();
+		}
+		
+		var user = await _userManager.FindByEmailAsync(payload.Value.Email);
 
-		var user = await _userManager.FindByEmailAsync(payload.Email);
+		if (user != null)
+		{
+			return await LoginAsync(payload.Value);
+		}
 		
-		if (user == null)
-			await RegisterAsync(payload);
-		
-		return await LoginAsync(payload);
+		var register = await RegisterAsync(payload.Value);
+		if (register.IsFailed)
+		{
+			return register.ToResult<string>();
+		}
+
+		return await LoginAsync(payload.Value);
 	}
 
-	private async Task<GoogleJsonWebSignature.Payload> VerifyTokenAsync(string token)
+	private async Task<Result<GoogleJsonWebSignature.Payload>> VerifyTokenAsync(string token)
 	{
 		var settings = new GoogleJsonWebSignature.ValidationSettings
 		{
@@ -52,12 +64,14 @@ public class GoogleAuthentication : IGoogleAuthentication
 		var payload = await GoogleJsonWebSignature.ValidateAsync(token, settings);
 		
 		if (payload == null)
-			throw new InvalidDataException("Invalid token");
+		{
+			return Result.Fail(new InvalidDataError("Invalid Google token"));
+		}
 
 		return payload;
 	}
 	
-	private async Task RegisterAsync(GoogleJsonWebSignature.Payload payload)
+	private async Task<Result> RegisterAsync(GoogleJsonWebSignature.Payload payload)
 	{
 		var user = new User
 		{
@@ -72,7 +86,8 @@ public class GoogleAuthentication : IGoogleAuthentication
 
 		if (!result.Succeeded)
 		{
-			throw new InvalidLoginDataException(result.Errors.Select(e => e.Description));
+			var reasons = result.Errors.Select(e => e.Description);
+			return Result.Fail(new InvalidDataError("Failed to register", reasons));
 		}
 
 		await _userManager.AddToRoleAsync(user, Role.user);
@@ -87,14 +102,17 @@ public class GoogleAuthentication : IGoogleAuthentication
 		};
 		
 		await _userManager.AddClaimsAsync(user, claims);
+		return Result.Ok();
 	}
 	
-	private async Task<string> LoginAsync(GoogleJsonWebSignature.Payload payload)
+	private async Task<Result<string>> LoginAsync(GoogleJsonWebSignature.Payload payload)
 	{
 		var user = await _userManager.FindByEmailAsync(payload.Email);
 
 		if (user == null)
-			throw new InvalidDataException("Failed to authenticate user");
+		{
+			return Result.Fail(new InvalidDataError("Failed to authenticate user"));
+		}
 		
 		await _signInManager.SignInAsync(user, true, "Google");
 

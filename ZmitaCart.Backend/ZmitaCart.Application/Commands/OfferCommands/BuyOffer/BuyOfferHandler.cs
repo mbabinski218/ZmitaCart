@@ -26,7 +26,8 @@ public class BuyOfferHandler : IRequestHandler<BuyOfferCommand, Result>
 		
 		var userId = int.Parse(_currentUserService.UserId);
 		
-		//TODO Add google pay api call
+		//TODO payment service
+		
 		
 		return await _offerRepository.BuyAsync(userId, request.OfferId, request.Quantity);
 	}

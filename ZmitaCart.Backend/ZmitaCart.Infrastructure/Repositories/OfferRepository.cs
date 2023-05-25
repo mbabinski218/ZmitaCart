@@ -164,31 +164,14 @@ public class OfferRepository : IOfferRepository
 	public async Task<Result> BuyAsync(int userId, int offerId, int quantity)
 	{
 		var offer = await _dbContext.Offers.FindAsync(offerId);
-		if (offer == null)
-		{
-			return Result.Fail(new NotFoundError("Offer does not exist"));
-		}
+		if (offer == null) return Result.Fail(new NotFoundError("Offer does not exist"));
 
 		var user = await _dbContext.Users.FindAsync(userId);
-		if (user == null)
-		{
-			return Result.Fail(new NotFoundError("User does not exist"));
-		}
+		if (user == null) return Result.Fail(new NotFoundError("User does not exist"));
 
-		if (offer.UserId == userId)
-		{
-			return Result.Fail(new InvalidDataError("You cannot buy your own offer"));
-		}
-
-		if (!offer.IsAvailable)
-		{
-			return Result.Fail(new InvalidDataError("Offer is not available"));
-		}
-
-		if (offer.Quantity < quantity)
-		{
-			return Result.Fail(new InvalidDataError("Offer is not available"));
-		}
+		if (offer.UserId == userId) return Result.Fail(new InvalidDataError("You cannot buy your own offer"));
+		if (!offer.IsAvailable) return Result.Fail(new InvalidDataError("Offer is not available"));
+		if (offer.Quantity < quantity) return Result.Fail(new InvalidDataError("Offer is not available"));
 
 		offer.Quantity -= quantity;
 		if (offer.Quantity == 0) offer.IsAvailable = false;

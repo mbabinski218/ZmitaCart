@@ -1,21 +1,21 @@
 ﻿using MediatR;
 using ZmitaCart.Application.Hubs;
-using ZmitaCart.Domain.Events;
+using ZmitaCart.Application.Interfaces;
 
 namespace ZmitaCart.Application.Events;
 
 public class MessageSentHandler : INotificationHandler<MessageSent>
 {
-	private readonly IChatHub _chatHub;
+	private readonly IConversationRepository _conversationRepository;
 
-	public MessageSentHandler(IChatHub chatHub)
+	public MessageSentHandler(IConversationRepository conversationRepository)
 	{
-		_chatHub = chatHub;
+		_conversationRepository = conversationRepository;
 	}
 
 	public async Task Handle(MessageSent notification, CancellationToken cancellationToken)
 	{
-		await _chatHub.SendMessageAsync(notification.Message.User.FirstName, notification.Message.ConversationId,
-			notification.Message.Text, notification.Message.Date, cancellationToken);
+		var userId = int.Parse(notification.UserId);
+		await _conversationRepository.SendMessageAsync(userId, notification.ConversationId, notification.Text);
 	}
 }

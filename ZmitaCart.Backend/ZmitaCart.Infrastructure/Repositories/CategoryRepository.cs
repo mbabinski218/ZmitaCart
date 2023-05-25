@@ -78,6 +78,10 @@ public class CategoryRepository : ICategoryRepository
                 .ToListAsync()).FirstOrDefault(c => c.Id == id);
 
             var result = CheckChildrenId(currentCategory!, parentId.Value);
+            if (result.IsFailed)
+            {
+                return result;
+            }
 
             category.Parent = parent;
             category.ParentId = parentId;

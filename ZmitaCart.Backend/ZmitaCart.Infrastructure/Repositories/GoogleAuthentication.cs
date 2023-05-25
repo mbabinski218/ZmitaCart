@@ -9,7 +9,6 @@ using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Common;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Common;
-using ZmitaCart.Infrastructure.Exceptions;
 
 namespace ZmitaCart.Infrastructure.Repositories;
 

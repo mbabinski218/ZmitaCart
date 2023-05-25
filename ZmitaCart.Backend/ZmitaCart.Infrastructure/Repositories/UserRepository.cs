@@ -35,43 +35,35 @@ public class UserRepository : IUserRepository
 		_dbContext = dbContext;
 	}
 
-	public async Task<Result> RegisterAsync(RegisterUserDto registerUserDto)
+	public async Task<Result> RegisterAsync(RegisterUserDto dto)
 	{
-		if (await _userManager.FindByEmailAsync(registerUserDto.Email) != null)
+		if (await _userManager.FindByEmailAsync(dto.Email) != null)
 		{
 			return Result.Fail(new AlreadyExistsError("User already exists"));
 		}
 
-		var user = new User
-		{
-			Email = registerUserDto.Email,
-			UserName = registerUserDto.Email,
-			FirstName = registerUserDto.FirstName,
-			LastName = registerUserDto.LastName,
-			EmailConfirmed = true
-		};
-
-		var result = await _userManager.CreateAsync(user, registerUserDto.Password);
+		var user = User.Create(dto.Email, dto.FirstName, dto.LastName);
+		var result = await _userManager.CreateAsync(user, dto.Password);
 
 		if (!result.Succeeded)
 		{
 			var reasons = result.Errors.Select(e => e.Description);
 			return Result.Fail(new InvalidDataError("Invalid register data", reasons));
 		}
-
-		await _userManager.AddToRoleAsync(user, Role.user);
+		
+		var role = dto.IsAdmin ? Role.administrator : Role.user;
+		await _userManager.AddToRoleAsync(user, role);
 
 		var claims = new List<Claim>
 		{
 			new(ClaimNames.Id, user.Id.ToString()),
-			new(ClaimNames.Email, user.Email),
+			new(ClaimNames.Email, user.Email!),
 			new(ClaimNames.FirstName, user.FirstName),
 			new(ClaimNames.LastName, user.LastName),
-			new(ClaimNames.Role, Role.user)
+			new(ClaimNames.Role, role)
 		};
-
 		await _userManager.AddClaimsAsync(user, claims);
-		
+
 		return Result.Ok();
 	}
 
@@ -89,8 +81,7 @@ public class UserRepository : IUserRepository
 			return Result.Fail(new InvalidDataError("Invalid password"));
 		}
 
-		var signInResult = await _signInManager.PasswordSignInAsync(user, loginUserDto.Password,
-			false, true);
+		var signInResult = await _signInManager.PasswordSignInAsync(user, loginUserDto.Password, false, true);
 
 		if (!signInResult.Succeeded)
 		{

@@ -10,4 +10,5 @@ public record RegisterUserCommand : IRequest<Result>
 	public string LastName { get; init; } = null!;
 	public string Password { get; init; } = null!;
 	public string ConfirmedPassword { get; init; } = null!;
+	public bool IsAdmin { get; init; }
 }

@@ -35,6 +35,9 @@ if (builder.Environment.IsDevelopment())
    //builder.Services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
 }
 
+builder.Services.AddCors(p => p.AddPolicy("corsapp", corsBuilder =>
+    corsBuilder.AllowAnyMethod().AllowAnyHeader().WithOrigins("*")));
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -53,6 +56,7 @@ app.MapControllers();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("corsapp");
 
 app.MapHub<ChatHub>("/ChatHub");
 

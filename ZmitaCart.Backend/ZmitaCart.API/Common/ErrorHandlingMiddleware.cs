@@ -30,13 +30,13 @@ public class ErrorHandlingMiddleware : IMiddleware
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(JsonSerializer
-                .Serialize(ex.Errors.Select(vf => vf.ErrorMessage)));
+                .Serialize(ex.Errors.Select(vf => vf.ErrorMessage).Take(1)));
         }
         catch (InvalidLoginDataException ex)
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(JsonSerializer.Serialize(ex.Errors));
+            await context.Response.WriteAsync(JsonSerializer.Serialize(ex.Errors.Take(1)));
         }
         catch (NotFoundException ex)
         {

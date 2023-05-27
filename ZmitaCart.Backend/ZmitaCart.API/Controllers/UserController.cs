@@ -39,7 +39,7 @@ public class UserController : ApiController
 	public async Task<ActionResult<string>> Login([FromBody] LoginUserQuery query)
 	{
 		return await mediator.Send(query).Then(
-			s => Ok(s.Value),
+			s => Ok(new TokenToReturn(s.Value)),
 			err => BadRequest(err.ToList()));
 	}
 

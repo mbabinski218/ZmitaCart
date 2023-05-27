@@ -66,6 +66,6 @@ public static class FluentResultsExtensions
 			}
 		}
 
-		return errors;
+		return errors.Take(1).ToList();
 	}
 }

@@ -1,12 +1,14 @@
-﻿using MapsterMapper;
+﻿using FluentResults;
+using MapsterMapper;
 using MediatR;
+using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
 
 namespace ZmitaCart.Application.Commands.OfferCommands.UpdateOffer;
 
-public class UpdateOfferHandler : IRequestHandler<UpdateOfferCommand, int>
+public class UpdateOfferHandler : IRequestHandler<UpdateOfferCommand, Result<int>>
 {
 	private readonly IOfferRepository _offerRepository;
 	private readonly IMapper _mapper;
@@ -22,11 +24,11 @@ public class UpdateOfferHandler : IRequestHandler<UpdateOfferCommand, int>
 		_currentUserService = currentUserService;
 	}
 
-	public async Task<int> Handle(UpdateOfferCommand request, CancellationToken cancellationToken)
+	public async Task<Result<int>> Handle(UpdateOfferCommand request, CancellationToken cancellationToken)
 	{		
 		if (_currentUserService.UserId is null)
 		{
-			throw new UnauthorizedAccessException("You are not authorized to update an offer.");
+			return Result.Fail(new UnauthorizedError("You are not authorized to update an offer."));
 		}
 		
 		var offer = _mapper.Map<UpdateOfferDto>(request);
@@ -34,12 +36,20 @@ public class UpdateOfferHandler : IRequestHandler<UpdateOfferCommand, int>
 		
 		if(request.PicturesToAdd is not null)
 		{
-			await _pictureRepository.AddAsync(offer.UserId, offer.Id, request.PicturesToAdd);
+			var addPic = await _pictureRepository.AddAsync(offer.UserId, offer.Id, request.PicturesToAdd);
+			if (addPic.IsFailed)
+			{
+				return Result.Fail(addPic.Errors);
+			}
 		}
 		
 		if(request.PictureIdsToRemove is not null)
 		{
-			await _pictureRepository.RemoveAsync(offer.UserId, offer.Id, request.PictureIdsToRemove);
+			var removePic = await _pictureRepository.RemoveAsync(offer.UserId, offer.Id, request.PictureIdsToRemove);
+			if (removePic.IsFailed)
+			{
+				return Result.Fail(removePic.Errors);
+			}
 		}
 		
 		return await _offerRepository.UpdateAsync(offer);

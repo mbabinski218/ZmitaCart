@@ -2,4 +2,4 @@
 
 namespace ZmitaCart.Application.Events;
 
-public record JoinedChat(string Chat) : INotification;
+public record JoinedChat(int Chat) : INotification;

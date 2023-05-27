@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.OfferDtos;
 
 namespace ZmitaCart.Application.Queries.OfferQueries.SearchOffers;
 
-public record SearchOffersQuery : IRequest<PaginatedList<OfferInfoDto>>
+public record SearchOffersQuery : IRequest<Result<PaginatedList<OfferInfoDto>>>
 {
 	public string? Title { get; init; }
 	public int? CategoryId { get; init; }

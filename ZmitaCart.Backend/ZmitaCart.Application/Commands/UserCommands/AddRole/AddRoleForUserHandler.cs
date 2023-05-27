@@ -1,11 +1,12 @@
-﻿using MapsterMapper;
+﻿using FluentResults;
+using MapsterMapper;
 using MediatR;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
 
 namespace ZmitaCart.Application.Commands.UserCommands.AddRole;
 
-public class AddRoleForUserHandler : IRequestHandler<AddRoleForUserCommand>
+public class AddRoleForUserHandler : IRequestHandler<AddRoleForUserCommand, Result>
 {
 	private readonly IUserRepository _userRepository;
 	private readonly IMapper _mapper;
@@ -18,8 +19,8 @@ public class AddRoleForUserHandler : IRequestHandler<AddRoleForUserCommand>
 		_currentUserService = currentUserService;
 	}
 	
-	public async Task Handle(AddRoleForUserCommand request, CancellationToken cancellationToken)
+	public async Task<Result> Handle(AddRoleForUserCommand request, CancellationToken cancellationToken)
 	{
-		await _userRepository.AddRoleAsync(request.UserEmail!, request.Role!);
+		return await _userRepository.AddRoleAsync(request.UserEmail!, request.Role!);
 	}
 }

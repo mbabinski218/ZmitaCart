@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.OfferCommands.AddToFavorites;
@@ -25,57 +26,74 @@ public class OfferController : ApiController
     [HttpPost]
     public async Task<ActionResult<int>> CreateOffer([FromForm] CreateOfferCommand command)
     {
-        return Ok(await mediator.Send(command));
+        return await mediator.Send(command).Then(
+            s => Ok(s.Value),
+            err => BadRequest(err.ToList()));
     }
 
     [HttpPut]
     public async Task<ActionResult<int>> UpdateOffer([FromForm] UpdateOfferCommand command)
     {
-        return Ok(await mediator.Send(command));
+        return await mediator.Send(command).Then(
+            s => Ok(s.Value),
+            err => BadRequest(err.ToList()));
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<PaginatedList<OfferInfoDto>>> SearchOffers([FromQuery] SearchOffersQuery query)
     {
-        return Ok(await mediator.Send(query));
+        return await mediator.Send(query).Then(
+            s => Ok(s.Value),
+            err => BadRequest(err.ToList()));
     }
     
     [HttpDelete("{Id}")]
     public async Task<ActionResult> DeleteOffer([FromRoute] DeleteOfferCommand command)
     {
-        await mediator.Send(command);
-        return Ok();
+        return await mediator.Send(command).Then(
+            s => Ok(),
+            err => BadRequest(err.ToList()));
     }
 
     [HttpGet("{Id}")]
+    [AllowAnonymous]
     public async Task<ActionResult<OfferDto>> GetOffer([FromRoute] GetOfferQuery query)
     {
-        return Ok(await mediator.Send(query));
+        return await mediator.Send(query).Then(
+            s => Ok(s.Value),
+            err => BadRequest(err.ToList()));
     }
 
     [HttpPost("addToFavorites/{Id}")]
     public async Task<ActionResult> AddToFavorites([FromRoute] AddToFavoritesCommand command)
     {
-        await mediator.Send(command);
-        return Ok();
+        return await mediator.Send(command).Then(
+            s => Ok(),
+            err => BadRequest(err.ToList()));
     }
     
     [HttpGet("favorites")]
     public async Task<ActionResult<PaginatedList<OfferInfoDto>>> GetFavoritesOffers([FromQuery] GetFavouritesOffersQuery query)
     {
-        return Ok(await mediator.Send(query));
+        return await mediator.Send(query).Then(
+            s => Ok(s.Value),
+            err => BadRequest(err.ToList()));
     }
     
     [HttpPost("buy")]
     public async Task<ActionResult> BuyOffer([FromBody] BuyOfferCommand command)
     {
-        await mediator.Send(command);
-        return Ok();
+        return await mediator.Send(command).Then(
+            s => Ok(),
+            err => BadRequest(err.ToList()));
     }
     
     [HttpGet("bought")]
     public async Task<ActionResult<PaginatedList<BoughtOfferDto>>> GetBoughtOffers([FromQuery] GetBoughtOffersQuery query)
     {
-        return Ok(await mediator.Send(query));
+        return await mediator.Send(query).Then(
+            s => Ok(s.Value),
+            err => BadRequest(err.ToList()));
     }
 }

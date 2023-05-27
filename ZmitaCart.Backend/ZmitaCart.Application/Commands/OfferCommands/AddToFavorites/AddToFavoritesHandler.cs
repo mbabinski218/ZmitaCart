@@ -1,10 +1,12 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
+using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
 
 namespace ZmitaCart.Application.Commands.OfferCommands.AddToFavorites;
 
-public class AddToFavoritesHandler : IRequestHandler<AddToFavoritesCommand>
+public class AddToFavoritesHandler : IRequestHandler<AddToFavoritesCommand, Result>
 {
 	private readonly IOfferRepository _offerRepository;
 	private readonly ICurrentUserService _currentUserService;
@@ -15,14 +17,14 @@ public class AddToFavoritesHandler : IRequestHandler<AddToFavoritesCommand>
 		_offerRepository = offerRepository;
 	}
 
-	public async Task Handle(AddToFavoritesCommand request, CancellationToken cancellationToken)
+	public async Task<Result> Handle(AddToFavoritesCommand request, CancellationToken cancellationToken)
 	{
 		if (_currentUserService.UserId is null)
 		{
-			throw new UnauthorizedAccessException("You are not authorized to add an offer to favorites.");
+			return Result.Fail(new UnauthorizedError("You are not authorized to add an offer to favorites."));
 		}
 		
 		var userId = int.Parse(_currentUserService.UserId);
-		await _offerRepository.AddToFavoritesAsync(userId, request.Id);
+		return await _offerRepository.AddToFavoritesAsync(userId, request.Id);
 	}
 }

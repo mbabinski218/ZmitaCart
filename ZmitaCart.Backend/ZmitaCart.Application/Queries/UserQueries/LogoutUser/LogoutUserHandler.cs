@@ -1,9 +1,10 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using ZmitaCart.Application.Interfaces;
 
 namespace ZmitaCart.Application.Queries.UserQueries.LogoutUser;
 
-public class LogoutUserHandler : IRequestHandler<LogoutUserQuery>
+public class LogoutUserHandler : IRequestHandler<LogoutUserQuery, Result>
 {
 	private readonly IUserRepository _userRepository;
 
@@ -12,8 +13,8 @@ public class LogoutUserHandler : IRequestHandler<LogoutUserQuery>
 		_userRepository = userRepository;
 	}
 
-	public async Task Handle(LogoutUserQuery request, CancellationToken cancellationToken)
+	public async Task<Result> Handle(LogoutUserQuery request, CancellationToken cancellationToken)
 	{
-		await _userRepository.LogoutAsync();
+		return await _userRepository.LogoutAsync();
 	}
 }

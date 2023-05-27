@@ -1,9 +1,10 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 
 namespace ZmitaCart.Application.Commands.OfferCommands.UpdateOffer;
 
-public record UpdateOfferCommand : IRequest<int>
+public record UpdateOfferCommand : IRequest<Result<int>>
 {
 	public int Id { get; set; }
 	public string? Title { get; set; }

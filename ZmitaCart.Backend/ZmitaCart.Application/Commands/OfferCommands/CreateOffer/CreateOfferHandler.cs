@@ -1,12 +1,14 @@
-﻿using MapsterMapper;
+﻿using FluentResults;
+using MapsterMapper;
 using MediatR;
+using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
 
 namespace ZmitaCart.Application.Commands.OfferCommands.CreateOffer;
 
-public class CreateOfferHandler : IRequestHandler<CreateOfferCommand, int>
+public class CreateOfferHandler : IRequestHandler<CreateOfferCommand, Result<int>>
 {
 	private readonly IOfferRepository _offerRepository;
 	private readonly ICurrentUserService _currentUserService;
@@ -22,11 +24,11 @@ public class CreateOfferHandler : IRequestHandler<CreateOfferCommand, int>
 		_pictureRepository = pictureRepository;
 	}
 
-	public async Task<int> Handle(CreateOfferCommand request, CancellationToken cancellationToken)
+	public async Task<Result<int>> Handle(CreateOfferCommand request, CancellationToken cancellationToken)
 	{
 		if (_currentUserService.UserId is null)
 		{
-			throw new UnauthorizedAccessException("You are not authorized to create an offer.");
+			return Result.Fail(new UnauthorizedError("You are not authorized to create an offer."));
 		}
 		
 		var offer = _mapper.Map<CreateOfferDto>(request);
@@ -36,9 +38,9 @@ public class CreateOfferHandler : IRequestHandler<CreateOfferCommand, int>
 		
 		var offerId = await _offerRepository.CreateAsync(offer);
 
-		if (request.Pictures is not null)
+		if (request.Pictures is not null && offerId.IsSuccess)
 		{
-			await _pictureRepository.AddAsync(offer.UserId, offerId, request.Pictures);
+			await _pictureRepository.AddAsync(offer.UserId, offerId.Value, request.Pictures);
 		}
 
 		return offerId;

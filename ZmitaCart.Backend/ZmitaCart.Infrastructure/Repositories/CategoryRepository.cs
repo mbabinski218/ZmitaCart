@@ -1,6 +1,5 @@
 using FluentResults;
 using Mapster;
-using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.CategoryDtos;
@@ -79,6 +78,10 @@ public class CategoryRepository : ICategoryRepository
                 .ToListAsync()).FirstOrDefault(c => c.Id == id);
 
             var result = CheckChildrenId(currentCategory!, parentId.Value);
+            if (result.IsFailed)
+            {
+                return result;
+            }
 
             category.Parent = parent;
             category.ParentId = parentId;

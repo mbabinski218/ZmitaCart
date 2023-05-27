@@ -1,10 +1,12 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
+using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
 
 namespace ZmitaCart.Application.Commands.UserCommands.UpdateCredentials;
 
-public class UpdateCredentialsHandler : IRequestHandler<UpdateCredentialsCommand>
+public class UpdateCredentialsHandler : IRequestHandler<UpdateCredentialsCommand, Result>
 {
 	private readonly IUserRepository _userRepository;
 	private readonly ICurrentUserService _currentUserService;
@@ -15,13 +17,13 @@ public class UpdateCredentialsHandler : IRequestHandler<UpdateCredentialsCommand
 		_currentUserService = currentUserService;
 	}
 
-	public async Task Handle(UpdateCredentialsCommand request, CancellationToken cancellationToken)
+	public async Task<Result> Handle(UpdateCredentialsCommand request, CancellationToken cancellationToken)
 	{
 		if (_currentUserService.UserId == null)
 		{
-			throw new UnauthorizedAccessException("Log in to use this function");
+			return Result.Fail(new UnauthorizedError("Log in to use this function"));
 		}
 		
-		await _userRepository.UpdateCredentialsAsync(_currentUserService.UserId, request.PhoneNumber, request.Address);
+		return await _userRepository.UpdateCredentialsAsync(_currentUserService.UserId, request.PhoneNumber, request.Address);
 	}
 }

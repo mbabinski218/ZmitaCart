@@ -2,13 +2,13 @@
 
 namespace ZmitaCart.Application.Common.Errors;
 
-public class NotFoundError : IError
+public class UnauthorizedError : IError
 {
-	public NotFoundError(string message)
+	public UnauthorizedError(string message)
 	{
 		Message = message;
 	}
-	
+
 	public string Message { get; }
 	public Dictionary<string, object>? Metadata { get; set; }
 	public List<IError>? Reasons { get; set; }

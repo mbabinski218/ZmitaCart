@@ -1,11 +1,12 @@
-﻿using MapsterMapper;
+﻿using FluentResults;
+using MapsterMapper;
 using MediatR;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
 
 namespace ZmitaCart.Application.Queries.UserQueries.LoginUser;
 
-public class LoginUserHandler : IRequestHandler<LoginUserQuery, string>
+public class LoginUserHandler : IRequestHandler<LoginUserQuery, Result<string>>
 {
 	private readonly IUserRepository _userRepository;
 	private readonly IMapper _mapper;
@@ -15,7 +16,7 @@ public class LoginUserHandler : IRequestHandler<LoginUserQuery, string>
 		_userRepository = userRepository;
 		_mapper = mapper;
 	}
-	public async Task<string> Handle(LoginUserQuery request, CancellationToken cancellationToken)
+	public async Task<Result<string>> Handle(LoginUserQuery request, CancellationToken cancellationToken)
 	{
 		var loginUser = _mapper.Map<LoginUserDto>(request);
 

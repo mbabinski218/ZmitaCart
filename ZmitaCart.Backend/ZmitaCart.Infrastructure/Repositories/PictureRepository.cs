@@ -1,6 +1,8 @@
+using FluentResults;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
+using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Persistence;
@@ -16,20 +18,25 @@ public class PictureRepository : IPictureRepository
         _dbContext = dbContext;
     }
 
-    public async Task AddAsync(int userId, int offerId, IEnumerable<IFormFile> files)
+    public async Task<Result> AddAsync(int userId, int offerId, IEnumerable<IFormFile> files)
     {
-        var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId)
-                    ?? throw new InvalidDataException("Offer does not exist");
+        var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId);
+        if (offer is null)
+        {
+            return Result.Fail(new NotFoundError("Offer not found."));
+        }
 
-        if (offer.UserId != userId) throw new UnauthorizedAccessException("User does not have access to this offer");
+        if (offer.UserId != userId)
+        {
+            return Result.Fail(new UnauthorizedError("You are not authorized to update an offer."));
+        }
 
         foreach (var file in files)
         {
             if (file.Length <= 0) continue;
 
             var creationTime = DateTimeOffset.Now;
-            var imageName =
-                $"{offerId}_{creationTime:ddMMyyyyhhmmssfff}_{new Random().Next(0, 10000000)}.{file.FileName.Split('.').Last()}";
+            var imageName = $"{offerId}_{creationTime:ddMMyyyyhhmmssfff}_{new Random().Next(0, 10000000)}.{file.FileName.Split('.').Last()}";
             var filePath = Path.Combine(Path.GetFullPath("wwwroot"), imageName);
             
             using (var image = await Image.LoadAsync(file.OpenReadStream()))
@@ -57,22 +64,36 @@ public class PictureRepository : IPictureRepository
         }
 
         await _dbContext.SaveChangesAsync();
+        return Result.Ok();
     }
 
-    public async Task RemoveAsync(int userId, int offerId, IEnumerable<int>? imagesIds = null)
+    public async Task<Result> RemoveAsync(int userId, int offerId, IEnumerable<int>? imagesIds = null)
     {
         var offer = await _dbContext.Offers
-                        .Include(o => o.Pictures)
-                        .FirstOrDefaultAsync(o => o.Id == offerId)
-                    ?? throw new InvalidDataException("Offer does not exist");
+            .Include(o => o.Pictures)
+            .FirstOrDefaultAsync(o => o.Id == offerId);
+        
+        if (offer is null)
+        {
+            return Result.Fail(new NotFoundError("Offer not found."));
+        }
 
-        if (offer.UserId != userId) throw new UnauthorizedAccessException("User does not have access to this offer");
+        if (offer.UserId != userId)
+        {
+            return Result.Fail(new UnauthorizedError("You are not authorized to update an offer."));
+        }
 
-        if (!offer.Pictures.Any()) return;
+        if (!offer.Pictures.Any())
+        {
+            return Result.Ok();
+        }
 
         var pictures = offer.Pictures.Where(picture => imagesIds?.Contains(picture.Id) ?? true).ToList();
 
-        if (!pictures.Any()) return;
+        if (!pictures.Any())
+        {
+            return Result.Ok();
+        }
 
         foreach (var filePath in pictures.Select(picture => Path.Combine(Path.GetFullPath("wwwroot"), picture.Name)).Where(File.Exists))
         {
@@ -81,5 +102,6 @@ public class PictureRepository : IPictureRepository
 
         _dbContext.Pictures.RemoveRange(pictures);
         await _dbContext.SaveChangesAsync();
+        return Result.Ok();
     }
 }

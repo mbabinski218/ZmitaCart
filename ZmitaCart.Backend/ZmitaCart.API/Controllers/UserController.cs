@@ -34,9 +34,9 @@ public class UserController : ApiController
 			err => BadRequest(err.ToList()));
 	}
 
-	[HttpGet("login")]
+	[HttpPost("login")]
 	[AllowAnonymous]
-	public async Task<ActionResult<string>> Login([FromQuery] LoginUserQuery query)
+	public async Task<ActionResult<string>> Login([FromBody] LoginUserQuery query)
 	{
 		return await mediator.Send(query).Then(
 			s => Ok(s.Value),

@@ -1,0 +1,16 @@
+<pp-header></pp-header>
+
+<div class="main">
+
+  <div class="content">
+    <div class="content-inner">
+      <ng-content></ng-content>
+
+      <div
+        *ngIf="isShowCategories$ | async"
+        class="overlay"
+      >
+      </div>
+    </div>
+  </div>
+</div>

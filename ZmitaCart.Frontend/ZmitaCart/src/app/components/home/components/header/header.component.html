@@ -1,6 +1,14 @@
 <div class="header">
   <div class="content">
-    <div class="menu icon icon-menu"></div>
+    <div
+      class="menu"
+      (mouseleave)="overlayService.setState(false)"
+      (mouseenter)="overlayService.setState(true)"
+    >
+      <div class="icon icon-menu"></div>
+
+      <pp-categories-menu *ngIf="isShowCategories$ | async"></pp-categories-menu>
+    </div>
 
     <div class="image">
       <img

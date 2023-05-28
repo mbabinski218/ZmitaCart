@@ -1,6 +1,11 @@
 @import 'variables/breakpoints';
 
 pp-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 3;
+
   .icon {
     width: 30px;
     height: 28px;
@@ -39,7 +44,6 @@ pp-header {
   }
 
   .header {
-    z-index: 500;
     background: #fff;
 
     transition: padding-top .2s ease,
@@ -57,7 +61,6 @@ pp-header {
     margin: 0 auto;
 
     min-height: 92px;
-    margin-bottom: 16px;
 
     display: grid;
     align-items: center;

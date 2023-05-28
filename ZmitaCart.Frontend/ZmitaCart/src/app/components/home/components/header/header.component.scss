@@ -5,6 +5,7 @@ pp-header {
     width: 30px;
     height: 28px;
     background-size: cover;
+    cursor: pointer;
 
     &-menu {
       width: 35px;
@@ -32,8 +33,7 @@ pp-header {
       background-image: url(/assets/images/heart.svg);
     }
 
-    &:hover,
-    &:focus {
+    &:hover {
       filter: sepia(100%) saturate(317%) hue-rotate(123deg) brightness(95%) contrast(95%);
     }
   }
@@ -92,6 +92,10 @@ pp-header {
 
       cursor: pointer;
       margin-right: 4px;
+
+      @media (width < $screen-1064) {
+        margin-top: 13px;
+      }
     }
 
     .image {
@@ -128,6 +132,12 @@ pp-header {
         width: 100%;
         min-width: 180px;
         flex: 1;
+        border: 1px solid #aaa;
+        border-radius: 10px;
+
+        @media (width >=$screen-768) {
+          border-radius: 10px 0 0 10px;
+        }
 
         :focus-visible {
           outline: none !important;
@@ -136,15 +146,10 @@ pp-header {
         .input {
           display: block;
           width: 100%;
-          border: 1px solid #aaa;
-          border-radius: 10px;
           background: 0 0;
+          border: 0;
           padding: 8px 24px;
           font-size: 16px;
-
-          @media (width >=$screen-768) {
-            border-radius: 10px 0 0 10px;
-          }
         }
       }
 
@@ -153,6 +158,8 @@ pp-header {
           display: none;
         }
 
+        position: relative;
+        right: 1px;
         background: #fff;
         display: flex;
         height: 40px;
@@ -167,11 +174,9 @@ pp-header {
         }
 
         .select {
-          position: relative;
-          right: 1px;
           display: block;
           width: 100%;
-          border: 1px solid #fff;
+          border: 0;
           background: 0 0;
           padding: 8px 38px;
           font-size: 16px;
@@ -180,19 +185,19 @@ pp-header {
 
           background-repeat: no-repeat;
           background-size: 28px;
-          background-position: 95%;
+          background-position: 92%;
 
           -moz-appearance: none;
           -webkit-appearance: none;
           appearance: none;
         }
-
-        .fix {
-          position: relative;
-          top: 5px;
-          right: 10px;
-        }
       }
+    }
+
+    .fix {
+      position: relative;
+      top: 4px;
+      right: 14px;
     }
 
     .actions {

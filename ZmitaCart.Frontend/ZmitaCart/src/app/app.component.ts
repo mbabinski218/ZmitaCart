@@ -22,6 +22,7 @@ export class AppComponent {
 }
 
 const customIcons: [string, string][] = [
+    ["allegro", "allegro.svg"],
     ["add", "add.svg"],
     ["arrow", "arrow.svg"],
     ["chat", "chat.svg"],

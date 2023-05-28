@@ -15,6 +15,11 @@
           placeholder="czego szukasz?"
           class="input"
         >
+        <div
+          *ngIf="!isBig"
+          class="icon icon-find fix cursor-pointer"
+        >
+        </div>
       </div>
 
       <div class="categories-form">
@@ -39,19 +44,36 @@
     <div class="actions">
       <div
         *ngIf="!isBig"
-        (click)="goToAddOffer()"
+        [routerLink]="ADD_OFFER_LINK"
         class="icon icon-add"
       >
       </div>
       <div class="icon icon-heart"></div>
       <div class="icon icon-chat"></div>
-      <div class="icon icon-user"></div>
+      <div
+        class="icon icon-user"
+        [matMenuTriggerFor]="accountMenu"
+      >
+        <mat-menu
+          #accountMenu="matMenu"
+          xPosition="before"
+        >
+          <button
+            mat-menu-item
+            class="iconsHover"
+            [routerLink]="LOGIN_LINK"
+          >
+            <mat-icon svgIcon="allegro"></mat-icon>
+            <span>Zaloguj się</span>
+          </button>
+        </mat-menu>
+      </div>
     </div>
 
     <a
       *ngIf="isBig"
       class="button"
-      (click)="goToAddOffer()"
+      [routerLink]="ADD_OFFER_LINK"
     >
       Wystaw
     </a>

@@ -13,12 +13,10 @@ namespace ZmitaCart.Infrastructure.Repositories;
 public class ConversationRepository : IConversationRepository
 {
 	private readonly ApplicationDbContext _dbContext;
-	private readonly IMapper _mapper;
 
-	public ConversationRepository(ApplicationDbContext dbContext, IMapper mapper)
+	public ConversationRepository(ApplicationDbContext dbContext)
 	{
 		_dbContext = dbContext;
-		_mapper = mapper;
 	}
 
 	public async Task<int> CreateConversationAsync(int userId, int offerId)

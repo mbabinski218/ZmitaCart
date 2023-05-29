@@ -39,9 +39,7 @@ public class UserRepository : IUserRepository
 	public async Task<Result> RegisterAsync(RegisterUserDto dto)
 	{
 		if (await _userManager.FindByEmailAsync(dto.Email) != null)
-		{
 			return Result.Fail(new AlreadyExistsError("User already exists"));
-		}
 
 		var user = User.Create(dto.Email, dto.FirstName, dto.LastName);
 		var result = await _userManager.CreateAsync(user, dto.Password);
@@ -54,6 +52,9 @@ public class UserRepository : IUserRepository
 		
 		var role = dto.IsAdmin is true ? Role.administrator : Role.user;
 		await _userManager.AddToRoleAsync(user, role);
+		
+		if (role is Role.administrator)
+			await _userManager.AddToRoleAsync(user, Role.user);
 
 		var claims = new List<Claim>
 		{
@@ -152,20 +153,19 @@ public class UserRepository : IUserRepository
 	public async Task<Result> AddRoleAsync(string userEmail, string role)
 	{
 		var user = await _userManager.FindByEmailAsync(userEmail);
-
+		
 		if (user == null)
-		{
 			return Result.Fail(new NotFoundError("User does not exist"));
-		}
 
 		if (!await _roleManager.RoleExistsAsync(role))
-		{
 			return Result.Fail(new NotFoundError("Role does not exist"));
-		}
+		
+		if (!await _userManager.IsInRoleAsync(user, role))
+			return Result.Fail(new InvalidDataError("User already has this role"));
 
 		await _userManager.AddToRoleAsync(user, role);
 		await _userManager.AddClaimAsync(user, new Claim(ClaimNames.Role, role));
-		
+
 		return Result.Ok();
 	}
 

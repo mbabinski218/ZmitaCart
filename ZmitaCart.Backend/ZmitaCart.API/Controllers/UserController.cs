@@ -30,7 +30,7 @@ public class UserController : ApiController
 	{
 		return await mediator.Send(command).Then(
 			s => Ok(),
-			err => BadRequest(err.ToList()));
+			err => StatusCode(err.StatusCode, err.ToList()));
 	}
 
 	[HttpPost("login")]
@@ -39,7 +39,7 @@ public class UserController : ApiController
 	{
 		return await mediator.Send(command).Then(
 			s => Ok(s.Value),
-			err => BadRequest(err.ToList()));
+			err => StatusCode(err.StatusCode, err.ToList()));
 	}
 
 	[HttpPost("logout")]
@@ -47,7 +47,7 @@ public class UserController : ApiController
 	{
 		return await mediator.Send(new LogoutUserQuery()).Then(
 			s => Ok(),
-			err => BadRequest(err.ToList()));
+			err => StatusCode(err.StatusCode, err.ToList()));
 	}
 
 	[HttpPost("addRole")]
@@ -56,7 +56,7 @@ public class UserController : ApiController
 	{
 		return await mediator.Send(command).Then(
 			s => Ok(),
-			err => BadRequest(err.ToList()));
+			err => StatusCode(err.StatusCode, err.ToList()));
 	}
 
 	[HttpPut("updateCredentials")]
@@ -64,7 +64,7 @@ public class UserController : ApiController
 	{
 		return await mediator.Send(command).Then(
 			s => Ok(),
-			err => BadRequest(err.ToList()));
+			err => StatusCode(err.StatusCode, err.ToList()));
 	}
 
 	[HttpPost("feedback")]
@@ -72,7 +72,7 @@ public class UserController : ApiController
 	{
 		return await mediator.Send(command).Then(
 			s => Ok(s.Value),
-			err => BadRequest(err.ToList()));
+			err => StatusCode(err.StatusCode, err.ToList()));
 	}
 
 	[HttpPut("feedback")]
@@ -80,13 +80,13 @@ public class UserController : ApiController
 	{
 		return await mediator.Send(command).Then(
 			s => Ok(s.Value),
-			err => BadRequest(err.ToList()));
+			err => StatusCode(err.StatusCode, err.ToList()));
 	}
 
-	[HttpDelete("feedback/{Id}")]
-	public async Task<ActionResult> DeleteFeedback([FromRoute] DeleteFeedbackCommand command)
+	[HttpDelete("feedback/{id:int}")]
+	public async Task<ActionResult> DeleteFeedback([FromRoute] int id)
 	{
-		return await mediator.Send(command).Then(
+		return await mediator.Send(new DeleteFeedbackCommand(id)).Then(
 			s => Ok(),
 			err => NotFound(err.ToList()));
 	}
@@ -96,6 +96,6 @@ public class UserController : ApiController
 	{
 		return await mediator.Send(query).Then(
 			s => Ok(s.Value),
-			err => BadRequest(err.ToList()));
+			err => StatusCode(err.StatusCode, err.ToList()));
 	}
 }

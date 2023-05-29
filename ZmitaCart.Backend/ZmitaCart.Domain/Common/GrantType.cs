@@ -2,9 +2,9 @@
 
 public static class GrantType
 {
-	public const string password = "Password";
-	public const string refreshToken = "RefreshToken";
-	public const string google = "Google";
+	public const string password = "password";
+	public const string refreshToken = "refresh_token";
+	public const string google = "google";
 	
 	public static IEnumerable<string> SupportedGrantTypes
 	{

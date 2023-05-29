@@ -7,5 +7,4 @@ public static class ClaimNames
 	public static string FirstName => "firstName";
 	public static string LastName => "lastName";
 	public static string Role => "role";
-	public static string Expires => "exp";
 }

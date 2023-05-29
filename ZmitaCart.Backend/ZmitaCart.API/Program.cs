@@ -54,9 +54,9 @@ app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseRouting();
+app.UseCors("corsapp");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("corsapp");
 
 app.MapHub<ChatHub>("/ChatHub");
 

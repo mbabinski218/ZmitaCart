@@ -39,7 +39,7 @@ public class UserController : ApiController
 	{
 		return await mediator.Send(command).Then(
 			s => Ok(s.Value),
-			err => BadRequest(err.ToList()));
+			err => Unauthorized(err.ToList()));
 	}
 
 	[HttpPost("logout")]

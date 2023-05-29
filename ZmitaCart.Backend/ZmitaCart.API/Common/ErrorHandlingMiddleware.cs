@@ -22,46 +22,48 @@ public class ErrorHandlingMiddleware : IMiddleware
         catch (NotImplementedException)
         {
             context.Response.StatusCode = StatusCodes.Status501NotImplemented;
-            context.Response.ContentType = "text/plain";
-            await context.Response.WriteAsync("Not implemented yet.");
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(CreateJsonResponse("Not implemented yet."));
         }
         catch (ValidationException ex)
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(JsonSerializer
-                .Serialize(ex.Errors.Select(vf => vf.ErrorMessage).Take(1)));
+            await context.Response.WriteAsync(CreateJsonResponse(ex.Errors.Select(vf => vf.ErrorMessage)));
         }
         catch (InvalidLoginDataException ex)
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(JsonSerializer.Serialize(ex.Errors.Take(1)));
+            await context.Response.WriteAsync(CreateJsonResponse(ex.Errors));
         }
         catch (NotFoundException ex)
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
-            context.Response.ContentType = "text/plain";
-            await context.Response.WriteAsync(ex.Message);
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(CreateJsonResponse(ex.Message));
         }
         catch (UnauthorizedAccessException ex)
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            context.Response.ContentType = "text/plain";
-            await context.Response.WriteAsync(ex.Message);
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(CreateJsonResponse(ex.Message));
         }
         catch (Exception ex) when (ex is ArgumentException or InvalidDataException)
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            context.Response.ContentType = "text/plain";
-            await context.Response.WriteAsync(ex.Message);
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(CreateJsonResponse(ex.Message));
         }
         catch (Exception ex)
         {
             _logger.LogCritical("{msg}", ex.Message);
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            context.Response.ContentType = "text/plain";
-            await context.Response.WriteAsync("An unexpected error occurred.");
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(CreateJsonResponse("An unexpected error occurred."));
         }
     }
+    
+    private static string CreateJsonResponse(IEnumerable<string> messages) => JsonSerializer.Serialize(messages);
+    private static string CreateJsonResponse(string message) => JsonSerializer.Serialize(new List<string>{ new(message) });
 }

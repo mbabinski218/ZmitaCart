@@ -8,7 +8,7 @@ namespace ZmitaCart.API.Common;
 [ApiController]
 [Route("[controller]")]
 [Authorize(Roles = Role.user)]
-#if DEBUG
+#if _debug
 [AllowAnonymous]
 #endif
 public class ApiController : ControllerBase

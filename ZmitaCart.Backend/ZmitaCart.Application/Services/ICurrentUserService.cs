@@ -7,5 +7,4 @@ public interface ICurrentUserService
 	public string? UserFirstName { get; }
 	public string? UserLastName { get; }
 	public string? UserRole { get; }
-	public string? Expires { get; }
 }

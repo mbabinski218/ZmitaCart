@@ -29,6 +29,7 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getBySuperiorId")]
+    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId([FromQuery] GetCategoriesBySuperiorIdQuery request)
     {
         return await mediator.Send(request).Then( 
@@ -37,6 +38,7 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getFewBySuperiorId")]
+    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId([FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
     {
         return await mediator.Send(request).Then( 
@@ -45,6 +47,7 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getAllSuperiors")]
+    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<SuperiorCategoryDto>>> GetCategoriesBySuperiorId()
     {
         return await mediator.Send(new GetAllSuperiorsQuery()).Then(

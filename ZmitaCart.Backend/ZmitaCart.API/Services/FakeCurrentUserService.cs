@@ -9,5 +9,4 @@ public class FakeCurrentUserService : ICurrentUserService
 	public string? UserFirstName => "FakeFirstName";
 	public string? UserLastName => "FakeLastName";
 	public string? UserRole => "fake";
-	public string? Expires => "123456";
 }

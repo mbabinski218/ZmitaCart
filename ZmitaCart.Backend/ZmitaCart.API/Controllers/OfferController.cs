@@ -28,7 +28,7 @@ public class OfferController : ApiController
     {
         return await mediator.Send(command).Then(
             s => Ok(s.Value),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpPut]
@@ -36,7 +36,7 @@ public class OfferController : ApiController
     {
         return await mediator.Send(command).Then(
             s => Ok(s.Value),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpGet]
@@ -45,32 +45,32 @@ public class OfferController : ApiController
     {
         return await mediator.Send(query).Then(
             s => Ok(s.Value),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
     
-    [HttpDelete("{Id}")]
-    public async Task<ActionResult> DeleteOffer([FromRoute] DeleteOfferCommand command)
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> DeleteOffer([FromRoute] int id)
     {
-        return await mediator.Send(command).Then(
+        return await mediator.Send(new DeleteOfferCommand(id)).Then(
             s => Ok(),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
-    [HttpGet("{Id}")]
+    [HttpGet("{id:int}")]
     [AllowAnonymous]
-    public async Task<ActionResult<OfferDto>> GetOffer([FromRoute] GetOfferQuery query)
+    public async Task<ActionResult<OfferDto>> GetOffer([FromRoute] int id)
     {
-        return await mediator.Send(query).Then(
+        return await mediator.Send(new GetOfferQuery(id)).Then(
             s => Ok(s.Value),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
-    [HttpPost("addToFavorites/{Id}")]
-    public async Task<ActionResult> AddToFavorites([FromRoute] AddToFavoritesCommand command)
+    [HttpPost("addToFavorites/{id:int}")]
+    public async Task<ActionResult> AddToFavorites([FromRoute] int id)
     {
-        return await mediator.Send(command).Then(
+        return await mediator.Send(new AddToFavoritesCommand(id)).Then(
             s => Ok(),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
     
     [HttpGet("favorites")]
@@ -78,7 +78,7 @@ public class OfferController : ApiController
     {
         return await mediator.Send(query).Then(
             s => Ok(s.Value),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
     
     [HttpPost("buy")]
@@ -86,7 +86,7 @@ public class OfferController : ApiController
     {
         return await mediator.Send(command).Then(
             s => Ok(),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
     
     [HttpGet("bought")]
@@ -94,6 +94,6 @@ public class OfferController : ApiController
     {
         return await mediator.Send(query).Then(
             s => Ok(s.Value),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 }

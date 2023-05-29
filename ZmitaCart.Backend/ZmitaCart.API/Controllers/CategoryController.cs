@@ -25,7 +25,7 @@ public class CategoryController : ApiController
     {
         return await mediator.Send(command).Then(
             s => Created($"category/{s.Value}", s.Value),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpGet("getBySuperiorId")]
@@ -34,7 +34,7 @@ public class CategoryController : ApiController
     {
         return await mediator.Send(request).Then( 
             s => Ok(s.Value), 
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpGet("getFewBySuperiorId")]
@@ -43,7 +43,7 @@ public class CategoryController : ApiController
     {
         return await mediator.Send(request).Then( 
             s => Ok(s.Value), 
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpGet("getAllSuperiors")]
@@ -52,7 +52,7 @@ public class CategoryController : ApiController
     {
         return await mediator.Send(new GetAllSuperiorsQuery()).Then(
             s => Ok(s.Value), 
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpPut("updateCategory")]
@@ -61,15 +61,15 @@ public class CategoryController : ApiController
     {
         return await mediator.Send(command).Then(
             s => Ok(s.Value), 
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
-    [HttpDelete("{Id}")]
+    [HttpDelete("{id:int}")]
     [Authorize(Roles = Role.administrator)]
-    public async Task<ActionResult> DeleteCategory([FromRoute] DeleteCategoryCommand command)
+    public async Task<ActionResult> DeleteCategory([FromRoute] int id)
     {
-        return await mediator.Send(command).Then(
+        return await mediator.Send(new DeleteCategoryCommand(id)).Then(
             s => Ok(),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 }

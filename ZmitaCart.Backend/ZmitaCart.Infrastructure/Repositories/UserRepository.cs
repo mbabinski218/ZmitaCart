@@ -39,9 +39,7 @@ public class UserRepository : IUserRepository
 	public async Task<Result> RegisterAsync(RegisterUserDto dto)
 	{
 		if (await _userManager.FindByEmailAsync(dto.Email) != null)
-		{
 			return Result.Fail(new AlreadyExistsError("User already exists"));
-		}
 
 		var user = User.Create(dto.Email, dto.FirstName, dto.LastName);
 		var result = await _userManager.CreateAsync(user, dto.Password);

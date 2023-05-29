@@ -45,7 +45,7 @@ public class UpdateOfferHandler : IRequestHandler<UpdateOfferCommand, Result<int
 		
 		if(request.PictureIdsToRemove is not null)
 		{
-			var removePic = await _pictureRepository.RemoveAsync(offer.UserId, offer.Id, request.PictureIdsToRemove);
+			var removePic = await _pictureRepository.DeleteAsync(offer.UserId, offer.Id, request.PictureIdsToRemove);
 			if (removePic.IsFailed)
 			{
 				return Result.Fail(removePic.Errors);

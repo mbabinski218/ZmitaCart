@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization.Infrastructure;
+using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Interfaces;
@@ -28,10 +29,11 @@ public class DatabaseSeeder : IDatabaseSeeder
         {
             await SeedRoles();
         }
-        
-        if(!await _dbContext.Categories.AnyAsync())
+
+        if (!await _dbContext.Categories.AnyAsync())
         {
             await SeedData();
+            await _dbContext.SaveChangesAsync();
         }
     }
 
@@ -40,16 +42,20 @@ public class DatabaseSeeder : IDatabaseSeeder
         foreach (var supportedRole in Role.SupportedRoles)
         {
             var role = new IdentityRole<int>(supportedRole);
-            
+
             if (!_dbContext.Roles.Contains(role))
             {
                 await _roleManager.CreateAsync(role);
             }
         }
     }
-    
+
     private async Task SeedData()
     {
-        
+        var basePath = Directory.GetCurrentDirectory();
+        var pathToFile = Path.Combine(basePath, @"..\\ZmitaCart.Infrastructure\Persistence\Samples.txt");
+        var script = await File.ReadAllTextAsync(pathToFile);
+
+        await _dbContext.Database.ExecuteSqlRawAsync(script);
     }
 }

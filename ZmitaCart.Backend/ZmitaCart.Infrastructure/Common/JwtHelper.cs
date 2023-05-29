@@ -1,23 +1,23 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Infrastructure.Common;
+using ZmitaCart.Infrastructure.Common.Settings;
 
-namespace ZmitaCart.Infrastructure.Repositories;
+namespace ZmitaCart.Infrastructure.Common;
 
-public class JwtTokenGenerator : IJwtTokenGenerator
+public class JwtHelper
 {
 	private readonly JwtSettings _jwtSettings;
 
-	public JwtTokenGenerator(IOptions<JwtSettings> jwtSettings)
+	public JwtHelper(IOptions<JwtSettings> jwtSettings)
 	{
 		_jwtSettings = jwtSettings.Value;
 	}
 
-	public string CreateToken(IEnumerable<Claim> userClaims)
+	public string GenerateAccessToken(IEnumerable<Claim> userClaims)
 	{
 		var signingCredentials = new SigningCredentials(
 			new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)), 
@@ -32,5 +32,10 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 		);
 
 		return new JwtSecurityTokenHandler().WriteToken(token);
+	}
+
+	public string GenerateRefreshToken()
+	{
+		return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 	}
 }

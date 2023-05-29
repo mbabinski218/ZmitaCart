@@ -10,6 +10,7 @@ using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Common;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Domain.ValueObjects;
+using ZmitaCart.Infrastructure.Common;
 using ZmitaCart.Infrastructure.Persistence;
 
 namespace ZmitaCart.Infrastructure.Repositories;
@@ -19,20 +20,20 @@ public class UserRepository : IUserRepository
 	private readonly UserManager<User> _userManager;
 	private readonly SignInManager<User> _signInManager;
 	private readonly RoleManager<IdentityRole<int>> _roleManager;
-	private readonly IJwtTokenGenerator _jwtTokenGenerator;
-	private readonly IGoogleAuthentication _googleAuthentication;
+	private readonly JwtHelper _jwtHelper;
 	private readonly ApplicationDbContext _dbContext;
+	private readonly GoogleAuthentication _googleAuthentication;
 
 	public UserRepository(UserManager<User> userManager, SignInManager<User> signInManager,
-		RoleManager<IdentityRole<int>> roleManager, IJwtTokenGenerator jwtTokenGenerator, IGoogleAuthentication googleAuthentication,
-		ApplicationDbContext dbContext)
+		RoleManager<IdentityRole<int>> roleManager, JwtHelper jwtHelper,
+		ApplicationDbContext dbContext, GoogleAuthentication googleAuthentication)
 	{
 		_userManager = userManager;
 		_signInManager = signInManager;
 		_roleManager = roleManager;
-		_jwtTokenGenerator = jwtTokenGenerator;
-		_googleAuthentication = googleAuthentication;
+		_jwtHelper = jwtHelper;
 		_dbContext = dbContext;
+		_googleAuthentication = googleAuthentication;
 	}
 
 	public async Task<Result> RegisterAsync(RegisterUserDto dto)
@@ -67,36 +68,79 @@ public class UserRepository : IUserRepository
 		return Result.Ok();
 	}
 
-	public async Task<Result<string>> LoginAsync(LoginUserDto loginUserDto)
+	public async Task<Result<TokensDto>> LoginAsync(LoginUserDto loginUserDto)
 	{
 		var user = await _userManager.FindByEmailAsync(loginUserDto.Email);
-
-		if (user == null)
-		{
+		if (user == null) 
 			return Result.Fail(new NotFoundError("User does not exist"));
-		}
-
-		if (!await _userManager.CheckPasswordAsync(user, loginUserDto.Password))
-		{
+		
+		if (!await _userManager.CheckPasswordAsync(user, loginUserDto.Password)) 
 			return Result.Fail(new InvalidDataError("Invalid password"));
-		}
 
 		var signInResult = await _signInManager.PasswordSignInAsync(user, loginUserDto.Password, false, true);
 
-		if (!signInResult.Succeeded)
-		{
+		if (!signInResult.Succeeded) 
 			return Result.Fail(new InvalidDataError("Could not sign in"));
-		}
-
-		if (signInResult.IsLockedOut)
-		{
+		
+		if (signInResult.IsLockedOut) 
 			return Result.Fail(new InvalidDataError("User is locked out"));
-		}
 
 		var authClaims = await _userManager.GetClaimsAsync(user);
-		var token = _jwtTokenGenerator.CreateToken(authClaims);
+		var accessToken = _jwtHelper.GenerateAccessToken(authClaims);
+		var refreshToken = _jwtHelper.GenerateRefreshToken();
+
+		await _userManager.SetAuthenticationTokenAsync(user, GrantType.password, "RefreshToken", refreshToken);
 		
-		return Result.Ok(token);
+		return new TokensDto
+		{
+			AccessToken = accessToken,
+			RefreshToken = refreshToken
+		};
+	}
+
+	public async Task<Result<TokensDto>> LoginWithRefreshTokenAsync(string? userId, string refreshToken)
+	{
+		if (userId == null) 
+			return Result.Fail(new NotFoundError("User not found"));
+		
+		var user = await _userManager.FindByIdAsync(userId);
+		if (user == null) 
+			return Result.Fail(new NotFoundError("User does not exist"));
+		
+		foreach(var authenticator in GrantType.SupportedGrantTypes)
+		{
+			var userRefreshToken = await _userManager.GetAuthenticationTokenAsync(user, authenticator, "RefreshToken");
+
+			if(userRefreshToken is null) continue;
+			
+			if (userRefreshToken != refreshToken)
+			{
+				await _userManager.RemoveAuthenticationTokenAsync(user, authenticator, "RefreshToken");
+				return Result.Fail(new InvalidDataError("Invalid refresh token"));
+			}
+
+			await _signInManager.RefreshSignInAsync(user);
+
+			var authClaims = await _userManager.GetClaimsAsync(user);
+			var accessToken = _jwtHelper.GenerateAccessToken(authClaims);
+			var newRefreshToken = _jwtHelper.GenerateRefreshToken();
+
+			await _userManager.RemoveAuthenticationTokenAsync(user, authenticator, "RefreshToken");
+			await _userManager.SetAuthenticationTokenAsync(user, GrantType.refreshToken, "RefreshToken", newRefreshToken);
+
+			return new TokensDto
+			{
+				AccessToken = accessToken,
+				RefreshToken = newRefreshToken
+			};
+		}
+		
+		return Result.Fail(new InvalidDataError("Failed to login with refresh token"));
+	}
+
+	public Task<Result<TokensDto>> LoginWithGoogleAsync(string idToken)
+	{
+		return _googleAuthentication.AuthenticateAsync(idToken);
 	}
 
 	public async Task<Result> LogoutAsync()
@@ -158,16 +202,6 @@ public class UserRepository : IUserRepository
 		
 		return Result.Ok();
 	}
-
-	public async Task<Result<string>> ExternalAuthenticationAsync(ExternalAuthDto externalAuthDto)
-	{
-		return externalAuthDto.Provider switch
-		{
-			"Google" => await _googleAuthentication.AuthenticateAsync(externalAuthDto),
-			_ => Result.Fail(new InvalidDataError("Invalid provider"))
-		};
-	}
-
 
 	public async Task<Result<int>> GiveFeedbackAsync(int raterId, int recipientId, int rating, string? comment)
 	{

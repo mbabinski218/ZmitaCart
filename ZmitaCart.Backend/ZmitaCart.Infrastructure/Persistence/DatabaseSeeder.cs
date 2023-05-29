@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Common;
@@ -23,7 +24,7 @@ public class DatabaseSeeder : IDatabaseSeeder
             return;
         }
 
-        if (!await _dbContext.Roles.AnyAsync())
+        if (!Equals(_dbContext.Roles.Select(r => r.Name), Role.SupportedRoles))
         {
             await SeedRoles();
         }

@@ -18,4 +18,5 @@ public class CurrentUserService : ICurrentUserService
 	public string? UserFirstName => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.FirstName);
 	public string? UserLastName => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.LastName);
 	public string? UserRole => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.Role);
+	public string? Expires => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.Expires);
 }

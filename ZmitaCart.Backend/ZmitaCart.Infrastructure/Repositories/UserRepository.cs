@@ -52,7 +52,7 @@ public class UserRepository : IUserRepository
 			return Result.Fail(new InvalidDataError("Invalid register data", reasons));
 		}
 		
-		var role = dto.IsAdmin ? Role.administrator : Role.user;
+		var role = dto.IsAdmin is true ? Role.administrator : Role.user;
 		await _userManager.AddToRoleAsync(user, role);
 
 		var claims = new List<Claim>

@@ -25,7 +25,7 @@
         <label>Nazwa</label>
         <em class="required">*</em>
         <input formControlName="title" placeholder="Wpisz, co chcesz sprzedać" class="customForm"
-        maxlength="50">
+               maxlength="50">
         <div class="titleLength">{{characterCount ?? 0}} / 50</div>
       </div>
 
@@ -39,6 +39,7 @@
         <label>Kategoria</label>
         <em class="required">*</em>
         <!--        tutaj bedzie gotowy komponent kategorii          -->
+        <pp-single-category></pp-single-category>
       </div>
     </div>
   </form>

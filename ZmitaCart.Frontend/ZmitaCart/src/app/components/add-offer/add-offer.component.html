@@ -1,23 +1,45 @@
 <div class="container">
-  <div class="addPhotosInfo">
-    <div class="addPhotosInfo--side ">
-      <!--    jak coś to nie działało z lokalnych plików ściaganie tego svg ZAMIENIC NA MAT ICON-->
-      <img src="https://lokalnie-prod-assets.storage.googleapis.com/ui/versions/12515bbe/assets/camera.5577f27d.svg"/>
+  <form [formGroup]="createOffer">
+    <div class="addPhotosInfo">
+      <div class="addPhotosInfo--side ">
+        <img src="assets/images/camera-add.svg" alt="camera"/>
+      </div>
+      <div class="addPhotoLabel">
+        <p>Dodaj zdjęcia</p>
+        <p class="subInfoLabel">Możesz dodać do 15 zdjęć w dowolnym formacie</p>
+      </div>
     </div>
-    <div class="addPhotoLabel">
-      <p>Dodaj zdjęcia</p>
-      <p class="subInfoLabel">Możesz dodać do 15 zdjęć w dowolnym formacie</p>
+    <hr>
+    <div class="addPhotos">
+      <button mat-raised-button class="selectFromDrive">Wybierz zdjęcia z dysku</button>
+      <input
+        type="file"
+        id="fileInput"
+        accept="image/*" multiple
+      />
     </div>
-  </div>
-  <hr>
-  <button mat-raised-button class="selectFromDrive">Wybierz zdjęcia z dysku</button>
-  <div class="addPhotos">
-    <input
-      type="file"
-      id="fileInput"
-      accept="image/*" multiple
-    />
-    <p class="subInfoLabel">Możesz dodać do 15 zdjęć w dowolnym formacie</p>
-  </div>
-  <div class="addOfferProps"></div>
+    <hr>
+
+    <div class="addOfferProps">
+      <div class="addTitle">
+        <label>Nazwa</label>
+        <em class="required">*</em>
+        <input formControlName="title" placeholder="Wpisz, co chcesz sprzedać" class="customForm"
+        maxlength="50">
+        <div class="titleLength">{{characterCount ?? 0}} / 50</div>
+      </div>
+
+      <div class="addDescription">
+        <label>Opis</label>
+        <textarea formControlName="description" placeholder="Powiedz kupującym coś więcej"
+                  class="customForm"></textarea>
+      </div>
+
+      <div class="addCategory">
+        <label>Kategoria</label>
+        <em class="required">*</em>
+        <!--        tutaj bedzie gotowy komponent kategorii          -->
+      </div>
+    </div>
+  </form>
 </div>

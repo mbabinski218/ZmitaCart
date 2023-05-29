@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Common;
+using ZmitaCart.Infrastructure.Common.Settings;
 using ZmitaCart.Infrastructure.Persistence;
 using ZmitaCart.Infrastructure.Persistence.Interceptors;
 using ZmitaCart.Infrastructure.Repositories;
@@ -34,6 +35,7 @@ public static class DependencyInjection
         services.AddScoped<IOfferRepository, OfferRepository>();
         services.AddScoped<IPictureRepository, PictureRepository>();
         services.AddScoped<IConversationRepository, ConversationRepository>();
+        services.AddScoped<GoogleAuthentication>();
 
         return services;
     }
@@ -73,8 +75,7 @@ public static class DependencyInjection
         configuration.Bind(GoogleSettings.sectionName, googleSettings);
         services.AddSingleton(Options.Create(googleSettings));
 
-        services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-        services.AddScoped<IGoogleAuthentication, GoogleAuthentication>();
+        services.AddSingleton<JwtHelper>();
 
         services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

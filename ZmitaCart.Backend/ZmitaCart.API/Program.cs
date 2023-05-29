@@ -22,6 +22,7 @@ builder.Services.AddSwaggerGen(options =>
         Type = SecuritySchemeType.ApiKey
     });
     options.OperationFilter<SecurityRequirementsOperationFilter>();
+    options.DescribeAllParametersInCamelCase();
 });
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddSignalR();
@@ -29,14 +30,13 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IChatHub, ChatHub>();
+builder.Services.AddCors(options => options.AddPolicy("corsapp", corsBuilder =>
+    corsBuilder.AllowAnyMethod().AllowAnyHeader().WithOrigins("*")));
 
 if (builder.Environment.IsDevelopment())
 {
    //builder.Services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
 }
-
-builder.Services.AddCors(p => p.AddPolicy("corsapp", corsBuilder =>
-    corsBuilder.AllowAnyMethod().AllowAnyHeader().WithOrigins("*")));
 
 var app = builder.Build();
 

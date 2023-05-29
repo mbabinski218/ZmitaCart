@@ -4,15 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.UserCommands.AddRole;
 using ZmitaCart.Application.Commands.UserCommands.DeleteFeedback;
-using ZmitaCart.Application.Commands.UserCommands.ExternalAuthentication;
 using ZmitaCart.Application.Commands.UserCommands.GiveFeedback;
+using ZmitaCart.Application.Commands.UserCommands.LoginUser;
 using ZmitaCart.Application.Commands.UserCommands.Register;
 using ZmitaCart.Application.Commands.UserCommands.UpdateCredentials;
 using ZmitaCart.Application.Commands.UserCommands.UpdateFeedback;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Queries.UserQueries.GetFeedback;
-using ZmitaCart.Application.Queries.UserQueries.LoginUser;
 using ZmitaCart.Application.Queries.UserQueries.LogoutUser;
 using ZmitaCart.Domain.Common;
 
@@ -36,10 +35,10 @@ public class UserController : ApiController
 
 	[HttpPost("login")]
 	[AllowAnonymous]
-	public async Task<ActionResult<string>> Login([FromBody] LoginUserQuery query)
+	public async Task<ActionResult<TokensDto>> Login([FromBody] LoginUserCommand command)
 	{
-		return await mediator.Send(query).Then(
-			s => Ok(new TokenToReturn(s.Value)),
+		return await mediator.Send(command).Then(
+			s => Ok(s.Value),
 			err => BadRequest(err.ToList()));
 	}
 
@@ -57,15 +56,6 @@ public class UserController : ApiController
 	{
 		return await mediator.Send(command).Then(
 			s => Ok(),
-			err => BadRequest(err.ToList()));
-	}
-
-	[HttpPost("externalAuthentication")]
-	[AllowAnonymous]
-	public async Task<ActionResult<string>> ExternalAuthentication([FromBody] ExternalAuthenticationCommand command)
-	{
-		return await mediator.Send(command).Then(
-			s => Ok(s.Value),
 			err => BadRequest(err.ToList()));
 	}
 

@@ -5,51 +5,40 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.UserDtos;
-using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Common;
 using ZmitaCart.Domain.Entities;
-using ZmitaCart.Infrastructure.Common;
+using ZmitaCart.Infrastructure.Common.Settings;
 
-namespace ZmitaCart.Infrastructure.Repositories;
+namespace ZmitaCart.Infrastructure.Common;
 
-public class GoogleAuthentication : IGoogleAuthentication
+public class GoogleAuthentication
 {
 	private readonly UserManager<User> _userManager;
 	private readonly SignInManager<User> _signInManager;
-	private readonly IJwtTokenGenerator _jwtTokenGenerator;
+	private readonly JwtHelper _jwtHelper;
 	private readonly GoogleSettings _googleSettings;
 
 	public GoogleAuthentication(IOptions<GoogleSettings> googleSettings, UserManager<User> userManager, 
-		SignInManager<User> signInManager, IJwtTokenGenerator jwtTokenGenerator)
+		SignInManager<User> signInManager, JwtHelper jwtHelper)
 	{
 		_userManager = userManager;
 		_signInManager = signInManager;
-		_jwtTokenGenerator = jwtTokenGenerator;
+		_jwtHelper = jwtHelper;
 		_googleSettings = googleSettings.Value;
 	}
 
-	public async Task<Result<string>> AuthenticateAsync(ExternalAuthDto externalAuthDto)
+	public async Task<Result<TokensDto>> AuthenticateAsync(string idToken)
 	{
-		var payload = await VerifyTokenAsync(externalAuthDto.Token);
-
-		if (payload.IsFailed)
-		{
-			return payload.ToResult<string>();
-		}
+		var payload = await VerifyTokenAsync(idToken);
+		if (payload.IsFailed) return payload.ToResult<TokensDto>();
 		
 		var user = await _userManager.FindByEmailAsync(payload.Value.Email);
-
-		if (user != null)
+		if (user == null)
 		{
-			return await LoginAsync(payload.Value);
+			var register = await RegisterAsync(payload.Value);
+			if (register.IsFailed) return register.ToResult<TokensDto>();
 		}
 		
-		var register = await RegisterAsync(payload.Value);
-		if (register.IsFailed)
-		{
-			return register.ToResult<string>();
-		}
-
 		return await LoginAsync(payload.Value);
 	}
 
@@ -61,11 +50,7 @@ public class GoogleAuthentication : IGoogleAuthentication
 		};
 		
 		var payload = await GoogleJsonWebSignature.ValidateAsync(token, settings);
-		
-		if (payload == null)
-		{
-			return Result.Fail(new InvalidDataError("Invalid Google token"));
-		}
+		if (payload == null) return Result.Fail(new InvalidDataError("Invalid Google token"));
 
 		return payload;
 	}
@@ -104,19 +89,25 @@ public class GoogleAuthentication : IGoogleAuthentication
 		return Result.Ok();
 	}
 	
-	private async Task<Result<string>> LoginAsync(GoogleJsonWebSignature.Payload payload)
+	private async Task<Result<TokensDto>> LoginAsync(GoogleJsonWebSignature.Payload payload)
 	{
 		var user = await _userManager.FindByEmailAsync(payload.Email);
-
-		if (user == null)
-		{
+		if (user == null) 
 			return Result.Fail(new InvalidDataError("Failed to authenticate user"));
-		}
 		
-		await _signInManager.SignInAsync(user, true, "Google");
+		await _signInManager.SignInAsync(user, true, GrantType.google);
 
 		var authClaims = await _userManager.GetClaimsAsync(user);
 
-		return _jwtTokenGenerator.CreateToken(authClaims);
+		var accessToken = _jwtHelper.GenerateAccessToken(authClaims);
+		var refreshToken = _jwtHelper.GenerateRefreshToken();
+		
+		await _userManager.SetAuthenticationTokenAsync(user, GrantType.google, "RefreshToken", refreshToken);
+
+		return new TokensDto
+		{
+			AccessToken = accessToken,
+			RefreshToken = refreshToken
+		};
 	}
 }

@@ -1,4 +1,4 @@
-﻿namespace ZmitaCart.Infrastructure.Common;
+﻿namespace ZmitaCart.Infrastructure.Common.Settings;
 
 public class JwtSettings
 {

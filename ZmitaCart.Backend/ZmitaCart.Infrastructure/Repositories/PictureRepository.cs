@@ -67,7 +67,7 @@ public class PictureRepository : IPictureRepository
         return Result.Ok();
     }
 
-    public async Task<Result> RemoveAsync(int userId, int offerId, IEnumerable<int>? imagesIds = null)
+    public async Task<Result> DeleteAsync(int userId, int offerId, IEnumerable<int>? imagesIds = null)
     {
         var offer = await _dbContext.Offers
             .Include(o => o.Pictures)
@@ -80,7 +80,7 @@ public class PictureRepository : IPictureRepository
 
         if (offer.UserId != userId)
         {
-            return Result.Fail(new UnauthorizedError("You are not authorized to update an offer."));
+            return Result.Fail(new UnauthorizedError("You are not authorized to remove an offer."));
         }
 
         if (!offer.Pictures.Any())

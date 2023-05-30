@@ -25,31 +25,34 @@ public class CategoryController : ApiController
     {
         return await mediator.Send(command).Then(
             s => Created($"category/{s.Value}", s.Value),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpGet("getBySuperiorId")]
+    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId([FromQuery] GetCategoriesBySuperiorIdQuery request)
     {
         return await mediator.Send(request).Then( 
             s => Ok(s.Value), 
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpGet("getFewBySuperiorId")]
+    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId([FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
     {
         return await mediator.Send(request).Then( 
             s => Ok(s.Value), 
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpGet("getAllSuperiors")]
+    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<SuperiorCategoryDto>>> GetCategoriesBySuperiorId()
     {
         return await mediator.Send(new GetAllSuperiorsQuery()).Then(
             s => Ok(s.Value), 
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpPut("updateCategory")]
@@ -58,15 +61,15 @@ public class CategoryController : ApiController
     {
         return await mediator.Send(command).Then(
             s => Ok(s.Value), 
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
-    [HttpDelete("{Id}")]
+    [HttpDelete("{id:int}")]
     [Authorize(Roles = Role.administrator)]
-    public async Task<ActionResult> DeleteCategory([FromRoute] DeleteCategoryCommand command)
+    public async Task<ActionResult> DeleteCategory([FromRoute] int id)
     {
-        return await mediator.Send(command).Then(
+        return await mediator.Send(new DeleteCategoryCommand(id)).Then(
             s => Ok(),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 }

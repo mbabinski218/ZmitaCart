@@ -55,6 +55,7 @@ app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseCors("corsapp");
 app.MapControllers();
 app.UseRouting();
+app.UseCors("corsapp");
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -29,7 +29,7 @@ public class DeleteOfferHandler : IRequestHandler<DeleteOfferCommand, Result>
 
 		var userId = int.Parse(user);
 		
-		var removePic = await _pictureRepository.RemoveAsync(userId, request.Id);
+		var removePic = await _pictureRepository.DeleteAsync(userId, request.Id);
 		if (removePic.IsFailed)
 		{
 			return Result.Fail(removePic.Errors);

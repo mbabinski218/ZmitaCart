@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization.Infrastructure;
 using System.Reflection;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Interfaces;
@@ -44,6 +45,7 @@ public class DatabaseSeeder : IDatabaseSeeder
 			if (!_dbContext.Roles.Contains(role))
 			{
 				await _roleManager.CreateAsync(role);
+				// await _roleManager.AddClaimAsync(role, new Claim(ClaimNames.Role, supportedRole));
 			}
 		}
 	}

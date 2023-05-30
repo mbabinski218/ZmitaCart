@@ -31,7 +31,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IChatHub, ChatHub>();
 builder.Services.AddCors(options => options.AddPolicy("corsapp", corsBuilder =>
-    corsBuilder.AllowAnyMethod().AllowAnyHeader().WithOrigins("*")));
+    corsBuilder.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()));
 
 if (builder.Environment.IsDevelopment())
 {

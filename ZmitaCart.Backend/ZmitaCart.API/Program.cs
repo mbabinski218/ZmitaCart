@@ -51,12 +51,12 @@ var seeder = scope.ServiceProvider.GetRequiredService<IDatabaseSeeder>();
 await seeder.Seed();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+app.UseCors("corsapp");
 app.MapControllers();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("corsapp");
 
 app.MapHub<ChatHub>("/ChatHub");
 

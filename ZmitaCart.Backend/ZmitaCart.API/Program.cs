@@ -52,7 +52,6 @@ await seeder.Seed();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 //app.UseHttpsRedirection();
-app.UseCors("corsapp");
 app.MapControllers();
 app.UseRouting();
 app.UseCors("corsapp");

@@ -33,16 +33,6 @@ $frontend-theme: mat.define-light-theme((color: (primary: $frontend-primary,
   --background-color-to-save-eyes: #71767a;
 }
 
-.iconsHover:hover {
-  g {
-    fill: var(--color-allegro-green);
-  }
-
-  span {
-    color: var(--color-allegro-green);
-  }
-}
-
 * {
   box-sizing: border-box;
   padding: 0;
@@ -133,4 +123,9 @@ body {
 
 // .mat-mdc-raised-button:not(:disabled) {
 //   color: white !important;
+// }
+
+//złe
+// .mat-mdc-menu-panel.mat-mdc-menu-panel {
+//   width: 280px !important;
 // }

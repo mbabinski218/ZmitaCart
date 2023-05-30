@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, Validators, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { emailPattern, passwordPattern } from '@shared/patterns/valid.pattern';
@@ -6,7 +6,10 @@ import { mustMatch } from '@shared/utils/must-match';
 import { InputComponent } from '@shared/components/input/input.component';
 import { MatIconModule } from '@angular/material/icon';
 import { RegisterService } from '@components/authentication/api/register.service';
-import { UserRegister } from '@components/authentication/interfaces/authentication-interface';
+import { Subject, filter, takeUntil, tap } from 'rxjs';
+import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
+import { Router } from '@angular/router';
+import { RoutesPath } from '@core/enums/routes-path.enum';
 
 @Component({
   selector: 'pp-register',
@@ -15,11 +18,12 @@ import { UserRegister } from '@components/authentication/interfaces/authenticati
   providers: [RegisterService],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
-  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy {
 
+  private onDestroy$ = new Subject<void>();
+  
   form = new FormGroup({
     email: new FormControl('', Validators.compose([Validators.required, Validators.pattern(emailPattern)])),
     firstName: new FormControl('', Validators.compose([Validators.required, Validators.maxLength(35)])),
@@ -40,24 +44,26 @@ export class RegisterComponent {
 
   constructor(
     private registerService: RegisterService,
+    private toastMessageService: ToastMessageService,
+    private router: Router,
   ) { }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
+  }
 
   togglePasswordVisibility(inputName: 'password' | 'confirmedPassword') {
     this.passwordVisibility[inputName] = !this.passwordVisibility[inputName];
   }
 
   register(): void {
-    if (this.form.valid) {
-      const registerForm: UserRegister = {
-        email: this.form.value.email,
-        firstName: this.form.value.firstName,
-        lastName: this.form.value.lastName,
-        password: this.form.value.password,
-        confirmedPassword: this.form.value.confirmedPassword,
-      };
-
-      this.registerService.register(registerForm).subscribe();
-    }
+    if (this.form.valid)
+      this.registerService.register(this.form.value).pipe(
+        filter((res) => !!res),
+        tap(() => this.toastMessageService.notifyOfSuccess('Konto zostało utworzone')),
+        tap(() => this.router.navigate([`${RoutesPath.AUTHENTICATION}/${RoutesPath.LOGIN}`])),
+        takeUntil(this.onDestroy$),
+      ).subscribe();
   }
 }
-

@@ -30,4 +30,6 @@ const customIcons: [string, string][] = [
     ["user", "user.svg"],
     ["menu", "menu.svg"],
     ["find", "find.svg"],
+    ["logout", "logout.svg"],
+    ["user-basic", "user-basic.svg"],
 ];

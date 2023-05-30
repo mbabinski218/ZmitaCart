@@ -1,5 +1,5 @@
 import { AbstractControl, ControlContainer, FormControl, FormGroupDirective, NgForm, ReactiveFormsModule } from '@angular/forms';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Nullable } from '@core/types/nullable';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -15,7 +15,6 @@ import { MatInputModule } from '@angular/material/input';
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None,
   viewProviders: [
     {
       provide: ControlContainer,

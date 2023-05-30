@@ -3,11 +3,11 @@ import { isEmpty } from 'lodash';
 import { LocalStorageService } from '@core/services/localStorage/local-storage.service';
 import { KeyStorage } from '@core/enums/key-storage.enum';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '@env/environment';
 import { Api } from '@core/enums/api.enum';
 import { tap } from 'rxjs/operators';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { addSeconds, isAfter } from 'date-fns';
 import { TokenData, UserAuthorization } from '@components/authentication/interfaces/authentication-interface';
 import jwt_decode from 'jwt-decode';
@@ -27,7 +27,6 @@ export class UserService {
   ) { }
 
   setUserToken(token: string): void {
-    console.log(token);
     this.userToken = token;
   }
 
@@ -56,34 +55,27 @@ export class UserService {
   }
 
   isTokenExpired(): boolean {
-    const { exp } = this.user();
+    const { expires_at } = this.user();
 
-    console.log(exp);
-    console.log(new Date());
-    console.log(new Date(exp));
-
-    return isAfter(new Date(), new Date(exp));
+    return isAfter(new Date(), new Date(expires_at));
   }
 
   refreshToken(): Observable<UserAuthorization> {
 
-    if (isEmpty(this.localStorageService.getItem<TokenData>(KeyStorage.USER))) {
+    if (isEmpty(this.localStorageService.getItem<TokenData>(KeyStorage.USER)))
       this.clearAll();
-    }
 
-    const userData = new HttpParams()
-      .set('grant_type', 'refresh_token');
-    // .set('client_id', environment.clientId)
-    // .set('client_secret', environment.clientSecret)
-    // .set('scope', 'webclient')
-    // .set('refresh_token', this.localStorageService.getItem<TokenData>(KeyStorage.USER).refresh_token);
+    const userData = {
+      grant_type: 'refresh_token',
+      refresh_token: this.localStorageService.getItem<TokenData>(KeyStorage.USER).refreshToken,
+    };
 
     return this.http.post<UserAuthorization>(`${environment.httpBackend}${Api.LOGIN}`, userData)
       .pipe(
         tap((token) => {
           const myToken = token;
           this.setUserStorage(myToken);
-          this.setUserToken(myToken.token);
+          this.setUserToken(myToken.accessToken);
         }),
       );
   }
@@ -98,11 +90,13 @@ export class UserService {
   }
 
   private setUserStorage(token: UserAuthorization) {
-    const decodedToken: TokenData = jwt_decode(token.token);
+    const decodedToken: TokenData = jwt_decode(token.accessToken);
 
-    const { email, exp, firstName, id, lastName, role } = decodedToken;
+    const { email, exp, firstName, id, iss, lastName, role } = decodedToken;
+    const refreshToken = token.refreshToken;
+    
     this.localStorageService.setItem<TokenData>(KeyStorage.USER, {
-      email, firstName, id, lastName, role, expires_at: addSeconds(new Date(), exp).toISOString()
+      refreshToken, email, firstName, id, iss, lastName, role, expires_at: addSeconds(new Date(), exp).toISOString()
     });
   }
 }

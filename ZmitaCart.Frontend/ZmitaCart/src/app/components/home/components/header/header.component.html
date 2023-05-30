@@ -5,7 +5,11 @@
       (mouseleave)="overlayService.setState(false)"
       (mouseenter)="overlayService.setState(true)"
     >
-      <div class="icon icon-menu"></div>
+      <mat-icon
+        class="svg svg-menu"
+        svgIcon="menu"
+      >
+      </mat-icon>
 
       <pp-categories-menu *ngIf="isShowCategories$ | async"></pp-categories-menu>
     </div>
@@ -23,11 +27,12 @@
           placeholder="czego szukasz?"
           class="input"
         >
-        <div
+        <mat-icon
           *ngIf="!isBig"
-          class="icon icon-find fix cursor-pointer"
+          class="svg fix"
+          svgIcon="find"
         >
-        </div>
+        </mat-icon>
       </div>
 
       <div class="categories-form">
@@ -50,32 +55,24 @@
     </form>
 
     <div class="actions">
-      <div
+      <mat-icon
         *ngIf="!isBig"
         [routerLink]="ADD_OFFER_LINK"
-        class="icon icon-add"
+        class="svg"
+        svgIcon="add"
       >
-      </div>
-      <div class="icon icon-heart"></div>
-      <div class="icon icon-chat"></div>
-      <div
-        class="icon icon-user"
-        [matMenuTriggerFor]="accountMenu"
+      </mat-icon>
+      <mat-icon
+        class="svg"
+        svgIcon="heart"
       >
-        <mat-menu
-          #accountMenu="matMenu"
-          xPosition="before"
-        >
-          <button
-            mat-menu-item
-            class="iconsHover"
-            [routerLink]="LOGIN_LINK"
-          >
-            <mat-icon svgIcon="allegro"></mat-icon>
-            <span>Zaloguj się</span>
-          </button>
-        </mat-menu>
-      </div>
+      </mat-icon>
+      <mat-icon
+        class="svg"
+        svgIcon="chat"
+      >
+      </mat-icon>
+      <pp-login-menu></pp-login-menu>
     </div>
 
     <a

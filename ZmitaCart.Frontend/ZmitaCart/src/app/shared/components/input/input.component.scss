@@ -1,22 +1,22 @@
-pp-input {
+:host {
   width: 100%;
   display: flex;
+}
 
-  .form-field {
-    width: 100%;
-  }
+.form-field {
+  width: 100%;
+}
 
-  .suffixOutside {
-    margin-top: 15px;
-    margin-left: 15px;
-  }
+.suffixOutside {
+  margin-top: 15px;
+  margin-left: 15px;
+}
 
-  .suffixInside {
-    margin-right: 15px;
-  }
+.suffixInside {
+  margin-right: 15px;
+}
 
-  .mat-error {
-    display: flex !important;
-    justify-content: space-between;
-  }
+.mat-error {
+  display: flex !important;
+  justify-content: space-between;
 }

@@ -2,17 +2,16 @@ import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@ang
 import {CommonModule} from '@angular/common';
 
 @Component({
-  selector: 'pp-single-category',
+  selector: 'pp-condition-wrapper',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './single-category.component.html',
-  styleUrls: ['./single-category.component.scss'],
+  templateUrl: './condition-wrapper.component.html',
+  styleUrls: ['./condition-wrapper.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SingleCategoryComponent {
-  @Input() categoryId: number;
-  @Input() categoryName: string;
-  @Input() categoryIcon: string;
-
+export class ConditionWrapperComponent {
+  @Input() title: string;
+  @Input() description: string;
+  @Input() condition: string;
 }

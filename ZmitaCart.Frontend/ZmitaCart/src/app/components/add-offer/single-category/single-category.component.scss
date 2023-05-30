@@ -1,0 +1,31 @@
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 48
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  padding: 1.2rem 20px;
+  width: 100%;
+  max-width: 50rem;
+  font-size: 1.6rem;
+  background-color: #fff;
+  border: none;
+  border-bottom: 1px solid #f7f7f7;
+}
+
+.btn:hover {
+  cursor: pointer;
+  background-color: #fafafa;
+}
+
+.categoryName {
+  margin-left: 30px;
+}
+
+.arrowRight {
+  margin-left: auto;
+}

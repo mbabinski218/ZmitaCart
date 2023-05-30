@@ -11,7 +11,7 @@
     </div>
     <hr>
     <div class="addPhotos">
-      <button mat-raised-button class="selectFromDrive">Wybierz zdjęcia z dysku</button>
+      <button mat-raised-button class="customButton">Wybierz zdjęcia z dysku</button>
       <input
         type="file"
         id="fileInput"
@@ -31,6 +31,7 @@
 
       <div class="addDescription">
         <label>Opis</label>
+        <em class="required">*</em>
         <textarea formControlName="description" placeholder="Powiedz kupującym coś więcej"
                   class="customForm"></textarea>
       </div>
@@ -38,9 +39,55 @@
       <div class="addCategory">
         <label>Kategoria</label>
         <em class="required">*</em>
-        <!--        tutaj bedzie gotowy komponent kategorii          -->
-        <pp-single-category></pp-single-category>
+        <div class="categoryPicker">
+
+          <ul>
+            <li *ngFor="let category of superiorCategories$ | async"
+                (click)="getFewBySuperiorId(category.id,2)">
+              <pp-single-category [categoryIcon]="category.iconName"
+                                  [categoryName]="category.name"
+                                  [categoryId]="category.id"
+              >
+              </pp-single-category>
+            </li>
+          </ul>
+        </div>
       </div>
+
+      <div class="condition">
+        <label>Stan przedmiotu</label>
+        <em class="required">*</em>
+        <ul class="conditionSelect">
+          <li (click)="setCondition(Condition.Used)">
+            <pp-condition-wrapper title="Używany" condition="Used"
+                                  description="Widoczne ślady używania lub uszkodzenia, które zostały uwzględnione w opisie tego przedmiotu i/lub na zdjęciach.">
+
+            </pp-condition-wrapper>
+          <li (click)="condition = 1">
+          <li>
+            <pp-condition-wrapper title="Bardzo dobry" condition="Good"
+                                  description="W bardzo dobrym stanie technicznym i wizualnym. Nie nosi śladów używania lub są one znikome."></pp-condition-wrapper>
+          </li>
+
+          <li (click)="condition = 2">
+            <pp-condition-wrapper title="Nowy" condition="New"
+                                  description="Fabrycznie nowy, nieużywany, nieuszkodzony, zapakowany w oryginalne opakowanie od producenta."></pp-condition-wrapper>
+          </li>
+        </ul>
+      </div>
+
+      <div class="price">
+        <label>Cena przedmiotu</label>
+        <em class="required">*</em>
+        <input type="text" formControlName="price" placeholder="0,00" class="customForm">
+      </div>
+
+      <div class="quantity">
+        <label>Liczba przedmiotów</label>
+        <input type="text" formControlName="quantity" class="customForm" id="qForm">
+      </div>
+      <button mat-raised-button class="customButton" id="submitBtn">wystaw ogłoszenie</button>
+      <div class="blank"></div>
     </div>
   </form>
 </div>

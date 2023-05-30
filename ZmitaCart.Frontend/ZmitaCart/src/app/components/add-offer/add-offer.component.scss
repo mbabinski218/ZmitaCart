@@ -18,9 +18,6 @@ pp-add-offer {
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    //&--side {
-    //  margin-left: 30px;
-    //}
   }
 
   .addPhotoLabel {
@@ -37,7 +34,6 @@ pp-add-offer {
   }
 
   hr {
-    //width: 100%;
     margin-left: -3.2rem;
     margin-right: -3.2rem;
     border: none;
@@ -59,7 +55,7 @@ pp-add-offer {
     //display: none;
   }
 
-  .selectFromDrive {
+  .customButton {
     color: red;
   }
 
@@ -84,11 +80,14 @@ pp-add-offer {
   }
 
   .titleLength {
+    display: flex;
+    justify-content: flex-end;
     font-weight: lighter;
     font-size: 1.1em;
     color: #767676;
     margin-top: 10px;
-    float: right;
+    width: 100%;
+    max-width: 50rem;
   }
 
   .customForm {
@@ -117,5 +116,40 @@ pp-add-offer {
     height: 130px;
     resize: vertical;
     font-family: inherit;
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  .categoryPicker {
+    margin-top: 10px;
+    height: 100%;
+    border-radius: 0.8rem;
+    border: 1px solid #e7e7e7;;
+    max-width: 50rem;
+    overflow: auto;
+    margin-bottom: 50px;
+  }
+
+  .price {
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+
+  #qForm {
+    width: 11.2rem;
+    margin-bottom: 50px;
+  }
+
+  #submitBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+  }
+
+  .blank {
+    margin-bottom: 50px;
   }
 }

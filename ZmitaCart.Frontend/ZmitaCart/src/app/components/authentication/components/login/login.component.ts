@@ -9,11 +9,12 @@ import { Router, RouterModule } from '@angular/router';
 import { LoginService } from '@components/authentication/api/login.service';
 import { Subject, filter, takeUntil, tap } from 'rxjs';
 import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
+import { GoogleLoginComponent } from '@components/authentication/components/login/components/google-login/google-login.component';
 
 @Component({
   selector: 'pp-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputComponent, ReactiveFormsModule, MatIconModule, RouterModule],
+  imports: [CommonModule, FormsModule, InputComponent, ReactiveFormsModule, MatIconModule, RouterModule, GoogleLoginComponent],
   providers: [LoginService],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],

@@ -23,6 +23,7 @@
     "@ngneat/input-mask": "^6.1.0",
     "@stomp/rx-stomp": "^2.0.0",
     "@stomp/stompjs": "^7.0.0",
+    "@types/google-one-tap": "^1.2.2",
     "@types/inputmask": "^5.0.3",
     "date-fns": "^2.30.0",
     "inputmask": "^5.0.8",

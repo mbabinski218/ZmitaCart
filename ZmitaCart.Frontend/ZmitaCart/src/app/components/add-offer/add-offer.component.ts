@@ -11,11 +11,13 @@ import {Observable} from "rxjs";
 import {Category} from "@components/add-offer/interfaces/Category";
 import {Condition} from "@core/enums/condition.enum";
 import {ConditionWrapperComponent} from "@components/add-offer/condition-wrapper/condition-wrapper.component";
+import {ToggleTestComponent} from "@components/add-offer/toggle-test/toggle-test.component";
+import {ConditionType} from "@components/add-offer/interfaces/ConditionType";
 
 @Component({
   selector: 'pp-add-offer',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, SingleCategoryComponent, ConditionWrapperComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, SingleCategoryComponent, ConditionWrapperComponent, ToggleTestComponent],
   templateUrl: './add-offer.component.html',
   styleUrls: ['./add-offer.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -27,8 +29,22 @@ export class AddOfferComponent implements OnInit {
   price: number;
   quantity: number;
   condition: Condition;
+  // condition: string;
   superiorCategories$: Observable<SuperiorCategory[]>;
   subCategories$: Category[] = [];
+  items: ConditionType[] = [{
+    title: "Używany",
+    description: "Widoczne ślady używania lub uszkodzenia, które zostały uwzględnione w opisie tego przedmiotu i/lub na zdjęciach.",
+    condition: Condition.Used
+  }, {
+    title: "Bardzo dobry",
+    description: "W bardzo dobrym stanie technicznym i wizualnym. Nie nosi śladów używania lub są one znikome.",
+    condition: Condition.Good,
+  }, {
+    title: "Nowy",
+    description: "Fabrycznie nowy, nieużywany, nieuszkodzony, zapakowany w oryginalne opakowanie od producenta.",
+    condition: Condition.New
+  }];
 
   constructor(private categoryService: CategoryService) {
   }
@@ -53,13 +69,12 @@ export class AddOfferComponent implements OnInit {
       this.subCategories$ = res;
       console.log(res);
     });
-
-
   }
 
-  public setCondition(con: Condition) {
-    this.condition = con;
-    console.log(Condition[con]);
+  public SetCondition(event: Condition) {
+    console.log(event);
+    this.condition = event;
+    console.log(Condition[this.condition]);
   }
 
   protected readonly Condition = Condition;

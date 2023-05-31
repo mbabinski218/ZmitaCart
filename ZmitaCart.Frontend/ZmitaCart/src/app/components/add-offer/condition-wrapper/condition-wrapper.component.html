@@ -1,9 +1,23 @@
-  <label class="wrapper">
-    <input type="radio" class="customRadio" [value]="condition" >
+<!--<li>-->
+<!--  <label [ngClass]="condition===whichSelected ? 'wrapper test' : 'wrapper'">-->
+<!--    <input (click)="onClick(condition)" type="radio" class="customRadio" [value]="condition" name="condition">-->
+<!--    <div class="radioTitle">-->
+<!--      {{title}}-->
+<!--    </div>-->
+<!--    <div class="radioDesc">-->
+<!--      {{description}}-->
+<!--    </div>-->
+<!--  </label>-->
+<!--</li>-->
+
+<li *ngFor="let item of items; let i = index">
+  <label [ngClass]="selectedIndex === i ? 'wrapper active' : 'wrapper'">
+    <input type="radio" (click)="selectItem(i)" class="customRadio" name="condition" [value]="condition">
     <div class="radioTitle">
-      {{title}}
+      {{item.title}}
     </div>
     <div class="radioDesc">
-      {{description}}
+      {{item.description}}
     </div>
   </label>
+</li>

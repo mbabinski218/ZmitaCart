@@ -16,16 +16,20 @@
   max-width: 50rem;
 }
 
-.wrapper:hover {
-  border: 1px solid #cfcccc;
+.active {
+  border: 1px solid #eb952d;
 }
 
-.radioTitle{
+//.wrapper:hover {
+//  border: 1px solid #cfcccc;
+//}
+
+.radioTitle {
   font-size: 1.6rem;
   margin-bottom: 5px;
 }
 
-.radioDesc{
+.radioDesc {
   font-weight: 100;
   font-size: 1.6rem;
 }

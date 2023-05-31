@@ -58,21 +58,20 @@
         <label>Stan przedmiotu</label>
         <em class="required">*</em>
         <ul class="conditionSelect">
-          <li (click)="setCondition(Condition.Used)">
-            <pp-condition-wrapper title="Używany" condition="Used"
-                                  description="Widoczne ślady używania lub uszkodzenia, które zostały uwzględnione w opisie tego przedmiotu i/lub na zdjęciach.">
+          <!--          <pp-condition-wrapper (componentClicked)="condition=Condition.Used" title="Używany" condition="Used"-->
+          <!--                                description="Widoczne ślady używania lub uszkodzenia, które zostały uwzględnione w opisie tego przedmiotu i/lub na zdjęciach.">-->
 
-            </pp-condition-wrapper>
-          <li (click)="condition = 1">
-          <li>
-            <pp-condition-wrapper title="Bardzo dobry" condition="Good"
-                                  description="W bardzo dobrym stanie technicznym i wizualnym. Nie nosi śladów używania lub są one znikome."></pp-condition-wrapper>
-          </li>
+          <!--          </pp-condition-wrapper>-->
+          <!--          <pp-condition-wrapper title="Bardzo dobry" condition="Good" (componentClicked)="condition=Condition.Good"-->
+          <!--                                description="W bardzo dobrym stanie technicznym i wizualnym. Nie nosi śladów używania lub są one znikome."></pp-condition-wrapper>-->
 
-          <li (click)="condition = 2">
-            <pp-condition-wrapper title="Nowy" condition="New"
-                                  description="Fabrycznie nowy, nieużywany, nieuszkodzony, zapakowany w oryginalne opakowanie od producenta."></pp-condition-wrapper>
-          </li>
+          <!--          <pp-condition-wrapper title="Nowy" condition="New" (componentClicked)="condition=Condition.New"-->
+          <!--                                description="Fabrycznie nowy, nieużywany, nieuszkodzony, zapakowany w oryginalne opakowanie od producenta."></pp-condition-wrapper>-->
+
+          <!--          <pp-toggle-test [elements]="items"></pp-toggle-test>-->
+
+          <pp-condition-wrapper [items]="items" (componentClicked)="SetCondition($event)"></pp-condition-wrapper>
+
         </ul>
       </div>
 

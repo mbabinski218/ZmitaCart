@@ -1,5 +1,7 @@
-import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {ConditionType} from "@components/add-offer/interfaces/ConditionType";
+import {Condition} from "@core/enums/condition.enum";
 
 @Component({
   selector: 'pp-condition-wrapper',
@@ -11,7 +13,15 @@ import {CommonModule} from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConditionWrapperComponent {
-  @Input() title: string;
-  @Input() description: string;
-  @Input() condition: string;
+  @Input() items: ConditionType[];
+  @Input() condition: Condition;
+  @Output() componentClicked = new EventEmitter<Condition>();
+  selectedIndex: number;
+
+  selectItem(index: number) {
+    this.selectedIndex = index;
+    this.condition = this.items[index].condition;
+    this.componentClicked.emit(this.condition);
+  }
+
 }

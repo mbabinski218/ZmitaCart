@@ -1,12 +1,14 @@
 ﻿using FluentResults;
 using Mapster;
 using MapsterMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
+using ZmitaCart.Domain.Events;
 using ZmitaCart.Infrastructure.Persistence;
 
 namespace ZmitaCart.Infrastructure.Repositories;
@@ -22,23 +24,22 @@ public class OfferRepository : IOfferRepository
 		_mapper = mapper;
 	}
 
-	public async Task<Result<int>> CreateAsync(CreateOfferDto offerDto)
+	public async Task<Result<int>> CreateAsync(CreateOfferDto dto)
 	{
-		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == offerDto.UserId);
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == dto.UserId);
 		if (user == null)
 		{
 			return Result.Fail(new NotFoundError("User does not exist"));
 		}
 
-		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == offerDto.CategoryId);	
+		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == dto.CategoryId);	
 		if (category == null)
 		{
 			return Result.Fail(new NotFoundError("Category does not exist"));
 		}
 
-		var offer = _mapper.Map<Offer>(offerDto);
-		offer.User = user;
-		offer.Category = category;
+		var offer = Offer.Create(dto.Title, dto.Description, dto.Price, dto.Quantity, dto.IsAvailable, dto.CreatedAt, dto.Condition,
+			dto.CategoryId, dto.UserId, user, category, dto.PicturesFiles?.Select(p => new FileStream(p.FileName, FileMode.Open)));
 
 		await _dbContext.Offers.AddAsync(offer);
 		await _dbContext.SaveChangesAsync();

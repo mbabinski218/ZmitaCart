@@ -18,7 +18,7 @@ public class PictureRepository : IPictureRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Result> AddAsync(int userId, int offerId, IEnumerable<IFormFile> files)
+    public async Task<Result> AddAsync(int userId, int offerId, IEnumerable<FileStream> filesStreams)
     {
         var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId);
         if (offer is null)
@@ -31,15 +31,15 @@ public class PictureRepository : IPictureRepository
             return Result.Fail(new UnauthorizedError("You are not authorized to update an offer."));
         }
 
-        foreach (var file in files)
+        foreach (var fileStream in filesStreams)
         {
-            if (file.Length <= 0) continue;
+            if (fileStream.Length <= 0) continue;
 
             var creationTime = DateTimeOffset.Now;
-            var imageName = $"{offerId}_{creationTime:ddMMyyyyhhmmssfff}_{new Random().Next(0, 10000000)}.{file.FileName.Split('.').Last()}";
+            var imageName = $"{offerId}_{creationTime:ddMMyyyyhhmmssfff}_{new Random().Next(0, 10000000)}.{fileStream.Name.Split('.').Last()}";
             var filePath = Path.Combine(Path.GetFullPath("wwwroot"), imageName);
             
-            using (var image = await Image.LoadAsync(file.OpenReadStream()))
+            using (var image = await Image.LoadAsync(fileStream))
             {
                 if(image.Size.Width > 2000 || image.Size.Height > 2000)
                     image.Mutate(op => op.Resize(new ResizeOptions

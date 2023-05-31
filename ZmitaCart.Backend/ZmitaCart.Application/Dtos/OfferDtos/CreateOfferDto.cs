@@ -1,4 +1,6 @@
-﻿namespace ZmitaCart.Application.Dtos.OfferDtos;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace ZmitaCart.Application.Dtos.OfferDtos;
 
 public class CreateOfferDto
 {
@@ -11,4 +13,5 @@ public class CreateOfferDto
 	public string Condition { get; set; } = null!;
 	public int CategoryId { get; set; }
 	public int UserId { get; set; }
+	public IEnumerable<IFormFile>? PicturesFiles { get; set; }
 }

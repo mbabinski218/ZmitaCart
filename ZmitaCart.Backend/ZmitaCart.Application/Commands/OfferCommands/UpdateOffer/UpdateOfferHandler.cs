@@ -36,7 +36,7 @@ public class UpdateOfferHandler : IRequestHandler<UpdateOfferCommand, Result<int
 		
 		if(request.PicturesToAdd is not null)
 		{
-			var addPic = await _pictureRepository.AddAsync(offer.UserId, offer.Id, request.PicturesToAdd);
+			var addPic = await _pictureRepository.AddAsync(offer.UserId, offer.Id, request.PicturesToAdd?.Select(p => new FileStream(p.FileName, FileMode.Open)));
 			if (addPic.IsFailed)
 			{
 				return Result.Fail(addPic.Errors);

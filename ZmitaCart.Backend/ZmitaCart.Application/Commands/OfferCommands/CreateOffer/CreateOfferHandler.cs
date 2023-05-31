@@ -36,13 +36,6 @@ public class CreateOfferHandler : IRequestHandler<CreateOfferCommand, Result<int
 		offer.CreatedAt = DateTimeOffset.Now;
 		offer.IsAvailable = true;
 		
-		var offerId = await _offerRepository.CreateAsync(offer);
-
-		if (request.Pictures is not null && offerId.IsSuccess)
-		{
-			await _pictureRepository.AddAsync(offer.UserId, offerId.Value, request.Pictures);
-		}
-
-		return offerId;
+		return await _offerRepository.CreateAsync(offer);
 	}
 }

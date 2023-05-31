@@ -12,5 +12,5 @@ public record CreateOfferCommand : IRequest<Result<int>>
     public int Quantity { get; set; }
     public string Condition { get; set; } = null!;
     public int CategoryId { get; set; }
-    public IEnumerable<IFormFile>? Pictures { get; set; }
+    public IEnumerable<IFormFile>? PicturesFiles { get; set; }
 }

@@ -10,15 +10,15 @@ public class OfferMapperConfig : IRegister
 	{
 		config.ForType<Offer, OfferInfoDto>()
 			.Map(dest => dest.Address, src => src.User.Address)
-			.Map(dest => dest.ImageUrl, src => !src.Pictures.Any()
+			.Map(dest => dest.ImageName, src => !src.Pictures.Any()
 				? null
-				: Path.Combine(Path.GetFullPath("wwwroot"), src.Pictures.OrderBy(p => p.CreationTime).First().Name));
+				: src.Pictures.OrderBy(p => p.CreationTime).First().Name);
 
 		config.ForType<Offer, OfferDto>()
 			.Map(dest => dest.Address, src => src.User.Address)
-			.Map(dest => dest.PicturesUrls, src => !src.Pictures.Any()
+			.Map(dest => dest.PicturesNames, src => !src.Pictures.Any()
 				? null
-				: src.Pictures.Select(p => Path.Combine(Path.GetFullPath("wwwroot"), p.Name)));
+				: src.Pictures.Select(p => p.Name));
 
 		config.ForType<Bought, BoughtOfferDto>()
 			.Map(dest => dest.Id, src => src.Offer.Id)

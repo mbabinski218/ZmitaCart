@@ -15,6 +15,6 @@ public class OfferDto
     public string Condition { get; set; } = null!;
     public UserDto User { get; set; } = null!;
     public Address Address { get; set; } = null!;
-    public ICollection<string>? PicturesUrls { get; set; }
+    public ICollection<string>? PicturesNames { get; set; }
     public bool IsFavourite { get; set; }
 }

@@ -9,7 +9,7 @@ public class CategoryMapperConfig : IRegister
 	public void Register(TypeAdapterConfig config)
 	{
 		config.ForType<Category, CategoryDto>()
-			.Map(dest => dest.Children, src => src.Children == null || !src.Children.Any()
+			.Map(dest => dest.Children, src => !src.Children.Any()
 				? null
 				: src.Children.Adapt<ICollection<CategoryDto>>());
 	}

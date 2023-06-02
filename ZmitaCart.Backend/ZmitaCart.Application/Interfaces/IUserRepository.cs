@@ -7,6 +7,7 @@ namespace ZmitaCart.Application.Interfaces;
 
 public interface IUserRepository
 {
+	public Task<Result<UserDataDto>> GetDataAsync(int id);
 	public Task<Result> RegisterAsync(RegisterUserDto dto);
 	public Task<Result<TokensDto>> LoginAsync(LoginUserDto loginUserDto);
 	public Task<Result<TokensDto>> LoginWithRefreshTokenAsync(string? userId, string refreshToken);

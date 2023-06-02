@@ -36,6 +36,16 @@ public class UserRepository : IUserRepository
 		_googleAuthentication = googleAuthentication;
 	}
 
+	public async Task<Result<UserDataDto>> GetDataAsync(int id)
+	{
+		var user = await _dbContext.Users
+			.FirstOrDefaultAsync(u => u.Id == id);
+
+		return user is null 
+			? Result.Fail<UserDataDto>(new NotFoundError("User not found")) 
+			: user.Adapt<UserDataDto>();
+	}
+
 	public async Task<Result> RegisterAsync(RegisterUserDto dto)
 	{
 		if (await _userManager.FindByEmailAsync(dto.Email) != null)

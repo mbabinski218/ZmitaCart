@@ -11,6 +11,7 @@ using ZmitaCart.Application.Commands.UserCommands.UpdateCredentials;
 using ZmitaCart.Application.Commands.UserCommands.UpdateFeedback;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.UserDtos;
+using ZmitaCart.Application.Queries.UserQueries.GetData;
 using ZmitaCart.Application.Queries.UserQueries.GetFeedback;
 using ZmitaCart.Application.Queries.UserQueries.LogoutUser;
 using ZmitaCart.Domain.Common;
@@ -24,6 +25,14 @@ public class UserController : ApiController
 	{
 	}
 
+	[HttpGet]
+	public async Task<ActionResult<UserDataDto>> GetUserData()
+	{
+		return await mediator.Send(new GetDataQuery()).Then(
+			s => Ok(s.Value),
+			err => NotFound(err.ToList()));
+	}
+	
 	[HttpPost("register")]
 	[AllowAnonymous]
 	public async Task<ActionResult> Register([FromBody] RegisterUserCommand command)

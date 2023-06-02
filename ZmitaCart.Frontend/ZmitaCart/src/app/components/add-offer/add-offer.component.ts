@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
@@ -11,13 +11,13 @@ import {Observable} from "rxjs";
 import {Category} from "@components/add-offer/interfaces/Category";
 import {Condition} from "@core/enums/condition.enum";
 import {ConditionWrapperComponent} from "@components/add-offer/condition-wrapper/condition-wrapper.component";
-import {ToggleTestComponent} from "@components/add-offer/toggle-test/toggle-test.component";
 import {ConditionType} from "@components/add-offer/interfaces/ConditionType";
+import {TestComponent} from "@components/add-offer/test/test.component";
 
 @Component({
   selector: 'pp-add-offer',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, SingleCategoryComponent, ConditionWrapperComponent, ToggleTestComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, SingleCategoryComponent, ConditionWrapperComponent, TestComponent],
   templateUrl: './add-offer.component.html',
   styleUrls: ['./add-offer.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -29,9 +29,11 @@ export class AddOfferComponent implements OnInit {
   price: number;
   quantity: number;
   condition: Condition;
-  // condition: string;
   superiorCategories$: Observable<SuperiorCategory[]>;
-  subCategories$: Category[] = [];
+  subCategories$: Observable<Category[]>;
+  subCategories: Category[];
+  children: Category[];
+
   items: ConditionType[] = [{
     title: "Używany",
     description: "Widoczne ślady używania lub uszkodzenia, które zostały uwzględnione w opisie tego przedmiotu i/lub na zdjęciach.",
@@ -46,7 +48,7 @@ export class AddOfferComponent implements OnInit {
     condition: Condition.New
   }];
 
-  constructor(private categoryService: CategoryService) {
+  constructor(private categoryService: CategoryService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -54,29 +56,59 @@ export class AddOfferComponent implements OnInit {
       title: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
       description: new FormControl(null as string, []),
       price: new FormControl(null as number, Validators.required),
-      quantity: new FormControl(1)
+      quantity: new FormControl(1),
+
     });
 
     this.createOffer.get('title').valueChanges.subscribe((res: string) => {
       this.characterCount = res.length;
     });
 
-    this.superiorCategories$ = this.categoryService.getAllSupCategories();
+    // this.superiorCategories$ = this.categoryService.getAllSupCategories();
+    // this.categoryService.getFewBySuperiorId(1, 1).subscribe(res => {
+    //     this.subCategories = res;
+    //     console.log(this.subCategories);
+    //   }
+    // );
+
+    // this.categoryService.getSuperiorsWithChildren(3).subscribe(res => {
+    //     this.subCategories = res;
+    //     console.log(this.subCategories);
+    //   }
+    // );
+
+
+    this.categoryService.getSuperiorsWithChildren(1)
+      .subscribe(res => {
+        this.subCategories = res;
+        this.children = this.subCategories;
+      });
+
+    // this.subCategories$ = this.categoryService.getSuperiorsWithChildren(1);
   }
 
-  public getFewBySuperiorId(supId: number, childrenCount: number) {
-    this.categoryService.getFewBySuperiorId(supId, childrenCount).subscribe(res => {
-      this.subCategories$ = res;
-      console.log(res);
-    });
+  public getFewBySuperiorId(supId: number, childrenCount?: number) {
+    // this.categoryService.getFewBySuperiorId(supId, childrenCount).subscribe(res => {
+    //   this.subCategories$ = res;
+    //   console.log(this.subCategories$);
+    // });
+    // this.subCategories$ = this.categoryService.getFewBySuperiorId(supId, childrenCount);
+  }
+
+  public getSuperiorsWithChildren(childrenCount?: number) {
+
   }
 
   public SetCondition(event: Condition) {
-    console.log(event);
     this.condition = event;
-    console.log(Condition[this.condition]);
   }
 
-  protected readonly Condition = Condition;
+  test(event: number) {
+    this.categoryService.getFewBySuperiorId(event, 2).subscribe(res => {
+      this.subCategories = res;
+      this.children = this.subCategories[0].children;
+      this.cdr.detectChanges();
+      console.log(this.subCategories);
+    });
+  }
 }
-

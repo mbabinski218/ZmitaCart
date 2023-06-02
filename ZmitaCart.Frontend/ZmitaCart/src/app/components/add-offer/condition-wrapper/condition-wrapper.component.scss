@@ -20,9 +20,9 @@
   border: 1px solid #eb952d;
 }
 
-//.wrapper:hover {
-//  border: 1px solid #cfcccc;
-//}
+.wrapper:not(.active):hover {
+  border: 1px solid #cfcccc;
+}
 
 .radioTitle {
   font-size: 1.6rem;

@@ -18,8 +18,15 @@ export class CategoryService {
     return this.http.get<SuperiorCategory[]>(`${environment.httpBackend}${Api.SUPERIOR_CATEGORIES}`);
   }
 
-  getFewBySuperiorId(superiorId: number, childrenCount: number): Observable<Category[]> {
+  getFewBySuperiorId(superiorId: number, childrenCount?: number): Observable<Category[]> {
     const options = {params: {'superiorId': superiorId, 'childrenCount': childrenCount}};
     return this.http.get<Category[]>(`${environment.httpBackend}${Api.GET_FEW_BY_SUP_ID}`, options);
+  }
+
+  getSuperiorsWithChildren(childrenCount?: number): Observable<Category[]> {
+    const options = {
+      params: {'childrenCount': childrenCount}
+    };
+    return this.http.get<Category[]>(`${environment.httpBackend}${Api.GET_SUPERIORS_WITH_CHILDREN}`, options);
   }
 }

@@ -11,7 +11,7 @@
     </div>
     <hr>
     <div class="addPhotos">
-      <button mat-raised-button class="customButton">Wybierz zdjęcia z dysku</button>
+      <button mat-raised-button>Wybierz zdjęcia z dysku</button>
       <input
         type="file"
         id="fileInput"
@@ -40,17 +40,38 @@
         <label>Kategoria</label>
         <em class="required">*</em>
         <div class="categoryPicker">
+          <!--            <li *ngFor="let category of superiorCategories$ | async"-->
+          <!--                (click)="getFewBySuperiorId(category.id,2)" [hidden]="isHidden">-->
+          <!--              <pp-single-category [categoryIcon]="category.iconName"-->
+          <!--                                  [categoryName]="category.name"-->
+          <!--                                  [categoryId]="category.id"-->
+          <!--              >-->
+          <!--              </pp-single-category>-->
+          <!--            </li>-->
 
-          <ul>
-            <li *ngFor="let category of superiorCategories$ | async"
-                (click)="getFewBySuperiorId(category.id,2)">
-              <pp-single-category [categoryIcon]="category.iconName"
-                                  [categoryName]="category.name"
-                                  [categoryId]="category.id"
-              >
-              </pp-single-category>
-            </li>
-          </ul>
+          <!--            <li *ngFor="let category of subCategories$ | async">-->
+          <!--              <pp-single-category-->
+          <!--                [categoryName]="category.name"-->
+          <!--                [categoryId]="category.id"-->
+          <!--              >-->
+          <!--              </pp-single-category>-->
+          <!--            </li>-->
+
+          <pp-test [item]="subCategories"
+                   [children]="children"
+                   (componentClicked)="test($event)"
+          ></pp-test>
+
+          <!--          <pp-test [item]="subCategories" *ngIf="!subCatHidden"-->
+          <!--                   [children]="children"-->
+          <!--                   (componentClicked)="test($event)"-->
+          <!--          ></pp-test>-->
+
+          <!--          <pp-test [item]="subCategories" *ngIf="!subCatHidden"-->
+          <!--                   [children]="subCategories[0].children"-->
+          <!--                   (componentClicked)="chuj($event)"-->
+          <!--          ></pp-test>-->
+
         </div>
       </div>
 
@@ -58,20 +79,7 @@
         <label>Stan przedmiotu</label>
         <em class="required">*</em>
         <ul class="conditionSelect">
-          <!--          <pp-condition-wrapper (componentClicked)="condition=Condition.Used" title="Używany" condition="Used"-->
-          <!--                                description="Widoczne ślady używania lub uszkodzenia, które zostały uwzględnione w opisie tego przedmiotu i/lub na zdjęciach.">-->
-
-          <!--          </pp-condition-wrapper>-->
-          <!--          <pp-condition-wrapper title="Bardzo dobry" condition="Good" (componentClicked)="condition=Condition.Good"-->
-          <!--                                description="W bardzo dobrym stanie technicznym i wizualnym. Nie nosi śladów używania lub są one znikome."></pp-condition-wrapper>-->
-
-          <!--          <pp-condition-wrapper title="Nowy" condition="New" (componentClicked)="condition=Condition.New"-->
-          <!--                                description="Fabrycznie nowy, nieużywany, nieuszkodzony, zapakowany w oryginalne opakowanie od producenta."></pp-condition-wrapper>-->
-
-          <!--          <pp-toggle-test [elements]="items"></pp-toggle-test>-->
-
           <pp-condition-wrapper [items]="items" (componentClicked)="SetCondition($event)"></pp-condition-wrapper>
-
         </ul>
       </div>
 

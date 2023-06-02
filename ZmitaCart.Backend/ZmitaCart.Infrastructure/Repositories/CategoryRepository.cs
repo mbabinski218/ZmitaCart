@@ -108,9 +108,9 @@ public class CategoryRepository : ICategoryRepository
         {
             return Result.Ok();
         }
-        
-        return category.Children.Select(child => CheckChildrenId(child, parentId)).Any(result => result.IsFailed) 
-            ? Result.Fail(new ArgumentError("Category cannot have itself as a child")) 
+
+        return category.Children.Select(child => CheckChildrenId(child, parentId)).Any(result => result.IsFailed)
+            ? Result.Fail(new ArgumentError("Category cannot have itself as a child"))
             : Result.Ok();
     }
 
@@ -140,13 +140,32 @@ public class CategoryRepository : ICategoryRepository
             .ToListAsync();
     }
 
+    public async Task<Result<IEnumerable<CategoryDto>>> GetSuperiorsWithFewChildren(int? childrenCount)
+    {
+        var categories = await _dbContext.Categories
+            .Where(c => c.ParentId == null)
+            .Include(c => c.Children)
+            .ProjectToType<CategoryDto>()
+            .ToListAsync();
+
+        childrenCount ??= 0; //get superiors only
+
+        foreach (var category in categories)
+        {
+            await FillChildren(category.Children, childrenCount.Value);
+        }
+
+        return categories;
+    }
+
+
     public async Task<Result<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId(int superiorId, int? childrenCount)
     {
         if (await _dbContext.Categories.AnyAsync(c => c.Id == superiorId) is false)
         {
             return Result.Fail(new NotFoundError("Superior category with input id doesn't exist"));
         }
-        
+
         var categories = await _dbContext.Categories
             .Where(c => c.Id == superiorId)
             .Include(c => c.Children)
@@ -162,7 +181,7 @@ public class CategoryRepository : ICategoryRepository
 
         return categories;
     }
-    
+
     private async Task FillChildren(IEnumerable<CategoryDto?>? children, int childrenCount)
     {
         if (childrenCount == 0 || children is null) return;

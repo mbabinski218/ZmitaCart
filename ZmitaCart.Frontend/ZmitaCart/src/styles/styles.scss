@@ -70,6 +70,11 @@ body {
   width: 100%;
 }
 
+//usuwanie prompt'a google'owego z prawego rogu ez
+#credential_picker_container {
+  display: none;
+}
+
 // img,
 // svg,
 // video {

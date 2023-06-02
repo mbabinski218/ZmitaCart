@@ -9,13 +9,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { CategoriesMenuComponent } from '@components/home/components/header/components/categories-menu/categories-menu.component';
 import { LoginMenuComponent } from '@components/home/components/header/components/login-menu/login-menu.component';
 import { OverlayService } from '@core/services/overlay/overlay.service';
-import { Observable } from 'rxjs';
+import { Observable, share, shareReplay } from 'rxjs';
 import { UserService } from '@core/services/authorization/user.service';
+import { SuperiorCategories } from '@components/home/components/header/interfaces/header.interface';
+import { HeaderService } from '@components/home/components/api/header.service';
 
 @Component({
   selector: 'pp-header',
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatIconModule, RouterModule, MatSelectModule, MatFormFieldModule, CategoriesMenuComponent, LoginMenuComponent],
+  providers: [HeaderService],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -32,14 +35,17 @@ export class HeaderComponent implements OnInit {
   isBig = window.innerWidth > 768;
 
   isShowCategories$: Observable<boolean>;
+  superiorCategories$: Observable<SuperiorCategories[]>;
 
   constructor(
     protected overlayService: OverlayService,
     protected userService: UserService,
+    protected headerService: HeaderService,
   ) { }
 
   ngOnInit(): void {
     this.isShowCategories$ = this.overlayService.getState();
+    this.superiorCategories$ = this.headerService.getSuperiorCategories().pipe(shareReplay());
   }
 
 }

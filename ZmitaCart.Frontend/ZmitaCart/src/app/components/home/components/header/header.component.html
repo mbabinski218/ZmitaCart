@@ -11,7 +11,10 @@
       >
       </mat-icon>
 
-      <pp-categories-menu *ngIf="isShowCategories$ | async"></pp-categories-menu>
+      <pp-categories-menu
+        *ngIf="isShowCategories$ | async"
+        [categories]="superiorCategories$ | async"
+      ></pp-categories-menu>
     </div>
 
     <div class="image">
@@ -43,12 +46,11 @@
           >
             --brak--
           </option>
-          <option value="dog">Dog</option>
-          <option value="cat">Cat</option>
-          <option value="hamster">Hamster</option>
-          <option value="parrot">Parrot</option>
-          <option value="spider">Spider</option>
-          <option value="goldfish">Goldfish</option>
+          <ng-container *ngFor="let category of superiorCategories$ | async">
+            <option [value]="category.id">
+              {{ category.name }}
+            </option>
+          </ng-container>
         </select>
         <div class="icon icon-find fix cursor-pointer"></div>
       </div>

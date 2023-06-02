@@ -39,11 +39,7 @@ export class LoginMenuComponent implements OnInit {
 
   logout(): void {
     this.userService.logout();
-    //api do wylogowywania
+    this.http.post(`${environment.httpBackend}${Api.LOGOUT}`, {}).subscribe();
     window.location.reload();
-  }
-
-  logoutTest() {
-    this.http.post(`${environment.httpBackend}${Api.LOGOUT}`, {}).subscribe((res) => console.log(res));
   }
 }

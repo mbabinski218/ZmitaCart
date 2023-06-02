@@ -17,11 +17,11 @@
   padding-inline: 30px;
   width: 65%;
 
-  @media (width < $screen-1200) {
+  @media (max-width: $screen-1200) {
     width: 55%;
   }
 
-  @media (width < $screen-768) {
+  @media (max-width: $screen-768) {
     width: 100%;
     margin: unset;
   }
@@ -90,11 +90,24 @@
     color: #222;
     border: 1px solid #aaa;
     margin-bottom: 15px;
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
+}
+
+.img {
+  position: absolute;
+  left: 8px;
 }
 
 .margin {
   margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .get {
@@ -135,7 +148,7 @@
 }
 
 .remove {
-  @media (width < $screen-1200) {
+  @media (max-width: $screen-1200) {
     display: none;
   }
 }

@@ -43,11 +43,11 @@
   padding-inline: 30px;
   width: 40%;
 
-  @media (width < $screen-1368) {
+  @media (max-width: $screen-1368) {
     width: 55%;
   }
 
-  @media (width < $screen-1064) {
+  @media (max-width: $screen-1064) {
     width: 100%;
     margin: unset;
   }

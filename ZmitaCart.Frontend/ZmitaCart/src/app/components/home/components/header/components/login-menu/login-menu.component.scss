@@ -15,11 +15,7 @@
 
 .container {
   position: absolute;
-  top: 70px;
-
-  @media(width < $screen-1200) {
-    right: 24px;
-  }
+  right: 0;
 }
 
 .list {

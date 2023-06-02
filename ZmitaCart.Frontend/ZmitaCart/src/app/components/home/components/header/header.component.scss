@@ -14,7 +14,7 @@
   &-menu {
     transform: scale(1.12);
   }
-  
+
   &:hover {
     filter: brightness(0) saturate(100%) invert(41%) sepia(40%) saturate(4250%) hue-rotate(147deg) brightness(98%) contrast(101%);
   }
@@ -46,24 +46,24 @@
     "image image button actions"
     "menu form form form";
 
-  @media (width >$screen-768) {
+  @media (min-width: $screen-768) {
     grid-template-columns: min-content auto auto min-content;
     grid-template-areas:
       "image image actions button"
       "menu form form form";
   }
 
-  @media (width >=$screen-1064) {
+  @media (min-width: $screen-1064) {
     grid-template-columns: min-content auto 1fr auto auto;
     grid-template-areas: "menu image form actions button";
   }
 
-  @media (width < $screen-1064) {
+  @media (max-width: $screen-1064) {
     padding-top: 16px;
     padding-bottom: 8px;
   }
 
-  @media (width >=$screen-1200) {
+  @media (min-width: $screen-1200) {
     --padding: 40px;
   }
 
@@ -72,8 +72,12 @@
 
     cursor: pointer;
     margin-right: 8px;
+    height: 70%;
+    display: flex;
+    align-items: center;
+    position: relative;
 
-    @media (width < $screen-1064) {
+    @media (max-width: $screen-1064) {
       margin-top: 13px;
     }
   }
@@ -95,13 +99,13 @@
 
     display: flex;
 
-    @media (width >=$screen-1064) {
+    @media (min-width: $screen-1064) {
       padding: 0 16px;
       min-width: 360px;
       max-width: 890px;
     }
 
-    @media (width < $screen-1064) {
+    @media (max-width: $screen-1064) {
       padding-top: 12px;
     }
 
@@ -115,7 +119,7 @@
       border: 1px solid #aaa;
       border-radius: 10px;
 
-      @media (width > $screen-768) {
+      @media (min-width: $screen-768) {
         border-radius: 10px 0 0 10px;
       }
 
@@ -126,7 +130,7 @@
       .input {
         display: block;
         width: 100%;
-        background: 0 0;
+        background-color: transparent;
         border: 0;
         padding: 8px 24px;
         font-size: 16px;
@@ -134,7 +138,7 @@
     }
 
     .categories-form {
-      @media (width <=$screen-768) {
+      @media (max-width: $screen-768) {
         display: none;
       }
 
@@ -157,7 +161,7 @@
         display: block;
         width: 100%;
         border: 0;
-        background: 0 0;
+        background-color: transparent;
         padding: 8px 38px;
         font-size: 16px;
 
@@ -191,6 +195,7 @@
     gap: 22px;
     justify-content: flex-end;
     align-items: center;
+    position: relative;
   }
 
   .button {

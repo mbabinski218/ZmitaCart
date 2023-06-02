@@ -37,21 +37,21 @@ export class LoginService {
     );
   }
 
-  // googleLogin(): Observable<UserAuthorization> {
-  //   return this.http.post<UserAuthorization>(`${environment.httpBackend}${Api.LOGIN}`, { ...userData, grantType: "password" }).pipe(
-  //     tap((token) => {
-  //       this.setUserStorage(token);
-  //       this.userService.setUserToken(token.accessToken);
-  //     }),
-  //     catchError((err: HttpErrorResponse) => {
-  //       const error = err.error as string[];
+  googleLogin(token: string): Observable<UserAuthorization> {
+    return this.http.post<UserAuthorization>(`${environment.httpBackend}${Api.LOGIN}`, { idToken: token, grantType: "google" }).pipe(
+      tap((token) => {
+        this.setUserStorage(token);
+        this.userService.setUserToken(token.accessToken);
+      }),
+      catchError((err: HttpErrorResponse) => {
+        const error = err.error as string[];
 
-  //       this.toastMessageService.notifyOfError(error[0]);
+        this.toastMessageService.notifyOfError(error[0]);
 
-  //       return of(null);
-  //     })
-  //   );
-  // }
+        return of(null);
+      })
+    );
+  }
 
   private setUserStorage(token: UserAuthorization) {
     const decodedToken: TokenData = jwt_decode(token.accessToken);

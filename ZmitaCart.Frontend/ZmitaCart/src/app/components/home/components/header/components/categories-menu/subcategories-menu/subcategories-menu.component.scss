@@ -1,0 +1,20 @@
+.isMain {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 24px;
+  color: #000;
+  white-space: nowrap;
+}
+
+.isLast {
+  line-height: 1.62;
+  font-size: 12px;
+  margin-bottom: 3px;
+  color: #767676;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--color-allegro-green);
+    cursor: pointer;
+  }
+}

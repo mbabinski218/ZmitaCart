@@ -8,6 +8,7 @@ using ZmitaCart.Application.Queries.CategoryQueries.GetAllSuperiors;
 using ZmitaCart.Application.Queries.CategoryQueries.GetCategories;
 using ZmitaCart.Application.Commands.CategoryCommands.UpdateCategory;
 using ZmitaCart.Application.Dtos.CategoryDtos;
+using ZmitaCart.Application.Queries.CategoryQueries.GetParentCategory;
 using ZmitaCart.Application.Queries.CategoryQueries.GetSuperiorsWithChildren;
 using ZmitaCart.Domain.Common;
 
@@ -63,6 +64,15 @@ public class CategoryController : ApiController
     public async Task<ActionResult<IEnumerable<SuperiorCategoryDto>>> GetCategoriesBySuperiorId()
     {
         return await mediator.Send(new GetAllSuperiorsQuery()).Then(
+            s => Ok(s.Value),
+            err => StatusCode(err.StatusCode, err.ToList()));
+    }
+
+    [HttpGet("getParentCategory")]
+    [AllowAnonymous]
+    public async Task<ActionResult<CategoryDto?>> GetParentCategory([FromQuery] GetParentCategoryQuery request)
+    {
+        return await mediator.Send(request).Then(
             s => Ok(s.Value),
             err => StatusCode(err.StatusCode, err.ToList()));
     }

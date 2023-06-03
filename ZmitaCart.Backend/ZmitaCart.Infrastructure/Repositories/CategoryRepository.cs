@@ -158,6 +158,10 @@ public class CategoryRepository : ICategoryRepository
         return categories;
     }
 
+    public async Task<Result<CategoryDto?>> GetParentCategory(int id)
+    {
+        return await _dbContext.Categories.Where(c => c.Id == id).ProjectToType<CategoryDto>().FirstOrDefaultAsync();
+    }
 
     public async Task<Result<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId(int superiorId, int? childrenCount)
     {

@@ -28,10 +28,11 @@ export class AddOfferComponent implements OnInit {
   condition: Condition;
   subCategories: Category[];
   children: Category[];
-  pickedCategoryId: number;
+  pickedCategory: Category = null;
   headCategory: Category;
   parentCategory?: Category;
   isInSubCategories: boolean;
+  loadCategories: boolean;
 
   items: ConditionType[] = [{
     title: "Używany",
@@ -77,6 +78,7 @@ export class AddOfferComponent implements OnInit {
 
   public getParentCategory(parentId: number) {
     //patrzymy na kategorie nadrzędne
+    console.log("pobieranie dzieci");
     if (parentId === null) {
       this.parentCategory = null;
       return;
@@ -85,24 +87,27 @@ export class AddOfferComponent implements OnInit {
     return this.categoryService.getParentCategory(parentId).subscribe(
       res => {
         this.parentCategory = res;
-        console.log(res);
       }
     );
   }
 
   goForward(event: Category) {
     this.isInSubCategories = true;
-    // if (event.parentId !== null)
-    this.getParentCategory(event.parentId);
+    if (event.parentId !== null && event.children)
+      this.getParentCategory(event.parentId);
 
     this.categoryService.getFewBySuperiorId(event.id, 2).subscribe(res => {
       if (res[0].children !== null) {
+        console.log("sprawdzam czy ma dzieci")
         this.subCategories = res;
         this.headCategory = this.subCategories[0];
         this.children = this.subCategories[0].children;
-        this.cdr.detectChanges();
-      } else
-        this.pickedCategoryId = res[0].id;
+      } else {
+
+        this.pickedCategory = res[0];
+      }
+      this.cdr.detectChanges();
+      console.log(this.pickedCategory);
     });
   }
 

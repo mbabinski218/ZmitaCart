@@ -5,12 +5,12 @@
     <span class="material-symbols-outlined">chevron_left</span>
     </span>
     <span class="goBackToCategory" *ngIf="parentCategory && parentCategory!==undefined else elseBlock">
-    Cofnij do: {{parentCategory.name }}
+    COFNIJ DO: {{parentCategory.name.toUpperCase() }}
     </span>
 
     <ng-template #elseBlock>
     <span class="goBackToCategory">
-      Cofnij do: Wszystkie kategorie
+      COFNIJ DO: WSZYSTKIE KATEGORIE
     </span>
     </ng-template>
 

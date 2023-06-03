@@ -39,7 +39,10 @@
       <div class="addCategory">
         <label>Kategoria</label>
         <em class="required">*</em>
-        <div class="categoryPicker">
+        <button class="loadCategoriesButton" (click)="loadCategories=true" *ngIf="!loadCategories">PRZEGLĄDAJ
+          WSZYSTKIE KATEGORIE
+        </button>
+        <div class="categoryPicker" *ngIf="loadCategories">
 
           <pp-category-selector [item]="subCategories"
                                 [children]="children"
@@ -51,6 +54,7 @@
           ></pp-category-selector>
 
         </div>
+        <span *ngIf="pickedCategory">Wybrana kategoria: {{pickedCategory.name }}</span>
       </div>
 
       <div class="condition">

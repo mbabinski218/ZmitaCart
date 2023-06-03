@@ -40,37 +40,15 @@
         <label>Kategoria</label>
         <em class="required">*</em>
         <div class="categoryPicker">
-          <!--            <li *ngFor="let category of superiorCategories$ | async"-->
-          <!--                (click)="getFewBySuperiorId(category.id,2)" [hidden]="isHidden">-->
-          <!--              <pp-single-category [categoryIcon]="category.iconName"-->
-          <!--                                  [categoryName]="category.name"-->
-          <!--                                  [categoryId]="category.id"-->
-          <!--              >-->
-          <!--              </pp-single-category>-->
-          <!--            </li>-->
 
-          <!--            <li *ngFor="let category of subCategories$ | async">-->
-          <!--              <pp-single-category-->
-          <!--                [categoryName]="category.name"-->
-          <!--                [categoryId]="category.id"-->
-          <!--              >-->
-          <!--              </pp-single-category>-->
-          <!--            </li>-->
-
-          <pp-test [item]="subCategories"
-                   [children]="children"
-                   (componentClicked)="test($event)"
-          ></pp-test>
-
-          <!--          <pp-test [item]="subCategories" *ngIf="!subCatHidden"-->
-          <!--                   [children]="children"-->
-          <!--                   (componentClicked)="test($event)"-->
-          <!--          ></pp-test>-->
-
-          <!--          <pp-test [item]="subCategories" *ngIf="!subCatHidden"-->
-          <!--                   [children]="subCategories[0].children"-->
-          <!--                   (componentClicked)="chuj($event)"-->
-          <!--          ></pp-test>-->
+          <pp-category-selector [item]="subCategories"
+                                [children]="children"
+                                [isInSubCat]="isInSubCategories"
+                                (componentClicked)="goForward($event)"
+                                (goBackClicked)="goBack($event)"
+                                [headCategory]="headCategory"
+                                [parentCategory]="parentCategory"
+          ></pp-category-selector>
 
         </div>
       </div>

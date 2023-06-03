@@ -5,9 +5,13 @@
   'opsz' 48
 }
 
-.btn {
-  display: flex;
+.categoryInfo {
   align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.btn {
   padding: 1.2rem 20px;
   width: 100%;
   max-width: 50rem;
@@ -18,14 +22,33 @@
 }
 
 .btn:hover {
+  cursor: default;
+}
+
+.btn:not(.header):hover {
   cursor: pointer;
   background-color: #fafafa;
 }
 
 .categoryName {
-  margin-left: 30px;
+  margin-left: 20px;
 }
 
 .arrowRight {
   margin-left: auto;
+}
+
+.btn.header {
+  display: flex;
+  align-items: center;
+}
+
+.btn.goBack {
+  flex: 0 0 100%;
+}
+
+.goBackToCategory {
+  align-items: center;
+  margin-left: 15px;
+  color: #2bb9a3;
 }

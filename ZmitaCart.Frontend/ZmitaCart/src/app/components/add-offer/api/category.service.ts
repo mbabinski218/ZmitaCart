@@ -29,4 +29,12 @@ export class CategoryService {
     };
     return this.http.get<Category[]>(`${environment.httpBackend}${Api.GET_SUPERIORS_WITH_CHILDREN}`, options);
   }
+
+  getParentCategory(parentId: number): Observable<Category> {
+    const options = {
+      params: {'parentId': parentId}
+    };
+
+    return this.http.get<Category>(`${environment.httpBackend}${Api.GET_PARENT_CATEGORY}`, options);
+  }
 }

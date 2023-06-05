@@ -27,7 +27,7 @@ public class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<TokensD
 		return request.GrantType switch
 		{
 			GrantType.password => await _userRepository.LoginAsync(_mapper.Map<LoginUserDto>(request)),
-			GrantType.refreshToken => await _userRepository.LoginWithRefreshTokenAsync(_currentUserService.UserId, request.RefreshToken!),
+			GrantType.refreshToken => await _userRepository.LoginWithRefreshTokenAsync(request.RefreshToken!),
 			GrantType.google => await _userRepository.LoginWithGoogleAsync(request.IdToken!),
 			_ => Result.Fail(new InvalidDataError("Invalid provider"))
 		};

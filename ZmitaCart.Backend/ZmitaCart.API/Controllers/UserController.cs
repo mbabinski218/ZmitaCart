@@ -10,7 +10,9 @@ using ZmitaCart.Application.Commands.UserCommands.Register;
 using ZmitaCart.Application.Commands.UserCommands.UpdateCredentials;
 using ZmitaCart.Application.Commands.UserCommands.UpdateFeedback;
 using ZmitaCart.Application.Common;
+using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Dtos.UserDtos;
+using ZmitaCart.Application.Queries.OfferQueries.GetUserOffers;
 using ZmitaCart.Application.Queries.UserQueries.GetData;
 using ZmitaCart.Application.Queries.UserQueries.GetFeedback;
 using ZmitaCart.Application.Queries.UserQueries.LogoutUser;
@@ -30,7 +32,7 @@ public class UserController : ApiController
 	{
 		return await mediator.Send(new GetDataQuery()).Then(
 			s => Ok(s.Value),
-			err => NotFound(err.ToList()));
+			err => StatusCode(err.StatusCode, err.ToList()));
 	}
 	
 	[HttpPost("register")]
@@ -102,6 +104,14 @@ public class UserController : ApiController
 
 	[HttpGet("feedback")]
 	public async Task<ActionResult<PaginatedList<FeedbackDto>>> GetFeedback([FromQuery] GetFeedbackQuery query)
+	{
+		return await mediator.Send(query).Then(
+			s => Ok(s.Value),
+			err => StatusCode(err.StatusCode, err.ToList()));
+	}
+	
+	[HttpGet("offer")]
+	public async Task<ActionResult<PaginatedList<OfferInfoDto>>> GetOffers([FromQuery] GetUserOffersQuery query)
 	{
 		return await mediator.Send(query).Then(
 			s => Ok(s.Value),

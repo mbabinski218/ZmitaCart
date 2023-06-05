@@ -274,4 +274,16 @@ public class OfferRepository : IOfferRepository
 
 		return offers;
 	}
+
+	public async Task<Result<PaginatedList<OfferInfoDto>>> GetUserOffersAsync(int userId, int? pageNumber = null, int? pageSize = null)
+	{
+		return await _dbContext.Offers
+			.Where(o => o.UserId == userId)
+			.Include(o => o.User)
+			.Include(o => o.Pictures)
+			.Include(o => o.Favorites)
+			.AsNoTracking()
+			.ProjectToType<OfferInfoDto>()
+			.ToPaginatedListAsync(pageNumber, pageSize);
+	}
 }

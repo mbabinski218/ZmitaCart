@@ -109,12 +109,11 @@ public class UserRepository : IUserRepository
 		};
 	}
 
-	public async Task<Result<TokensDto>> LoginWithRefreshTokenAsync(string? userId, string refreshToken)
+	public async Task<Result<TokensDto>> LoginWithRefreshTokenAsync(string refreshToken)
 	{
-		if (userId == null) 
-			return Result.Fail(new NotFoundError("User not found"));
+		var userId = _dbContext.UserTokens.FirstOrDefaultAsync(t => t.Value == refreshToken).Id;
+		var user = await _userManager.FindByIdAsync(userId.ToString());
 		
-		var user = await _userManager.FindByIdAsync(userId);
 		if (user == null) 
 			return Result.Fail(new NotFoundError("User does not exist"));
 		

@@ -30,7 +30,7 @@ public class OfferRepository : IOfferRepository
 			return Result.Fail(new NotFoundError("User does not exist"));
 		}
 
-		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == offerDto.CategoryId);	
+		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == offerDto.CategoryId);
 		if (category == null)
 		{
 			return Result.Fail(new NotFoundError("Category does not exist"));
@@ -58,7 +58,7 @@ public class OfferRepository : IOfferRepository
 		{
 			return Result.Fail(new UnauthorizedError("User does not have access to this offer"));
 		}
-		
+
 		offer.Title = offerDto.Title ?? offer.Title;
 		offer.Description = offerDto.Description ?? offer.Description;
 		offer.Price = offerDto.Price ?? offer.Price;
@@ -99,24 +99,24 @@ public class OfferRepository : IOfferRepository
 			.ProjectToType<OfferDto>()
 			.FirstOrDefaultAsync();
 
-		return offer == null 
-			? Result.Fail(new NotFoundError("Offer does not exist")) 
+		return offer == null
+			? Result.Fail(new NotFoundError("Offer does not exist"))
 			: Result.Ok(offer);
 	}
 
 	public async Task<Result> AddToFavoritesAsync(int userId, int offerId)
 	{
 		var offer = await _dbContext.Offers.FindAsync(offerId);
-        if(offer == null)
-        { 
-	        return Result.Fail(new NotFoundError("Offer does not exist"));
-        }
+		if (offer == null)
+		{
+			return Result.Fail(new NotFoundError("Offer does not exist"));
+		}
 
 		var user = await _dbContext.Users
-			           .Include(u => u.Favorites)
-			           .FirstOrDefaultAsync(u => u.Id == userId);
-		
-		if(user == null)
+			.Include(u => u.Favorites)
+			.FirstOrDefaultAsync(u => u.Id == userId);
+
+		if (user == null)
 		{
 			return Result.Fail(new NotFoundError("User does not exist"));
 		}
@@ -186,7 +186,7 @@ public class OfferRepository : IOfferRepository
 			BoughtAt = DateTimeOffset.Now,
 			TotalPrice = offer.Price * quantity
 		};
-		
+
 		await _dbContext.Bought.AddAsync(bought);
 		await _dbContext.SaveChangesAsync();
 		return Result.Ok();
@@ -201,7 +201,8 @@ public class OfferRepository : IOfferRepository
 			.ToPaginatedListAsync(pageNumber, pageSize);
 	}
 
-	public async Task<Result<PaginatedList<OfferInfoDto>>> SearchOffersAsync(SearchOfferDto search, int? pageNumber = null, int? pageSize = null)
+	public async Task<Result<PaginatedList<OfferInfoDto>>> SearchOffersAsync(SearchOfferDto search, int? pageNumber = null,
+		int? pageSize = null)
 	{
 		var categoriesId = await _dbContext.Database
 			.SqlQuery<int>
@@ -241,19 +242,20 @@ public class OfferRepository : IOfferRepository
 		return Result.Ok(offers);
 	}
 
-	public async Task<Result<IEnumerable<OfferInfoWithCategoryNameDto>>> GetOffersByCategoriesNameAsync(List<string> categoriesNames, int size)
+	public async Task<Result<IEnumerable<OfferInfoWithCategoryNameDto>>> GetOffersByCategoriesNameAsync(List<string> categoriesNames,
+		int size)
 	{
 		var offersId = await _dbContext.Database
-			.SqlQuery<int>
+			.SqlQueryRaw<int>
 			($@"
 				SELECT id FROM
 				(
-					SELECT *, ROW_NUMBER() OVER (PARTITION BY CategoryId ORDER BY CreatedAt ASC) AS RowNumber
+					SELECT *, ROW_NUMBER() OVER (PARTITION BY CategoryId ORDER BY CreatedAt DESC) AS RowNumber
 					FROM Offers
 					WHERE CategoryId IN
 					(
 						SELECT Id FROM Categories
-						WHERE Name IN ({string.Join(", ", categoriesNames)})
+						WHERE Name IN ({string.Join(", ", categoriesNames.Select(s => $"'{s}'"))})
 					)
 				) AS Offers
 				WHERE RowNumber <= {size}	

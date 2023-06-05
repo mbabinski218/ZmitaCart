@@ -28,7 +28,7 @@ public class DatabaseSeeder : IDatabaseSeeder
 
 		await SeedRoles();
 
-		if (!await _dbContext.Categories.AnyAsync())
+		if (!await _dbContext.Categories.AnyAsync() || !await _dbContext.Offers.AnyAsync())
 		{
 			await SeedData();
 		}

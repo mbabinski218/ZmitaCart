@@ -240,4 +240,36 @@ public class OfferRepository : IOfferRepository
 
 		return Result.Ok(offers);
 	}
+
+	public async Task<Result<IEnumerable<OfferInfoWithCategoryNameDto>>> GetOffersByCategoriesNameAsync(List<string> categoriesNames, int size)
+	{
+		var offersId = await _dbContext.Database
+			.SqlQuery<int>
+			($@"
+				SELECT id FROM
+				(
+					SELECT *, ROW_NUMBER() OVER (PARTITION BY CategoryId ORDER BY CreatedAt ASC) AS RowNumber
+					FROM Offers
+					WHERE CategoryId IN
+					(
+						SELECT Id FROM Categories
+						WHERE Name IN ({string.Join(", ", categoriesNames)})
+					)
+				) AS Offers
+				WHERE RowNumber <= {size}	
+			")
+			.ToListAsync();
+
+		var offers = await _dbContext.Offers
+			.Where(o => offersId.Contains(o.Id))
+			.Include(o => o.Category)
+			.Include(o => o.User)
+			.Include(o => o.Pictures)
+			.Include(o => o.Favorites)
+			.AsNoTracking()
+			.ProjectToType<OfferInfoWithCategoryNameDto>()
+			.ToListAsync();
+
+		return offers;
+	}
 }

@@ -4,15 +4,13 @@ using ZmitaCart.Application.Common.Errors;
 
 namespace ZmitaCart.API.Common;
 
-public class Success<T>
+public class Success<T> : Success
 {
 	public T Value { get; }
-	public IReadOnlyCollection<ISuccess> Reasons { get; }
 
-	public Success(IResult<T> result)
+	public Success(IResult<T> result) : base(result)
 	{
 		Value = result.Value;
-		Reasons = result.Successes;
 	}
 }
 
@@ -75,6 +73,6 @@ public static class FluentResultsExtensions
 			}
 		}
 
-		return errors.ToList();
+		return errors;
 	}
 }

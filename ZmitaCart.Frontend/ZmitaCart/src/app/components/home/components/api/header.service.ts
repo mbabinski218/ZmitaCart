@@ -9,6 +9,8 @@ import { Api } from '@core/enums/api.enum';
 @Injectable()
 export class HeaderService {
 
+  myCategoriesStorage: { superiorId: number, categories: SubCategories }[] = [];
+
   constructor(
     private http: HttpClient,
     private toastMessageService: ToastMessageService,
@@ -27,13 +29,17 @@ export class HeaderService {
   }
 
   getSubCategories(superiorId: number): Observable<SubCategories> {
+    const againThisCategory = this.myCategoriesStorage.find((res) => res.superiorId === superiorId);
+    if (againThisCategory)
+      return of(againThisCategory.categories);
+
     const params = new HttpParams()
       .set('superiorId', superiorId)
       .set('childrenCount', 2);
 
     return this.http.get<SubCategories[]>(`${environment.httpBackend}${Api.GET_SUB_CATEGORIES_FEW}`, { params }).pipe(
       map((res) => res[0]),
-      tap((res) => console.log(res)),
+      tap((res) => this.myCategoriesStorage = [...this.myCategoriesStorage, { superiorId, categories: res }]),
       catchError((err: HttpErrorResponse) => {
         const error = err.error as string[];
 

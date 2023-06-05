@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TokenData } from '@components/authentication/interfaces/authentication-interface';
 import { MatMenuModule } from '@angular/material/menu';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { RoutesPath } from '@core/enums/routes-path.enum';
 import { MatIconModule } from '@angular/material/icon';
 import { ClickOutsideDirective } from '@shared/directives/click-outside.directive';
@@ -21,7 +21,9 @@ import { isEmpty } from 'lodash';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginMenuComponent implements OnInit {
+
   readonly LOGIN_LINK = `/${RoutesPath.AUTHENTICATION}/${RoutesPath.LOGIN}`;
+  readonly RoutesPath = RoutesPath;
 
   opened = false;
   userData: TokenData;
@@ -30,6 +32,7 @@ export class LoginMenuComponent implements OnInit {
   constructor(
     private userService: UserService,
     private http: HttpClient,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -40,6 +43,7 @@ export class LoginMenuComponent implements OnInit {
   logout(): void {
     this.userService.logout();
     this.http.post(`${environment.httpBackend}${Api.LOGOUT}`, {}).subscribe();
+    void this.router.navigate(['/']);
     window.location.reload();
   }
 }

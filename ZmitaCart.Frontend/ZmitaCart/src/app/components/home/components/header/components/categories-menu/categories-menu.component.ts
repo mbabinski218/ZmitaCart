@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { HeaderService } from '@components/home/components/api/header.service';
 import { Observable, tap } from 'rxjs';
 import { SubcategoriesMenuComponent } from '@components/home/components/header/components/categories-menu/subcategories-menu/subcategories-menu.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'pp-categories-menu',
@@ -25,6 +26,8 @@ export class CategoriesMenuComponent {
 
   constructor(
     private headerService: HeaderService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   openSubCategories(category: SuperiorCategories): void {
@@ -38,6 +41,9 @@ export class CategoriesMenuComponent {
   }
 
   openCategory(categoryName: string): void {
-    console.log(categoryName);
+    void this.router.navigate(['.'], {
+      relativeTo: this.route,
+      queryParams: { category: categoryName },
+    });
   }
 }

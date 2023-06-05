@@ -1,0 +1,26 @@
+<div class="tile__data-wrapper">
+  <p
+    *ngIf="propertyName"
+    class="tile__property-name"
+  >
+    {{ propertyName }}
+  </p>
+  <div
+    class="tile__data"
+    [class.tile__data--hover]="type === 'string' || type === 'number'"
+  >
+    <ng-content></ng-content>
+  </div>
+</div>
+<div
+  *ngIf="icon"
+  class="tile__icon"
+>
+  <mat-icon
+    aria-hidden="false"
+    aria-label="icon"
+    class="material-icons-outlined"
+  >
+    {{ icon }}
+  </mat-icon>
+</div>

@@ -4,7 +4,7 @@ import { RoutesPath } from '@core/enums/routes-path.enum';
 export const routes: Route[] = [
   {
     path: '',
-    redirectTo: RoutesPath.HOME,
+    redirectTo: `${RoutesPath.HOME}/${RoutesPath.OFFERS}`,
     pathMatch: 'full'
   },
   {
@@ -16,6 +16,18 @@ export const routes: Route[] = [
     path: RoutesPath.HOME,
     loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent),
     children: [
+      {
+        path: RoutesPath.ACCOUNT,
+        loadComponent: () => import('./components/account/account.component').then(m => m.AccountComponent),
+      },
+      {
+        path: RoutesPath.OFFERS,
+        loadComponent: () => import('./components/offers/offers.component').then(m => m.OffersComponent),
+      },
+      {
+        path: RoutesPath.OFFERS_FILTERED,
+        loadComponent: () => import('./components/offers-filtered/offers-filtered.component').then(m => m.OffersFilteredComponent),
+      },
       // {
       //   path: RoutesPath.OFFER,
       //   component: OfferComponent,
@@ -55,6 +67,6 @@ export const routes: Route[] = [
 
   {
     path: '**',
-    redirectTo: RoutesPath.HOME,
+    redirectTo: `${RoutesPath.HOME}/${RoutesPath.OFFERS}`,
   },
 ];

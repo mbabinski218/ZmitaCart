@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { CategoriesMenuComponent } from '@components/home/components/header/components/categories-menu/categories-menu.component';
 import { LoginMenuComponent } from '@components/home/components/header/components/login-menu/login-menu.component';
 import { OverlayService } from '@core/services/overlay/overlay.service';
-import { Observable, share, shareReplay } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { UserService } from '@core/services/authorization/user.service';
 import { SuperiorCategories } from '@components/home/components/header/interfaces/header.interface';
 import { HeaderService } from '@components/home/components/api/header.service';
@@ -29,7 +29,8 @@ export class HeaderComponent implements OnInit {
   onResize(): void {
     this.isBig = window.innerWidth > 768;
   }
-
+  
+  readonly RoutesPath = RoutesPath;
   readonly ADD_OFFER_LINK = `/${RoutesPath.ADD_OFFER}`;
 
   isBig = window.innerWidth > 768;

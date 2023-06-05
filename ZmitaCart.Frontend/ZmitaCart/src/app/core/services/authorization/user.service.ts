@@ -3,7 +3,7 @@ import { isEmpty } from 'lodash';
 import { LocalStorageService } from '@core/services/localStorage/local-storage.service';
 import { KeyStorage } from '@core/enums/key-storage.enum';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
 import { Api } from '@core/enums/api.enum';
 import { tap } from 'rxjs/operators';
@@ -66,8 +66,8 @@ export class UserService {
       this.clearAll();
 
     const userData = {
-      grant_type: 'refresh_token',
-      refresh_token: this.localStorageService.getItem<TokenData>(KeyStorage.USER).refreshToken,
+      grantType: 'refresh_token',
+      refreshToken: this.localStorageService.getItem<TokenData>(KeyStorage.USER).refreshToken,
     };
 
     return this.http.post<UserAuthorization>(`${environment.httpBackend}${Api.LOGIN}`, userData)

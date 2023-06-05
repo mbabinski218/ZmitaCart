@@ -8,7 +8,6 @@ import { RoutesPath } from '@core/enums/routes-path.enum';
 import { Router, RouterModule } from '@angular/router';
 import { LoginService } from '@components/authentication/api/login.service';
 import { Subject, filter, takeUntil, tap } from 'rxjs';
-import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
 import { GoogleLoginComponent } from '@components/authentication/components/login/components/google-login/google-login.component';
 
 @Component({
@@ -38,7 +37,6 @@ export class LoginComponent implements OnDestroy {
 
   constructor(
     private loginService: LoginService,
-    private toastMessageService: ToastMessageService,
     private router: Router,
   ) { }
 
@@ -56,7 +54,6 @@ export class LoginComponent implements OnDestroy {
       this.loginService.login(this.form.value).pipe(
         filter((res) => !!res),
         tap(() => this.router.navigate(['/'])),
-        // tap(() => this.toastMessageService.notifyOfSuccess('Zalogowano')),
         takeUntil(this.onDestroy$),
       ).subscribe();
   }

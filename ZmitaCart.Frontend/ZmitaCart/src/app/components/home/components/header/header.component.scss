@@ -169,7 +169,7 @@
 
         background-repeat: no-repeat;
         background-size: 28px;
-        background-position: 92%;
+        background-position: 88%;
 
         -moz-appearance: none;
         -webkit-appearance: none;
@@ -181,7 +181,8 @@
   .fix {
     position: relative;
     top: 7px;
-    right: 16px;
+    right: 21px;
+    margin-right: -5px;
 
     &:hover {
       filter: none;

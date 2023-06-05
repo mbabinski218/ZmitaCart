@@ -1,0 +1,41 @@
+@import 'variables/breakpoints';
+
+pp-account {
+  .container {
+    // max-width: 140.8rem;
+    // height: 100%;
+    // padding-inline: 2.4rem;
+    // margin-left: auto;
+    // margin-right: auto;
+
+    padding-top: 20px;
+
+    display: flex;
+    gap: 20px;
+  }
+
+  .mat-button-toggle-group-appearance-standard.mat-button-toggle-vertical .mat-button-toggle+.mat-button-toggle {
+    border: 0;
+  }
+
+  .mat-button-toggle-standalone.mat-button-toggle-appearance-standard, .mat-button-toggle-group-appearance-standard {
+    border: 0;
+  }
+
+  .mat-button-toggle-appearance-standard {
+    background-color: #fff;
+
+    width: 380px;
+    display: flex;
+    font-family: "Open Sans";
+
+    @media (max-width: $screen-1064) {
+      width: 230px;
+    }
+  }
+
+  .mat-button-toggle-checked {
+    background-color: #fef7e7;
+    border-right: 5px solid var(--color-allegro) !important;
+  }
+}

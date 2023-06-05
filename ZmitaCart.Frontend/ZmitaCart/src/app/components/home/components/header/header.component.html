@@ -17,7 +17,10 @@
       ></pp-categories-menu>
     </div>
 
-    <div class="image">
+    <div
+      class="image cursor-pointer"
+      [routerLink]="['/']"
+    >
       <img
         class="img"
         src="https://allegrolokalnie.pl/images/lokalnie-logo.svg"
@@ -52,7 +55,11 @@
             </option>
           </ng-container>
         </select>
-        <div class="icon icon-find fix cursor-pointer"></div>
+        <mat-icon
+          class="svg fix"
+          svgIcon="find"
+        >
+        </mat-icon>
       </div>
     </form>
 
@@ -67,6 +74,8 @@
       <mat-icon
         class="svg"
         svgIcon="heart"
+        [routerLink]="RoutesPath.ACCOUNT"
+        fragment="observed"
       >
       </mat-icon>
       <mat-icon

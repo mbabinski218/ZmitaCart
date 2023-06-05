@@ -1,5 +1,5 @@
 import { AbstractControl, ControlContainer, FormControl, FormGroupDirective, NgForm, ReactiveFormsModule } from '@angular/forms';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Nullable } from '@core/types/nullable';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -7,11 +7,13 @@ import { ErrorMessage } from '@shared/components/input/interfaces/error-message.
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { InputMaskType, POSTCODE_MASK, TELEPHONE_MASK } from '@shared/components/input/input-masks/mask-input.config';
+import { InputMaskModule, InputmaskOptions } from '@ngneat/input-mask';
 
 @Component({
   selector: 'pp-input',
   standalone: true,
-  imports: [CommonModule, MatInputModule, ReactiveFormsModule, MatIconModule],
+  imports: [CommonModule, MatInputModule, ReactiveFormsModule, MatIconModule, InputMaskModule],
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,8 +45,11 @@ export class InputComponent {
   @Input() hintAlign: 'end' | 'start' = 'end';
   @Input() optional = false;
 
-  @Output() lzFocus = new EventEmitter<boolean>();
+  @Input() set mask(value: InputMaskType) {
+    this._mask = this.setMask(value);
+  }
 
+  _mask: InputmaskOptions<unknown>;
   matcher = new MyErrorStateMatcher();
 
   constructor(
@@ -75,6 +80,13 @@ export class InputComponent {
     for (const [key] of Object.entries(this.getControl.errors)) {
       if (Object.prototype.hasOwnProperty.call(this.getControl.errors, key))
         return this.ppErrorMessage[key as keyof ErrorMessage];
+    }
+  }
+
+  setMask(value: InputMaskType): InputmaskOptions<unknown> {
+    switch (value) {
+      case 'post-code': return POSTCODE_MASK;
+      case 'telephone': return TELEPHONE_MASK;
     }
   }
 }

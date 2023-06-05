@@ -19,8 +19,21 @@
 .content-inner {
   min-height: 100%;
 
-  padding: 0 40px;
+  --max-width: 1360px;
+  --padding: 24px;
+
+  padding: 0 var(--padding, 0);
+  max-width: calc(2*var(--padding, 0px) + var(--max-width));
   margin: 0 auto;
+
+  @media (max-width: $screen-1064) {
+    padding-top: 16px;
+    padding-bottom: 8px;
+  }
+
+  @media (min-width: $screen-1200) {
+    --padding: 40px;
+  }
 }
 
 .overlay {

@@ -1,21 +1,20 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { UserRegister } from '@components/authentication/interfaces/authentication-interface';
-import { Observable, catchError, map, of } from 'rxjs';
 import { Api } from '@core/enums/api.enum';
 import { environment } from '@env/environment';
 import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
+import { Observable, catchError, map, of } from 'rxjs';
 
 @Injectable()
-export class RegisterService {
+export class OfferService {
 
   constructor(
     private http: HttpClient,
     private toastMessageService: ToastMessageService,
   ) { }
 
-  register(userData: Partial<UserRegister>): Observable<boolean> {
-    return this.http.post<unknown>(`${environment.httpBackend}${Api.REGISTER}`, userData).pipe(
+  getOffers(): Observable<boolean> {
+    return this.http.get<unknown>(`${environment.httpBackend}${Api.OFFER}`).pipe(
       map(() => true),
       catchError((err: HttpErrorResponse) => {
         const error = err.error as string[];

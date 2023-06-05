@@ -12,6 +12,7 @@ using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Queries.OfferQueries.GetBoughtOffers;
 using ZmitaCart.Application.Queries.OfferQueries.GetFavouritesOffers;
 using ZmitaCart.Application.Queries.OfferQueries.GetOffer;
+using ZmitaCart.Application.Queries.OfferQueries.GetOffersByCategoriesName;
 using ZmitaCart.Application.Queries.OfferQueries.SearchOffers;
 
 namespace ZmitaCart.API.Controllers;
@@ -91,6 +92,14 @@ public class OfferController : ApiController
     
     [HttpGet("bought")]
     public async Task<ActionResult<PaginatedList<BoughtOfferDto>>> GetBoughtOffers([FromQuery] GetBoughtOffersQuery query)
+    {
+        return await mediator.Send(query).Then(
+            s => Ok(s.Value),
+            err => StatusCode(err.StatusCode, err.ToList()));
+    }
+    
+    [HttpGet("byCategoriesNameQuery")]
+    public async Task<ActionResult<List<OfferInfoWithCategoryNameDto>>> GetOffersByCategoriesNameQuery([FromQuery] GetOffersByCategoriesNameQuery query)
     {
         return await mediator.Send(query).Then(
             s => Ok(s.Value),

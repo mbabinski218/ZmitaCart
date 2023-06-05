@@ -1,6 +1,6 @@
 --Kategorie
---Root
 SET IDENTITY_INSERT Categories ON
+
     INSERT Categories (Id, Name, IconName) VALUES (1, 'Elektronika', 'devices')
     INSERT Categories (Id, Name, IconName) VALUES (2, 'Moda', 'styler')
     INSERT Categories (Id, Name, IconName) VALUES (3, 'Budowa i remont', 'foundation')
@@ -89,3 +89,89 @@ SET IDENTITY_INSERT Categories ON
             INSERT Categories (Id, Name, ParentId) VALUES (68, 'Gry komputerowe',66)
     
 SET IDENTITY_INSERT Categories OFF
+
+--Oferty
+SET IDENTITY_INSERT Offers ON
+
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (34, N'Galaxy S22', N'Smartfon Samsung z ekranem 6,1 cala, wyświetlacz Dynamic AMOLED 2X. Aparat 50 Mpix, pamięć 8 GB RAM, bateria 3700mAh. Obsługuje sieć: 5G', 4000.99, 1, 1, N'2023-06-05 19:54:21.2174737 +02:00', N'New', 24, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (35, N'Galaxy S22+', N'Smartfon Samsung z ekranem 6,1 cala, wyświetlacz Dynamic AMOLED 2X. Aparat 50 Mpix, pamięć 8 GB RAM, bateria 3700mAh. Obsługuje sieć: 5G', 4500.99, 1, 1, N'2023-06-05 19:54:33.1051650 +02:00', N'New', 24, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (36, N'Galaxy S22 Ultra', N'Smartfon Samsung z ekranem 6,1 cala, wyświetlacz Dynamic AMOLED 2X. Aparat 50 Mpix, pamięć 8 GB RAM, bateria 3700mAh. Obsługuje sieć: 5G', 5500.99, 1, 1, N'2023-06-05 19:54:45.9703731 +02:00', N'New', 24, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (37, N'Galaxy S22 Ultra', N'Smartfon Samsung z ekranem 6,1 cala, wyświetlacz Dynamic AMOLED 2X. Aparat 50 Mpix, pamięć 8 GB RAM, bateria 3700mAh. Obsługuje sieć: 5G', 3300.99, 2, 1, N'2023-06-05 19:54:57.5109105 +02:00', N'Used', 24, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (38, N'Galaxy A53', N'Smartfon Samsung z ekranem 6,1 cala, wyświetlacz Dynamic AMOLED 2X. Aparat 50 Mpix, pamięć 8 GB RAM, bateria 3700mAh. Obsługuje sieć: 5G', 2300.99, 10, 1, N'2023-06-05 19:55:14.3641973 +02:00', N'New', 24, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (39, N'Galaxy A53', N'Smartfon Samsung z ekranem 6,1 cala, wyświetlacz Dynamic AMOLED 2X. Aparat 50 Mpix, pamięć 8 GB RAM, bateria 3700mAh. Obsługuje sieć: 5G', 2650.99, 1, 1, N'2023-06-05 19:55:57.7072465 +02:00', N'Good', 24, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (40, N'Galaxy A53', N'Smartfon Samsung z ekranem 6,1 cala, wyświetlacz Dynamic AMOLED 2X. Aparat 50 Mpix, pamięć 8 GB RAM, bateria 3700mAh. Obsługuje sieć: 5G', 2150.99, 1, 1, N'2023-06-05 19:56:09.1665400 +02:00', N'Good', 24, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (41, N'Galaxy Ace 2', N'Super telefon', 10000.59, 1, 1, N'2023-06-05 19:57:00.4101284 +02:00', N'New', 24, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (42, N'IPhone 15 Pro Ultra Max', N'Smartfon Apple z ekranem 6,1 cala, wyświetlacz OLED. Aparat 12 Mpix, pamięć 6 GB RAM. Obsługuje sieć: 5G', 7777.77, 1, 1, N'2023-06-05 19:57:49.2760608 +02:00', N'New', 25, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (43, N'IPhone 15 Pro Ultra Max', N'Smartfon Apple z ekranem 6,1 cala, wyświetlacz OLED. Aparat 12 Mpix, pamięć 6 GB RAM. Obsługuje sieć: 5G', 7077.77, 5, 1, N'2023-06-05 19:57:59.2633374 +02:00', N'Good', 25, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (44, N'IPhone 15 Pro', N'Smartfon Apple z ekranem 6,1 cala, wyświetlacz OLED. Aparat 12 Mpix, pamięć 6 GB RAM. Obsługuje sieć: 5G', 3500.00, 1, 1, N'2023-06-05 19:58:20.7107542 +02:00', N'Used', 25, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (45, N'IPhone 15 Pro', N'Smartfon Apple z ekranem 6,1 cala, wyświetlacz OLED. Aparat 12 Mpix, pamięć 6 GB RAM. Obsługuje sieć: 5G', 5500.00, 2, 1, N'2023-06-05 19:58:33.0883392 +02:00', N'New', 25, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (46, N'IPhone SE', N'Smartfon Apple z ekranem 4,5 cala, wyświetlacz OLED. Aparat 12 Mpix, pamięć 6 GB RAM. Obsługuje sieć: 5G', 1900.10, 1, 1, N'2023-06-05 19:59:05.3445918 +02:00', N'Good', 25, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (47, N'Pixel 8', N'Smartfon Google z ekranem 6,3 cala, wyświetlacz AMOLED. Aparat 12 Mpix, pamięć 8 GB RAM, bateria 4355mAh. Obsługuje sieć: 5G', 4141.45, 1, 1, N'2023-06-05 20:04:17.7167653 +02:00', N'Good', 26, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (48, N'Pixel 7', N'Smartfon Google z ekranem 6,3 cala, wyświetlacz AMOLED. Aparat 12 Mpix, pamięć 8 GB RAM, bateria 4355mAh. Obsługuje sieć: 5G', 4069.10, 29, 1, N'2023-06-05 20:06:46.7916481 +02:00', N'New', 26, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (49, N'Pixel 7', N'Smartfon Google z ekranem 6,3 cala, wyświetlacz AMOLED. Aparat 12 Mpix, pamięć 8 GB RAM, bateria 4355mAh. Obsługuje sieć: 5G', 2069.10, 1, 1, N'2023-06-05 20:07:06.3929593 +02:00', N'Used', 26, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (50, N'IPhone 15', N'Smartfon Apple z ekranem 6,3 cala, wyświetlacz AMOLED. Aparat 12 Mpix, pamięć 8 GB RAM, bateria 4355mAh. Obsługuje sieć: 5G', 2069.10, 2, 1, N'2023-06-05 20:09:59.3591778 +02:00', N'New', 25, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (51, N'IPhone 14 Pro', N'Smartfon Apple z ekranem 6,3 cala, wyświetlacz AMOLED. Aparat 12 Mpix, pamięć 8 GB RAM, bateria 4355mAh. Obsługuje sieć: 5G', 3069.10, 1, 1, N'2023-06-05 20:10:31.8861324 +02:00', N'Used', 25, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (52, N'Galaxy S22', N'Smartfon Samsung z ekranem 6,3 cala, wyświetlacz AMOLED. Aparat 12 Mpix, pamięć 8 GB RAM, bateria 4355mAh. Obsługuje sieć: 5G', 4069.10, 2, 1, N'2023-06-05 20:10:51.4985258 +02:00', N'Used', 24, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (53, N'IPhone 15 Ultra', N'Smartfon Apple z ekranem 6,3 cala, wyświetlacz AMOLED. Aparat 12 Mpix, pamięć 8 GB RAM, bateria 4355mAh. Obsługuje sieć: 5G', 6001.20, 3, 1, N'2023-06-05 20:13:29.3777493 +02:00', N'New', 25, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (54, N'Threadripper pro 5995wx', N'Poznaj nową serię ultrawydajnych procesorów Ryzen Threadripper PRO od AMD. Stworzony, aby zapewnić przewagę na rynku jednostek do profesjonalnych zastosowań, Threadripper PRO 5995WX ma 128 wątków oraz 64 rdzenie taktowane bazową częstotliwością 2,7 GHz, która w trybie boost może wzrosnąć nawet do 4.5 GHz.', 27999.00, 1, 1, N'2023-06-05 20:18:18.4382286 +02:00', N'New', 22, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (55, N'BMW E46', N'Witam sprzedam BMW E46 2.0 Diesel 150km stan licznika 427tys auto w moim posiadaniu przez 2 lata w zeszłym roku maj nowe klocki i tarcze, olej i filtr po wymianie zrobione 2000km. Auto do z zewnatrz jak na zdjęciach co do stanu techniczneg nie dużo do zrobienia. Silnik bez zarzutu, turbina również.', 6010.50, 1, 1, N'2023-06-05 20:24:13.6032044 +02:00', N'Used', 6, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (56, N'BMW E46', N'Witam sprzedam BMW E46 2.0 Diesel 150km stan licznika 427tys auto w moim posiadaniu przez 2 lata w zeszłym roku maj nowe klocki i tarcze, olej i filtr po wymianie zrobione 2000km. Auto do z zewnatrz jak na zdjęciach co do stanu techniczneg nie dużo do zrobienia. Silnik bez zarzutu, turbina również.', 9999.00, 2, 1, N'2023-06-05 20:24:23.9766002 +02:00', N'Good', 6, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (57, N'BMW E46', N'Witam sprzedam BMW E46 2.0 Diesel 150km stan licznika 427tys auto w moim posiadaniu przez 2 lata w zeszłym roku maj nowe klocki i tarcze, olej i filtr po wymianie zrobione 2000km. Auto do z zewnatrz jak na zdjęciach co do stanu techniczneg nie dużo do zrobienia. Silnik bez zarzutu, turbina również.', 15000.69, 1, 1, N'2023-06-05 20:24:48.7961199 +02:00', N'New', 6, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (58, N'BMW M3', N'Modele BMW M3 Limuzyna łączą w sobie atletyczne proporcje i charakterystyczną czterodrzwiową, trójbryłową karoserię z typowo sportowym charakterem M. Kwartet mocnych charakterów z BMW M3 Competition Limuzyna na czele o imponującej mocy 510 KM i momencie obrotowym 650 Nm.', 200069.00, 1, 1, N'2023-06-05 20:25:58.0616244 +02:00', N'New', 6, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (59, N'BMW M3', N'Modele BMW M3 Limuzyna łączą w sobie atletyczne proporcje i charakterystyczną czterodrzwiową, trójbryłową karoserię z typowo sportowym charakterem M. Kwartet mocnych charakterów z BMW M3 Competition Limuzyna na czele o imponującej mocy 510 KM i momencie obrotowym 650 Nm.', 199980.00, 1, 1, N'2023-06-05 20:26:16.4782644 +02:00', N'Good', 6, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (60, N'BMW M3', N'Modele BMW M3 Limuzyna łączą w sobie atletyczne proporcje i charakterystyczną czterodrzwiową, trójbryłową karoserię z typowo sportowym charakterem M. Kwartet mocnych charakterów z BMW M3 Competition Limuzyna na czele o imponującej mocy 510 KM i momencie obrotowym 650 Nm.', 170000.00, 1, 1, N'2023-06-05 20:26:31.9225697 +02:00', N'Good', 6, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (61, N'Gold 7', N'Volkswagen Golf Comfortline Bussines', 50000.20, 1, 1, N'2023-06-05 20:28:21.4702892 +02:00', N'Good', 6, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (62, N'Gold 7', N'Volkswagen Golf Comfortline Bussines', 30301.42, 1, 1, N'2023-06-05 20:28:36.7282716 +02:00', N'Used', 6, 1);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (63, N'Gold 7', N'Volkswagen Golf Comfortline Bussines', 70301.42, 1, 1, N'2023-06-05 20:28:54.2732961 +02:00', N'New', 6, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (64, N'Daewoo Tico', N'Pierwszy właściciel, stan bardzo dobry, garażowany. Przegląd ważny do 03.2024. Bardzo niski przebieg.', 3500.00, 1, 1, N'2023-06-05 20:30:52.0062085 +02:00', N'Used', 6, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (65, N'Daewoo Tico', N'Pierwszy właściciel, stan bardzo dobry, garażowany. Przegląd ważny do 03.2024. Bardzo niski przebieg.', 4000.00, 1, 1, N'2023-06-05 20:31:13.2791361 +02:00', N'Good', 6, 2);
+INSERT Offers (Id, Title, Description, Price, Quantity, IsAvailable, CreatedAt, Condition, CategoryId, UserId) VALUES (66, N'Daewoo Tico', N'Pierwszy właściciel, stan bardzo dobry, garażowany. Przegląd ważny do 03.2024. Bardzo niski przebieg.', 690.00, 1, 1, N'2023-06-05 20:31:41.9912296 +02:00', N'Used', 6, 1);
+
+SET IDENTITY_INSERT Offers OFF
+
+--Obrazki
+SET IDENTITY_INSERT Pictures ON
+
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (7, 48, N'48_05062023080646823_6019917.jpg', N'2023-06-05 20:06:46.8233675 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (8, 49, N'49_05062023080706409_7697137.jpg', N'2023-06-05 20:07:06.4099554 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (9, 50, N'50_05062023080959383_2432687.webp', N'2023-06-05 20:09:59.3837446 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (10, 51, N'51_05062023081031913_8997759.jpg', N'2023-06-05 20:10:31.9133455 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (11, 52, N'52_05062023081051515_5629427.jpg', N'2023-06-05 20:10:51.5156993 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (12, 53, N'53_05062023081329402_9885666.webp', N'2023-06-05 20:13:29.4023703 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (13, 53, N'53_05062023081330647_2389104.jpg', N'2023-06-05 20:13:30.6472066 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (14, 53, N'53_05062023081330720_8307690.jpg', N'2023-06-05 20:13:30.7201038 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (15, 53, N'53_05062023081330837_6019422.jpg', N'2023-06-05 20:13:30.8376817 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (16, 53, N'53_05062023081330959_46614.jpg', N'2023-06-05 20:13:30.9595159 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (17, 54, N'54_05062023081818474_8831179.webp', N'2023-06-05 20:18:18.4740242 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (18, 54, N'54_05062023081819149_5842064.jpg', N'2023-06-05 20:18:19.1491238 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (19, 54, N'54_05062023081819182_9476378.jpg', N'2023-06-05 20:18:19.1829276 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (20, 54, N'54_05062023081819191_7432293.jpg', N'2023-06-05 20:18:19.1916342 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (21, 55, N'55_05062023082413628_595530.jpg', N'2023-06-05 20:24:13.6284780 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (22, 55, N'55_05062023082413634_2768554.jpg', N'2023-06-05 20:24:13.6342431 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (23, 55, N'55_05062023082413641_6645087.jpg', N'2023-06-05 20:24:13.6417472 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (24, 56, N'56_05062023082423998_517946.jpg', N'2023-06-05 20:24:23.9989891 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (25, 56, N'56_05062023082424004_7982906.jpg', N'2023-06-05 20:24:24.0046796 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (26, 56, N'56_05062023082424009_7716601.jpg', N'2023-06-05 20:24:24.0095410 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (27, 57, N'57_05062023082448819_3789275.jpg', N'2023-06-05 20:24:48.8192436 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (28, 57, N'57_05062023082448830_7066557.jpg', N'2023-06-05 20:24:48.8300125 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (29, 57, N'57_05062023082448834_322365.jpg', N'2023-06-05 20:24:48.8347024 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (30, 58, N'58_05062023082558086_8869771.jpg', N'2023-06-05 20:25:58.0868862 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (31, 58, N'58_05062023082558221_5791753.jpg', N'2023-06-05 20:25:58.2219043 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (32, 59, N'59_05062023082616491_2217434.jpg', N'2023-06-05 20:26:16.4917959 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (33, 59, N'59_05062023082616616_7444816.jpg', N'2023-06-05 20:26:16.6161252 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (34, 60, N'60_05062023082631938_7961121.jpg', N'2023-06-05 20:26:31.9383003 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (35, 60, N'60_05062023082632063_236862.jpg', N'2023-06-05 20:26:32.0632328 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (36, 61, N'61_05062023082821497_1127685.jpg', N'2023-06-05 20:28:21.4978738 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (37, 61, N'61_05062023082821508_4942233.jpg', N'2023-06-05 20:28:21.5085863 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (38, 63, N'63_05062023082854294_444441.jpg', N'2023-06-05 20:28:54.2941440 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (39, 63, N'63_05062023082854300_3968068.jpg', N'2023-06-05 20:28:54.3007966 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (40, 64, N'64_05062023083052030_6681172.jpg', N'2023-06-05 20:30:52.0303062 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (41, 64, N'64_05062023083052138_7447756.jpg', N'2023-06-05 20:30:52.1385768 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (42, 64, N'64_05062023083052233_4505818.webp', N'2023-06-05 20:30:52.2333663 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (43, 65, N'65_05062023083113293_3057020.jpg', N'2023-06-05 20:31:13.2939012 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (44, 65, N'65_05062023083113388_4870705.jpg', N'2023-06-05 20:31:13.3886907 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (45, 65, N'65_05062023083113483_9936795.webp', N'2023-06-05 20:31:13.4833169 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (46, 66, N'66_05062023083142014_3997337.jpg', N'2023-06-05 20:31:42.0142140 +02:00');
+INSERT Pictures (Id, OfferId, Name, CreationTime) VALUES (47, 66, N'66_05062023083142112_948263.jpg', N'2023-06-05 20:31:42.1128264 +02:00');
+
+SET IDENTITY_INSERT Pictures OFF

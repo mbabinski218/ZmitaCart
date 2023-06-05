@@ -111,10 +111,14 @@ public class UserRepository : IUserRepository
 
 	public async Task<Result<TokensDto>> LoginWithRefreshTokenAsync(string refreshToken)
 	{
-		var userId = _dbContext.UserTokens.FirstOrDefaultAsync(t => t.Value == refreshToken).Id;
-		var user = await _userManager.FindByIdAsync(userId.ToString());
+		var userToken = await _dbContext.UserTokens.FirstOrDefaultAsync(t => t.Value == refreshToken);
 		
-		if (user == null) 
+		if (userToken is null) 
+			return Result.Fail(new NotFoundError("User does not exist"));
+		
+		var user = await _userManager.FindByIdAsync(userToken.UserId.ToString());
+		
+		if (user is null) 
 			return Result.Fail(new NotFoundError("User does not exist"));
 		
 		foreach(var authenticator in GrantType.SupportedGrantTypes)

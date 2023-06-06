@@ -98,7 +98,7 @@ public class OfferController : ApiController
             err => StatusCode(err.StatusCode, err.ToList()));
     }
     
-    [HttpGet("byCategoriesNameQuery")]
+    [HttpGet("byCategoriesName")]
     public async Task<ActionResult<List<OfferInfoWithCategoryNameDto>>> GetOffersByCategoriesNameQuery([FromQuery] GetOffersByCategoriesNameQuery query)
     {
         return await mediator.Send(query).Then(

@@ -163,7 +163,61 @@ public class CategoryRepository : ICategoryRepository
         return await _dbContext.Categories.Where(c => c.Id == id).ProjectToType<CategoryDto>().FirstOrDefaultAsync();
     }
 
-    public async Task<Result<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId(int superiorId, int? childrenCount)
+    //TODO przerobic na rekurencyjne query jak w ofertach
+    //To ogolnie jest ZLE zrobione ale dziala
+    public async Task<Result<List<string>>> GetMostPopularCategoriesAsync(int numberOfCategories)
+    {
+        // var superiors = await GetAllSuperiors();
+        //
+        // if(superiors.IsFailed)
+        // {
+        //     return Result.Fail(new NotFoundError("No categories found"));
+        // }
+        //
+        // var superiorsId = superiors.Value.Select(s => s.Id).ToList();
+        
+        // var childrenId = await _dbContext.Categories
+        //     .Where(c => superiorsId.Contains(c.ParentId ?? 0))
+        //     .Select(c => c.Id)
+        //     .ToListAsync();
+
+        
+        // foreach (var id in childrenId)
+        // {
+        //     var temp = await GetCategoriesIdBySuperiorId(id);
+        //     if(temp.IsFailed) continue;
+        //
+        //     var categoriesId = temp.Value.ToList();
+        //
+        //     var offersCount = await _dbContext.Offers.Where(o => categoriesId.Contains(o.CategoryId)).CountAsync();
+        //
+        //     stats.Add(id, offersCount);
+        // }
+        
+        var categoriesId = await _dbContext.Categories.Select(c => c.Id).ToListAsync();
+        var stats = new Dictionary<int, int>();
+        
+        foreach (var id in categoriesId)
+        {
+            var offersCount = await _dbContext.Offers.Where(o => o.CategoryId == id).CountAsync();
+
+            stats.Add(id, offersCount);
+        }
+        
+        var categories = await _dbContext.Categories
+            .Where(c => categoriesId.Contains(c.Id))
+            .ToListAsync();
+        
+        var result =  categories.OrderByDescending(c => stats[c.Id])
+            .Select(c => c.Name)
+            .Take(numberOfCategories)
+            .ToList();
+        
+        return result;
+    }
+
+    //TODO przerobic na rekurencyjne query jak w ofertach
+    public async Task<Result<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId(int superiorId, int? childrenCount = null)
     {
         if (await _dbContext.Categories.AnyAsync(c => c.Id == superiorId) is false)
         {
@@ -204,5 +258,28 @@ public class CategoryRepository : ICategoryRepository
 
             await FillChildren(child.Children, childrenCount);
         }
+    }
+
+    private async Task<Result<IEnumerable<int>>> GetCategoriesIdBySuperiorId(int superiorId)
+    {
+        return await _dbContext.Database
+            .SqlQuery<int>
+            ($@"
+				WITH Subcategories AS
+				(
+		            SELECT DISTINCT Id, ParentId
+		            FROM Categories
+		            WHERE ParentId = {superiorId}
+
+		            UNION ALL
+
+		            SELECT Categories.Id, Categories.ParentId
+		            FROM Subcategories, Categories
+		            WHERE Categories.ParentId = Subcategories.Id
+				)
+
+				SELECT Id FROM Subcategories
+			")
+            .ToListAsync();
     }
 }

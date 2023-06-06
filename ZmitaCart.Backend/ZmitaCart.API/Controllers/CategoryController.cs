@@ -8,6 +8,7 @@ using ZmitaCart.Application.Queries.CategoryQueries.GetAllSuperiors;
 using ZmitaCart.Application.Queries.CategoryQueries.GetCategories;
 using ZmitaCart.Application.Commands.CategoryCommands.UpdateCategory;
 using ZmitaCart.Application.Dtos.CategoryDtos;
+using ZmitaCart.Application.Queries.CategoryQueries.GetMostPopularCategories;
 using ZmitaCart.Application.Queries.CategoryQueries.GetParentCategory;
 using ZmitaCart.Application.Queries.CategoryQueries.GetSuperiorsWithChildren;
 using ZmitaCart.Domain.Common;
@@ -92,6 +93,14 @@ public class CategoryController : ApiController
     {
         return await mediator.Send(new DeleteCategoryCommand(id)).Then(
             s => Ok(),
+            err => StatusCode(err.StatusCode, err.ToList()));
+    }
+    
+    [HttpGet("getMostPopular")]
+    public async Task<ActionResult> GetMostPopularCategories([FromQuery] GetMostPopularCategoriesQuery query)
+    {
+        return await mediator.Send(query).Then(
+            s => Ok(s.Value),
             err => StatusCode(err.StatusCode, err.ToList()));
     }
 }

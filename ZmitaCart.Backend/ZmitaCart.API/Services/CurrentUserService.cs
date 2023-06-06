@@ -24,7 +24,7 @@ public class CurrentUserService : ICurrentUserService
 				.FirstOrDefault()
 				?.Split(" ")
 				.LastOrDefault();
-			
+
 			if (token is null)
 				return null;
 

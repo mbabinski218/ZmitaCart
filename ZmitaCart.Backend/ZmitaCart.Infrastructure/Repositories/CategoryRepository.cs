@@ -259,27 +259,4 @@ public class CategoryRepository : ICategoryRepository
             await FillChildren(child.Children, childrenCount);
         }
     }
-
-    private async Task<Result<IEnumerable<int>>> GetCategoriesIdBySuperiorId(int superiorId)
-    {
-        return await _dbContext.Database
-            .SqlQuery<int>
-            ($@"
-				WITH Subcategories AS
-				(
-		            SELECT DISTINCT Id, ParentId
-		            FROM Categories
-		            WHERE ParentId = {superiorId}
-
-		            UNION ALL
-
-		            SELECT Categories.Id, Categories.ParentId
-		            FROM Subcategories, Categories
-		            WHERE Categories.ParentId = Subcategories.Id
-				)
-
-				SELECT Id FROM Subcategories
-			")
-            .ToListAsync();
-    }
 }

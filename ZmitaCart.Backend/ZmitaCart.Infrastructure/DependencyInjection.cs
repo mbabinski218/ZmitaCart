@@ -58,19 +58,18 @@ public static class DependencyInjection
                 options.Password.RequiredLength = 1;
                 options.Password.RequiredUniqueChars = 0;
             })
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
-        
-        services.ConfigureApplicationCookie(options =>
-        {
-            options.Cookie.Name = "auth_cookie";
-            options.Events.OnRedirectToLogin = context =>
-            {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                context.RedirectUri = "";
-                return Task.CompletedTask;
-            };
-        });
+            .AddEntityFrameworkStores<ApplicationDbContext>();
+
+        // services.ConfigureApplicationCookie(options =>
+        // {
+        //     options.Cookie.Name = "auth_cookie";
+        //     options.Events.OnRedirectToLogin = context =>
+        //     {
+        //         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        //         context.RedirectUri = "";
+        //         return Task.CompletedTask;
+        //     };
+        // });
 
         services.AddScoped<PublishDomainEventsInterceptor>();
         
@@ -89,7 +88,12 @@ public static class DependencyInjection
 
         services.AddSingleton<JwtHelper>();
 
-        services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
+        services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters

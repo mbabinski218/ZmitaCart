@@ -31,13 +31,14 @@ export class CategoriesMenuComponent {
   ) { }
 
   openSubCategories(category: SuperiorCategories): void {
-    this.subcategories$ = this.headerService.getSubCategories(category.id).pipe(
-      tap((res) => {
-        if (!(res.children && res.children.length > 0)) {
-          this.categories.find((res) => res === category).isClickable = true;
-        }
-      })
-    );
+    this.subcategories$ = this.headerService.getSubCategories(category.id);
+    // .pipe(
+    //   tap((res) => {
+    //     if (!(res.children && res.children.length > 0)) {
+    //       this.categories.find((res) => res === category).isClickable = true;
+    //     }
+    //   })
+    // );
   }
 
   openCategory(categoryName: string): void {

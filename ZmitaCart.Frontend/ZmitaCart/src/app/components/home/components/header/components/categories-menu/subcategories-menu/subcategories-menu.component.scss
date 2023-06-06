@@ -4,6 +4,11 @@
   line-height: 24px;
   color: #000;
   white-space: nowrap;
+
+  &:hover {
+    color: var(--color-allegro-green);
+    cursor: pointer;
+  }
 }
 
 .isLast {

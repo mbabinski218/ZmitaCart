@@ -66,15 +66,13 @@
   }
 }
 
-.isMain {
+.data {
   font-size: 14px;
   font-weight: 600;
   line-height: 24px;
   color: #000;
   white-space: nowrap;
-}
 
-.change {
   &:hover {
     color: var(--color-allegro-green);
     cursor: pointer;
@@ -84,5 +82,4 @@
 .flex-item {
   display: flex;
   flex-direction: column;
-  // padding-bottom: 30px;
 }

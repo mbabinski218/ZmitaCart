@@ -22,28 +22,12 @@ export const routes: Route[] = [
       },
       {
         path: RoutesPath.OFFERS,
-        loadComponent: () => import('./components/offers/offers.component').then(m => m.OffersComponent),
+        loadComponent: () => import('./components/offers-main/offers-main.component').then(m => m.OffersMainComponent),
       },
       {
         path: RoutesPath.OFFERS_FILTERED,
         loadComponent: () => import('./components/offers-filtered/offers-filtered.component').then(m => m.OffersFilteredComponent),
       },
-      // {
-      //   path: RoutesPath.OFFER,
-      //   component: OfferComponent,
-      // },
-      // {
-      //   path: RoutesPath.FAVOURITES,
-      //   component: FavouritesComponent,
-      // },
-      // {
-      //   path: RoutesPath.ACCOUNT,
-      //   component: AccountComponent,
-      // },
-      // {
-      //   path: RoutesPath.MESSAGES,
-      //   component: MessagesComponent,
-      // },
     ]
   },
   {

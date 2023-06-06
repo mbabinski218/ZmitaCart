@@ -10,5 +10,6 @@ export enum Api {
   GET_SUB_CATEGORIES = '/category/getBySuperiorId',
   GET_SUB_CATEGORIES_FEW = '/category/getFewBySuperiorId',
 
-  OFFER = '/offer'
+  OFFER = '/offer',
+  OFFER_MAIN = '/offer/byCategoriesNameQuery',
 }

@@ -5,12 +5,7 @@
   >
     {{ propertyName }}
   </p>
-  <div
-    class="tile__data"
-    [class.tile__data--hover]="type === 'string' || type === 'number'"
-  >
-    <ng-content></ng-content>
-  </div>
+  <ng-content></ng-content>
 </div>
 <div
   *ngIf="icon"

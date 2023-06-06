@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SubCategories } from '@components/home/components/header/interfaces/header.interface';
+import { Router } from '@angular/router';
+import { RoutesPath } from '@core/enums/routes-path.enum';
 
 @Component({
   selector: 'pp-subcategories-menu',
@@ -13,7 +15,13 @@ import { SubCategories } from '@components/home/components/header/interfaces/hea
 export class SubcategoriesMenuComponent {
   @Input() subcategories: SubCategories[];
 
+  constructor(
+    private router: Router,
+  ) { }
+
   openCategory(categoryName: string): void {
-    console.log(categoryName);
+    void this.router.navigate([`${RoutesPath.HOME}/${RoutesPath.OFFERS_FILTERED}`], {
+      queryParams: { c: categoryName },
+    });
   }
 }

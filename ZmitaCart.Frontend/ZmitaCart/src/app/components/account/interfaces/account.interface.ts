@@ -10,7 +10,6 @@ export interface CredentialsForm {
   }
 }
 
-
 export interface UserCredentials {
   email: string,
   firstName: string,
@@ -24,4 +23,10 @@ export interface UserCredentials {
     houseNumber: number,
     apartmentNumber: number,
   }
+}
+
+export interface UserCredentialsShow {
+  name: string,
+  value: string | number,
+  icon: string,
 }

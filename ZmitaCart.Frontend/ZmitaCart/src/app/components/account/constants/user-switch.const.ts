@@ -16,7 +16,7 @@ export const USER_SWITCHES: UserSwitch[] = [
     value: 'bought',
   },
   {
-    name: 'Aktualizacja adresu',
+    name: 'Aktualizacja danych',
     value: 'update',
   },
 ];

@@ -15,10 +15,13 @@
   </div>
 
   <ng-container [ngSwitch]="currentView">
-    <pp-favourites *ngSwitchCase="'observed'"></pp-favourites>
     <pp-user-data *ngSwitchCase="'credentials'"></pp-user-data>
-    <pp-address-form *ngSwitchCase="'update'"></pp-address-form>
+    <pp-favourites *ngSwitchCase="'observed'"></pp-favourites>
     <pp-user-offers *ngSwitchCase="'offers'"></pp-user-offers>
     <pp-user-bought *ngSwitchCase="'bought'"></pp-user-bought>
+    <pp-address-form *ngSwitchCase="'update'"></pp-address-form>
   </ng-container>
 </div>
+
+
+<!-- TODO footer -->

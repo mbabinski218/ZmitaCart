@@ -6,6 +6,7 @@ import { CredentialsForm } from '@components/account/interfaces/account.interfac
 import { AccountService } from '@components/account/api/account.service';
 import { Subject, filter, takeUntil, tap } from 'rxjs';
 import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'pp-address-form',
@@ -33,6 +34,8 @@ export class AddressFormComponent implements OnDestroy {
   constructor(
     private accountService: AccountService,
     private toastMessageService: ToastMessageService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnDestroy(): void {
@@ -56,8 +59,15 @@ export class AddressFormComponent implements OnDestroy {
     this.accountService.sendForm(formData).pipe(
       filter((res) => !!res),
       tap(() => this.toastMessageService.notifyOfSuccess('Zaktualizowano dane')),
-      tap(() => this.form.reset()),
+      tap(() => this.navigateTo('credentials')),
       takeUntil(this.onDestroy$),
     ).subscribe();
+  }
+
+  navigateTo(fragment: string): void {
+    void this.router.navigate(['.'], {
+      relativeTo: this.route,
+      fragment,
+    });
   }
 }

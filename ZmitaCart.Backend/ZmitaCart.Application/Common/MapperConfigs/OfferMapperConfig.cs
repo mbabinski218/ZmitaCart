@@ -14,13 +14,6 @@ public class OfferMapperConfig : IRegister
 				? null
 				: src.Pictures.OrderBy(p => p.CreationTime).First().Name);
 
-		config.ForType<Offer, OfferInfoWithCategoryNameDto>()
-			.Map(dest => dest.CategoryName, src => src.Category.Name)
-			.Map(dest => dest.Address, src => src.User.Address)
-			.Map(dest => dest.ImageName, src => !src.Pictures.Any()
-				? null
-				: src.Pictures.OrderBy(p => p.CreationTime).First().Name);
-
 		config.ForType<Offer, OfferDto>()
 			.Map(dest => dest.Address, src => src.User.Address)
 			.Map(dest => dest.PicturesNames, src => !src.Pictures.Any()

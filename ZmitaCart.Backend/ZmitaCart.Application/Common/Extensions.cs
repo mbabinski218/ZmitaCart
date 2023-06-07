@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ZmitaCart.Application.Common;
 
@@ -17,4 +18,23 @@ public static class Extensions
 	public static IQueryable<TSource> OrderByIf<TSource, TKey>(this IQueryable<TSource> queryable, 
 		Expression<Func<TSource, TKey>> keySelector, bool? condition)
 		=> condition is true ? queryable.OrderBy(keySelector) : queryable;
+
+	public static async Task<Dictionary<TKey, List<TElement>>> ToUniqueDictionary<TSource, TKey, TElement>(
+		this IQueryable<TSource> queryable,
+		Func<TSource, TKey> keySelector,
+		Func<TSource, TElement> elementSelector)
+		where TKey : notnull
+	{
+		var dictionary = new Dictionary<TKey, List<TElement>>();
+		
+		await foreach (var element in queryable.AsAsyncEnumerable())
+		{
+			if (!dictionary.TryAdd(keySelector(element), new List<TElement>{ elementSelector(element) }))
+			{
+				dictionary[keySelector(element)].Add(elementSelector(element));
+			}
+		}
+
+		return dictionary;
+	}
 }

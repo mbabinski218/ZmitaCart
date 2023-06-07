@@ -5,7 +5,7 @@ using ZmitaCart.Application.Interfaces;
 
 namespace ZmitaCart.Application.Queries.OfferQueries.GetOffersByCategoriesName;
 
-public class GetOffersByCategoriesNameHandler : IRequestHandler<GetOffersByCategoriesNameQuery, Result<IEnumerable<OfferInfoWithCategoryNameDto>>>
+public class GetOffersByCategoriesNameHandler : IRequestHandler<GetOffersByCategoriesNameQuery, Result<Dictionary<string, List<OfferInfoDto>>>>
 {
 	private readonly IOfferRepository _offerRepository;
 
@@ -14,7 +14,8 @@ public class GetOffersByCategoriesNameHandler : IRequestHandler<GetOffersByCateg
 		_offerRepository = offerRepository;
 	}
 
-	public async Task<Result<IEnumerable<OfferInfoWithCategoryNameDto>>> Handle(GetOffersByCategoriesNameQuery request, CancellationToken cancellationToken)
+	public async Task<Result<Dictionary<string, List<OfferInfoDto>>>> Handle(GetOffersByCategoriesNameQuery request, 
+		CancellationToken cancellationToken)
 	{
 		return await _offerRepository.GetOffersByCategoriesNameAsync(request.CategoriesNames, request.Size);
 	}

@@ -242,8 +242,8 @@ public class OfferRepository : IOfferRepository
 		return Result.Ok(offers);
 	}
 
-	public async Task<Result<IEnumerable<OfferInfoWithCategoryNameDto>>> GetOffersByCategoriesNameAsync(List<string> categoriesNames,
-		int size)
+	public async Task<Result<Dictionary<string, List<OfferInfoDto>>>> GetOffersByCategoriesNameAsync(
+		IEnumerable<string> categoriesNames, int size)
 	{
 		var offersId = await _dbContext.Database
 			.SqlQueryRaw<int>
@@ -269,8 +269,7 @@ public class OfferRepository : IOfferRepository
 			.Include(o => o.Pictures)
 			.Include(o => o.Favorites)
 			.AsNoTracking()
-			.ProjectToType<OfferInfoWithCategoryNameDto>()
-			.ToListAsync();
+			.ToUniqueDictionary(o => o.Category.Name, o => o.Adapt<OfferInfoDto>());
 
 		return offers;
 	}

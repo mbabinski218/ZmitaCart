@@ -27,6 +27,7 @@ const customIcons: [string, string][] = [
     ["arrow", "arrow.svg"],
     ["chat", "chat.svg"],
     ["heart", "heart.svg"],
+    ["heart-filled", "heart-filled.svg"],
     ["user", "user.svg"],
     ["menu", "menu.svg"],
     ["find", "find.svg"],

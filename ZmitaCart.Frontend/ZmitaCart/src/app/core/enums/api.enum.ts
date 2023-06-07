@@ -9,7 +9,11 @@ export enum Api {
   GET_SUPERIOR_CATEGORIES = '/category/getAllSuperiors',
   GET_SUB_CATEGORIES = '/category/getBySuperiorId',
   GET_SUB_CATEGORIES_FEW = '/category/getFewBySuperiorId',
+  CATEGORIES_POPULAR = '/category/getMostPopular',
 
   OFFER = '/offer',
-  OFFER_MAIN = '/offer/byCategoriesNameQuery',
+  OFFER_MAIN = '/offer/byCategoriesName',
+  OFFER_ADD_TO_FAVOURITES = '/offer/addToFavorites/:id',
+
+  FILE = '/File'
 }

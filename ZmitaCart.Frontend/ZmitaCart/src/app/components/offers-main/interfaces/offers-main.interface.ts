@@ -1,6 +1,10 @@
+export interface Offers {
+  name: string,
+  data: MainOffers[],
+}
+
 export interface MainOffers {
   id: number,
-  categoryName: string,
   title: string,
   price: number,
   address: {

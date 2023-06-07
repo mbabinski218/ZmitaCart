@@ -1,5 +1,6 @@
 import { Route } from '@angular/router';
 import { RoutesPath } from '@core/enums/routes-path.enum';
+import { isUserLoggedInGuard, isUserNotLoggedInGuard } from '@core/guards/auth.guard';
 
 export const routes: Route[] = [
   {
@@ -18,6 +19,7 @@ export const routes: Route[] = [
     children: [
       {
         path: RoutesPath.ACCOUNT,
+        canActivate: [isUserLoggedInGuard],
         loadComponent: () => import('./components/account/account.component').then(m => m.AccountComponent),
       },
       {
@@ -28,14 +30,20 @@ export const routes: Route[] = [
         path: RoutesPath.OFFERS_FILTERED,
         loadComponent: () => import('./components/offers-filtered/offers-filtered.component').then(m => m.OffersFilteredComponent),
       },
+      // {
+      // path: RoutesPath.OFFER, // żeby id oferty było też w url
+      // loadComponent: () => import('./components/offers-main/offers-main.component').then(m => m.OffersMainComponent),
+      // },
     ]
   },
   {
     path: RoutesPath.ADD_OFFER,
+    canActivate: [isUserLoggedInGuard],
     loadComponent: () => import('./components/add-offer/add-offer.component').then(m => m.AddOfferComponent),
   },
   {
     path: RoutesPath.AUTHENTICATION,
+    canActivate: [isUserNotLoggedInGuard],
     loadComponent: () => import('./components/authentication/authentication.component').then(m => m.AuthenticationComponent),
     children: [
       {

@@ -25,7 +25,7 @@ import { GoogleLoginProvider, SocialAuthService, SocialAuthServiceConfig } from 
       ],
     } as SocialAuthServiceConfig,
   }
-],
+  ],
   templateUrl: './google-login.component.html',
   styleUrls: ['./google-login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

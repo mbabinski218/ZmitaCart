@@ -99,7 +99,7 @@ public class OfferController : ApiController
     }
     
     [HttpGet("byCategoriesName")]
-    public async Task<ActionResult<Dictionary<string, List<OfferInfoDto>>>> GetOffersByCategoriesNameQuery([FromQuery] GetOffersByCategoriesNameQuery query)
+    public async Task<ActionResult<List<NamedList<string, OfferInfoDto>>>> GetOffersByCategoriesNameQuery([FromQuery] GetOffersByCategoriesNameQuery query)
     {
         return await mediator.Send(query).Then(
             s => Ok(s.Value),

@@ -19,17 +19,28 @@ public static class Extensions
 		Expression<Func<TSource, TKey>> keySelector, bool? condition)
 		=> condition is true ? queryable.OrderBy(keySelector) : queryable;
 
-	public static async Task<List<NamedList<TElement>>> ToUniqueListAsync<TSource, TKey, TElement>(
+	public static async Task<List<NamedList<TKey, TElement>>> ToUniqueListAsync<TSource, TKey, TElement>(
 		this IQueryable<TSource> queryable,
 		Func<TSource, TKey> keySelector,
 		Func<TSource, TElement> elementSelector)
-		where TKey : notnull
+		where TKey : IEquatable<TKey>
 	{
-		var list = new List<NamedList<TElement>>();
+		var list = new List<NamedList<TKey, TElement>>();
 		
 		await foreach (var element in queryable.AsAsyncEnumerable())
 		{
-			
+			if (list.Any(x => x.Name.Equals(keySelector(element))))
+			{
+				list.First(x => x.Name.Equals(keySelector(element))).Data.Add(elementSelector(element));
+			}
+			else
+			{
+				list.Add(new NamedList<TKey, TElement>
+				{
+					Name = keySelector(element),
+					Data = new List<TElement> { elementSelector(element) }
+				});
+			}
 		}
 
 		return list;

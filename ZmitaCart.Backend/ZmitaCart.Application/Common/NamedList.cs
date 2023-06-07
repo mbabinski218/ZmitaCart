@@ -1,7 +1,8 @@
 ﻿namespace ZmitaCart.Application.Common;
 
-public class NamedList<T>
+public class NamedList<TKey, TElement>
+	where TKey : notnull
 {
-	public string Name { get; set; } = null!;
-	public List<T> List { get; set; } = null!;
+	public TKey Name { get; set; } = default!;
+	public List<TElement> Data { get; set; } = null!;
 }

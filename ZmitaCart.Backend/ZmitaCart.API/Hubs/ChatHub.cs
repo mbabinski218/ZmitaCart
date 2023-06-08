@@ -17,22 +17,22 @@ public class ChatHub : Hub, IChatHub
 		_mediator = mediator;
 	}
 
-	public async Task JoinAsync(int chat, CancellationToken cancellationToken)
+	public async Task Join(int chat, CancellationToken cancellationToken)
 	{
 		try
 		{
 			await Groups.AddToGroupAsync(Context.ConnectionId, chat.ToString(), cancellationToken);
-			await ConnectAsync();
+			await Connect();
 			await _mediator.Publish(new JoinedChat(chat), cancellationToken);
 		}
 		catch
 		{
-			await DisconnectAsync();
+			await Disconnect();
 			throw;
 		}
 	}
 	
-	public async Task RestoreMessagesAsync(int userId, string user, int chat, string text, DateTimeOffset date, CancellationToken cancellationToken)
+	public async Task RestoreMessages(int userId, string user, int chat, string text, DateTimeOffset date, CancellationToken cancellationToken)
 	{
 		await Clients.Caller.SendAsync("ReceiveMessage", new
 		{
@@ -43,7 +43,7 @@ public class ChatHub : Hub, IChatHub
 		}, cancellationToken);
 	}
 	
-	public async Task SendMessageAsync(string user, int chat, string text, DateTimeOffset date, CancellationToken cancellationToken)
+	public async Task SendMessage(string user, int chat, string text, DateTimeOffset date, CancellationToken cancellationToken)
 	{
 		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", new
 		{
@@ -55,8 +55,8 @@ public class ChatHub : Hub, IChatHub
 		await _mediator.Publish(new MessageSent(user, chat, text), cancellationToken);
 	}
 	
-	private async Task ConnectAsync() => await Clients.Client(Context.ConnectionId).SendAsync("Connected");
+	private async Task Connect() => await Clients.Client(Context.ConnectionId).SendAsync("Connected");
 
-	private async Task DisconnectAsync() => await Clients.Client(Context.ConnectionId).SendAsync("Disconnected");
+	private async Task Disconnect() => await Clients.Client(Context.ConnectionId).SendAsync("Disconnected");
 	
 }

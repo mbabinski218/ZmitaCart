@@ -31,7 +31,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IChatHub, ChatHub>();
 builder.Services.AddCors(options => options.AddPolicy("corsapp", corsBuilder =>
-    corsBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials()));
+    corsBuilder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader().AllowCredentials()));
 
 if (builder.Environment.IsDevelopment())
 {
@@ -53,8 +53,8 @@ await seeder.Seed();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseRouting();
 app.UseCors("corsapp");
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 app.MapControllers();
 
 app.MapHub<ChatHub>("/ChatHub");

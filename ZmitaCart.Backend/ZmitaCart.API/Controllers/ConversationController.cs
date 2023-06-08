@@ -16,14 +16,14 @@ public class ConversationController : ApiController
 	}
 	
 	[HttpPost("message")]
-	[RoleAuthorize]
+	//[RoleAuthorize]
 	public async Task<ActionResult<int>> SendMessage([FromBody] SendMessageCommand command)
 	{
 		return Ok(await mediator.Send(command));
 	}
 	
 	[HttpGet]
-	[RoleAuthorize]
+	//[RoleAuthorize]
 	public async Task<ActionResult<PaginatedList<ConversationInfoDto>>> GetAllConversations([FromQuery] GetAllConversationsQuery query)
 	{
 		return Ok(await mediator.Send(query));

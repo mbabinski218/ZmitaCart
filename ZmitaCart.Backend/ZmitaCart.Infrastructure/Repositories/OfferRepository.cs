@@ -229,7 +229,8 @@ public class OfferRepository : IOfferRepository
 			            && (categoriesId.Contains(o.CategoryId) || o.CategoryId == (search.CategoryId ?? o.CategoryId))
 			            && o.Price >= (search.MinPrice ?? o.Price)
 			            && o.Price <= (search.MaxPrice ?? o.Price)
-			            && o.Condition == (search.Condition ?? o.Condition))
+			            && o.Condition == (search.Condition ?? o.Condition)
+			            && o.IsAvailable == true)
 			.Include(o => o.User)
 			.Include(o => o.Pictures)
 			.Include(o => o.Favorites)
@@ -252,7 +253,7 @@ public class OfferRepository : IOfferRepository
 				(
 					SELECT *, ROW_NUMBER() OVER (PARTITION BY CategoryId ORDER BY CreatedAt DESC) AS RowNumber
 					FROM Offers
-					WHERE CategoryId IN
+					WHERE IsAvailable = 1 AND CategoryId IN
 					(
 						SELECT Id FROM Categories
 						WHERE Name IN ({string.Join(", ", categoriesNames.Select(s => $"'{s}'"))})

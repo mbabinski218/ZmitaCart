@@ -25,6 +25,7 @@ public class OfferController : ApiController
     }
 
     [HttpPost]
+    [RoleAuthorize]
     public async Task<ActionResult<int>> CreateOffer([FromForm] CreateOfferCommand command)
     {
         return await mediator.Send(command).Then(
@@ -33,6 +34,7 @@ public class OfferController : ApiController
     }
 
     [HttpPut]
+    [RoleAuthorize]
     public async Task<ActionResult<int>> UpdateOffer([FromForm] UpdateOfferCommand command)
     {
         return await mediator.Send(command).Then(
@@ -41,7 +43,6 @@ public class OfferController : ApiController
     }
 
     [HttpGet]
-    [AllowAnonymous]
     public async Task<ActionResult<PaginatedList<OfferInfoDto>>> SearchOffers([FromQuery] SearchOffersQuery query)
     {
         return await mediator.Send(query).Then(
@@ -50,6 +51,7 @@ public class OfferController : ApiController
     }
     
     [HttpDelete("{id:int}")]
+    [RoleAuthorize]
     public async Task<ActionResult> DeleteOffer([FromRoute] int id)
     {
         return await mediator.Send(new DeleteOfferCommand(id)).Then(
@@ -58,7 +60,6 @@ public class OfferController : ApiController
     }
 
     [HttpGet("{id:int}")]
-    [AllowAnonymous]
     public async Task<ActionResult<OfferDto>> GetOffer([FromRoute] int id)
     {
         return await mediator.Send(new GetOfferQuery(id)).Then(
@@ -67,6 +68,7 @@ public class OfferController : ApiController
     }
 
     [HttpPost("addToFavorites/{id:int}")]
+    [RoleAuthorize]
     public async Task<ActionResult> AddToFavorites([FromRoute] int id)
     {
         return await mediator.Send(new AddToFavoritesCommand(id)).Then(
@@ -75,6 +77,7 @@ public class OfferController : ApiController
     }
     
     [HttpGet("favorites")]
+    [RoleAuthorize]
     public async Task<ActionResult<PaginatedList<OfferInfoDto>>> GetFavoritesOffers([FromQuery] GetFavouritesOffersQuery query)
     {
         return await mediator.Send(query).Then(
@@ -83,6 +86,7 @@ public class OfferController : ApiController
     }
     
     [HttpPost("buy")]
+    [RoleAuthorize]
     public async Task<ActionResult> BuyOffer([FromBody] BuyOfferCommand command)
     {
         return await mediator.Send(command).Then(
@@ -91,6 +95,7 @@ public class OfferController : ApiController
     }
     
     [HttpGet("bought")]
+    [RoleAuthorize]
     public async Task<ActionResult<PaginatedList<BoughtOfferDto>>> GetBoughtOffers([FromQuery] GetBoughtOffersQuery query)
     {
         return await mediator.Send(query).Then(

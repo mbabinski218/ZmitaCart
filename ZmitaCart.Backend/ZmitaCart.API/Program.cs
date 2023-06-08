@@ -25,7 +25,10 @@ builder.Services.AddSwaggerGen(options =>
     options.DescribeAllParametersInCamelCase();
 });
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(o=>
+{
+    o.EnableDetailedErrors = true;
+});
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
@@ -35,7 +38,7 @@ builder.Services.AddCors(options => options.AddPolicy("corsapp", corsBuilder =>
 
 if (builder.Environment.IsDevelopment())
 {
-   builder.Services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
+   //builder.Services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
 }
 
 var app = builder.Build();
@@ -51,12 +54,12 @@ var seeder = scope.ServiceProvider.GetRequiredService<IDatabaseSeeder>();
 await seeder.Seed();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
-app.UseRouting();
 app.UseCors("corsapp");
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseRouting();
+app.UseAuthorization();
 app.MapControllers();
 
-app.MapHub<ChatHub>("/ChatHub");
+app.MapHub<ChatHub>("/ChatHub").AllowAnonymous();
 
 app.Run();

@@ -30,10 +30,10 @@ export const routes: Route[] = [
         path: RoutesPath.OFFERS_FILTERED,
         loadComponent: () => import('./components/offers-filtered/offers-filtered.component').then(m => m.OffersFilteredComponent),
       },
-      // {
-      // path: RoutesPath.OFFER, // żeby id oferty było też w url
-      // loadComponent: () => import('./components/offers-main/offers-main.component').then(m => m.OffersMainComponent),
-      // },
+      {
+      path: `${RoutesPath.OFFER}/:id`,
+      loadComponent: () => import('./components/offer-single/offer-single.component').then(m => m.OfferSingleComponent),
+      },
     ]
   },
   {

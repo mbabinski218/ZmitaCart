@@ -5,7 +5,7 @@ import { AccountService } from '@components/account/api/account.service';
 import { UserCredentialsShow } from '@components/account/interfaces/account.interface';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DetailTileComponent } from '@shared/components/detail-tile/detail-tile.component';
-
+import { stringMask } from '@shared/utils/string-mask';
 @Component({
   selector: 'pp-user-data',
   standalone: true,
@@ -43,7 +43,7 @@ export class UserDataComponent implements OnInit {
         },
         {
           name: 'Numer telefonu',
-          value: this.applyMask('Numer telefonu', res.phoneNumber),
+          value: res.phoneNumber ? stringMask('Numer telefonu', res.phoneNumber) : '-',
           icon: 'dialpad',
         },
         {
@@ -63,7 +63,7 @@ export class UserDataComponent implements OnInit {
         },
         {
           name: 'Kod pocztowy',
-          value: this.applyMask('Kod pocztowy', String(res.address.postalCode)),
+          value: res.address.postalCode ? stringMask('Kod pocztowy', String(res.address.postalCode)) : '-',
           icon: 'markunread_mailbox',
         },
         {
@@ -78,16 +78,5 @@ export class UserDataComponent implements OnInit {
         },
       ]))
     );
-  }
-
-  applyMask(type:string, value: string): string {
-    switch(type) {
-      case 'Numer telefonu': {
-        return `${value.slice(0, 3)}-${value.slice(3, 6)}-${value.slice(6)}`;
-      }
-      case 'Kod pocztowy': {
-        return `${value.slice(0, 2)}-${value.slice(2)}`;
-      }
-    }
   }
 }

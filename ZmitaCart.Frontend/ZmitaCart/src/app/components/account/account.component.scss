@@ -11,8 +11,8 @@ pp-account {
   .box {
     border-radius: 0.8rem;
     box-shadow: 0 1px 1px 0 rgba(10, 22, 70, .1), 0 0 1px 0 rgba(10, 22, 70, .06);
-    margin: 0 auto 2.4rem;
-    background-color: #fafafa;
+    background-color: #fff;
+    padding: 16px;
   }
 
   .header {
@@ -25,10 +25,6 @@ pp-account {
     padding: 1.6rem 2.6rem;
     background: #fff;
     text-align: unset;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 
     .text {
       font-size: 1.45rem;

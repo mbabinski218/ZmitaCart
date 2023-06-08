@@ -49,4 +49,8 @@ export class OffersMainComponent implements OnInit {
     item.isFavourite = !item.isFavourite;
     //TODO czemu to nie działa w tapie lub subscribie??
   }
+
+  details(id: number): void {
+    void this.router.navigateByUrl(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${id}`);
+  }
 }

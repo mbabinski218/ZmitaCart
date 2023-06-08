@@ -7,12 +7,16 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserService } from '@core/services/authorization/user.service';
+import { LocalStorageService } from '../localStorage/local-storage.service';
+import { KeyStorage } from '@core/enums/key-storage.enum';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private localStorageService: LocalStorageService,
   ) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -25,10 +29,12 @@ export class AuthInterceptor implements HttpInterceptor {
     //     }
     //   });
     // }
+    const token = this.localStorageService.getItem<string>(KeyStorage.USER_TOKEN);
 
     request = request.clone({
       setHeaders: {
-        'Authorization': `bearer ${this.userService.getUserToken()}`,
+        'Authorization': `bearer ${isEmpty(token) ? undefined : token}`,
+        // 'Authorization': `bearer ${this.userService.getUserToken()}`,
       }
     });
 

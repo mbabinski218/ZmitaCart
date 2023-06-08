@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../header/header.component';
+import { HeaderComponent } from '@components/home/components/header/header.component';
 import { OverlayService } from '@core/services/overlay/overlay.service';
 import { Observable } from 'rxjs';
 

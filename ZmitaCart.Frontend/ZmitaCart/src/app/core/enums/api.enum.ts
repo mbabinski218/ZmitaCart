@@ -12,8 +12,11 @@ export enum Api {
   CATEGORIES_POPULAR = '/category/getMostPopular',
 
   OFFER = '/offer',
+  OFFER_SINGLE = '/offer/:id',
   OFFER_MAIN = '/offer/byCategoriesName',
   OFFER_ADD_TO_FAVOURITES = '/offer/addToFavorites/:id',
 
-  FILE = '/File'
+  FILE = '/File',
+
+  CONVERSATION = '/conversation',
 }

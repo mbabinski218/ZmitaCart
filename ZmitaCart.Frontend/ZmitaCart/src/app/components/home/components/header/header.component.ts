@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { RoutesPath } from '@core/enums/routes-path.enum';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,6 +13,7 @@ import { Observable, shareReplay } from 'rxjs';
 import { UserService } from '@core/services/authorization/user.service';
 import { SuperiorCategories } from '@components/home/components/header/interfaces/header.interface';
 import { HeaderService } from '@components/home/components/api/header.service';
+import { RoutingService } from '@shared/services/routing.service';
 
 @Component({
   selector: 'pp-header',
@@ -29,7 +30,7 @@ export class HeaderComponent implements OnInit {
   onResize(): void {
     this.isBig = window.innerWidth > 768;
   }
-  
+
   readonly RoutesPath = RoutesPath;
   readonly ADD_OFFER_LINK = `/${RoutesPath.ADD_OFFER}`;
 
@@ -40,8 +41,8 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     protected overlayService: OverlayService,
-    protected userService: UserService,
-    protected headerService: HeaderService,
+    private routingService: RoutingService,
+    private headerService: HeaderService,
   ) { }
 
   ngOnInit(): void {
@@ -49,4 +50,7 @@ export class HeaderComponent implements OnInit {
     this.superiorCategories$ = this.headerService.getSuperiorCategories().pipe(shareReplay());
   }
 
+  navigateTo(fragment?: string): void {
+    this.routingService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.ACCOUNT}`, fragment);
+  }
 }

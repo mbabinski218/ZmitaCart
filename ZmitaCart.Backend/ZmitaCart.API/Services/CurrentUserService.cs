@@ -24,12 +24,12 @@ public class CurrentUserService : ICurrentUserService
 				.FirstOrDefault()
 				?.Split(" ")
 				.LastOrDefault();
-
+	
 			if (token is null)
 				return null;
-
+	
 			var handler = new JwtSecurityTokenHandler();
-
+	
 			if (!handler.CanReadToken(token))
 				return null;
 			
@@ -39,6 +39,7 @@ public class CurrentUserService : ICurrentUserService
 			return userId;
 		}
 	}
+	//public string? UserId => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.Id);
 	public string? UserEmail => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.Email);
 	public string? UserFirstName => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.FirstName);
 	public string? UserLastName => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimNames.LastName);

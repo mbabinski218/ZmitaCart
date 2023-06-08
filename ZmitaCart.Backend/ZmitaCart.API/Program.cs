@@ -35,7 +35,7 @@ builder.Services.AddCors(options => options.AddPolicy("corsapp", corsBuilder =>
 
 if (builder.Environment.IsDevelopment())
 {
-   builder.Services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
+   //builder.Services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
 }
 
 var app = builder.Build();

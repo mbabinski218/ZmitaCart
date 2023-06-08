@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace ZmitaCart.Application.Dtos.FileDtos;
+﻿namespace ZmitaCart.Application.Dtos.FileDtos;
 
 public class FileDto
 {

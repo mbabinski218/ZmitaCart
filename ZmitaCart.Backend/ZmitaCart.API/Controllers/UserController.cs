@@ -28,6 +28,7 @@ public class UserController : ApiController
 	}
 
 	[HttpGet]
+	[RoleAuthorize]
 	public async Task<ActionResult<UserDataDto>> GetUserData()
 	{
 		return await mediator.Send(new GetDataQuery()).Then(
@@ -36,7 +37,6 @@ public class UserController : ApiController
 	}
 	
 	[HttpPost("register")]
-	[AllowAnonymous]
 	public async Task<ActionResult> Register([FromBody] RegisterUserCommand command)
 	{
 		return await mediator.Send(command).Then(
@@ -45,7 +45,6 @@ public class UserController : ApiController
 	}
 
 	[HttpPost("login")]
-	[AllowAnonymous]
 	public async Task<ActionResult<TokensDto>> Login([FromBody] LoginUserCommand command)
 	{
 		return await mediator.Send(command).Then(
@@ -54,6 +53,7 @@ public class UserController : ApiController
 	}
 
 	[HttpPost("logout")]
+	[RoleAuthorize]
 	public async Task<ActionResult> Logout()
 	{
 		return await mediator.Send(new LogoutUserQuery()).Then(
@@ -62,7 +62,7 @@ public class UserController : ApiController
 	}
 
 	[HttpPost("addRole")]
-	[Authorize(Roles = Role.administrator)]
+	[RoleAuthorize(Roles = Role.administrator)]
 	public async Task<ActionResult> AddRoleForUser([FromBody] AddRoleForUserCommand command)
 	{
 		return await mediator.Send(command).Then(
@@ -71,6 +71,7 @@ public class UserController : ApiController
 	}
 
 	[HttpPut("updateCredentials")]
+	[RoleAuthorize]
 	public async Task<ActionResult> UpdateCredentials([FromBody] UpdateCredentialsCommand command)
 	{
 		return await mediator.Send(command).Then(
@@ -79,6 +80,7 @@ public class UserController : ApiController
 	}
 
 	[HttpPost("feedback")]
+	[RoleAuthorize]
 	public async Task<ActionResult<int>> GiveFeedback([FromBody] GiveFeedbackCommand command)
 	{
 		return await mediator.Send(command).Then(
@@ -87,6 +89,7 @@ public class UserController : ApiController
 	}
 
 	[HttpPut("feedback")]
+	[RoleAuthorize]
 	public async Task<ActionResult<int>> UpdateFeedback([FromBody] UpdateFeedbackCommand command)
 	{
 		return await mediator.Send(command).Then(
@@ -95,6 +98,7 @@ public class UserController : ApiController
 	}
 
 	[HttpDelete("feedback/{id:int}")]
+	[RoleAuthorize]
 	public async Task<ActionResult> DeleteFeedback([FromRoute] int id)
 	{
 		return await mediator.Send(new DeleteFeedbackCommand(id)).Then(
@@ -111,7 +115,8 @@ public class UserController : ApiController
 	}
 	
 	[HttpGet("offer")]
-	public async Task<ActionResult<PaginatedList<OfferInfoDto>>> GetOffers([FromQuery] GetUserOffersQuery query)
+	[RoleAuthorize]
+	public async Task<ActionResult<PaginatedList<OfferInfoDto>>> GetUserOffers([FromQuery] GetUserOffersQuery query)
 	{
 		return await mediator.Send(query).Then(
 			s => Ok(s.Value),

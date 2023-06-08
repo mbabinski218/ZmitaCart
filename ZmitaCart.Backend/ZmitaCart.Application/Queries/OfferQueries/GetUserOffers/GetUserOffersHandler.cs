@@ -1,6 +1,5 @@
 ﻿using FluentResults;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.OfferDtos;

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization.Infrastructure;
-using System.Reflection;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Common;

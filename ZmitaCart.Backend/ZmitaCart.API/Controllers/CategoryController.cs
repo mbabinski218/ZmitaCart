@@ -23,7 +23,7 @@ public class CategoryController : ApiController
     }
 
     [HttpPost]
-    [Authorize(Roles = Role.administrator)]
+    [RoleAuthorize(Role.administrator)]
     public async Task<ActionResult<int>> CreateCategory([FromBody] CreateCategoryCommand command)
     {
         return await mediator.Send(command).Then(
@@ -32,7 +32,6 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getBySuperiorId")]
-    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId([FromQuery] GetCategoriesBySuperiorIdQuery request)
     {
         return await mediator.Send(request).Then(
@@ -41,7 +40,6 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getFewBySuperiorId")]
-    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId(
         [FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
     {
@@ -51,7 +49,6 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getSuperiorsWithChildren")]
-    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetSuperiorsWithChildren(
         [FromQuery] GetSuperiorsWithChildrenQuery request)
     {
@@ -61,7 +58,6 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getAllSuperiors")]
-    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<SuperiorCategoryDto>>> GetCategoriesBySuperiorId()
     {
         return await mediator.Send(new GetAllSuperiorsQuery()).Then(
@@ -70,7 +66,6 @@ public class CategoryController : ApiController
     }
 
     [HttpGet("getParentCategory")]
-    [AllowAnonymous]
     public async Task<ActionResult<CategoryDto?>> GetParentCategory([FromQuery] GetParentCategoryQuery request)
     {
         return await mediator.Send(request).Then(
@@ -79,7 +74,7 @@ public class CategoryController : ApiController
     }
 
     [HttpPut("updateCategory")]
-    [Authorize(Roles = Role.administrator)]
+    [RoleAuthorize(Roles = Role.administrator)]
     public async Task<ActionResult<int>> UpdateCategory([FromBody] UpdateCategoryCommand command)
     {
         return await mediator.Send(command).Then(
@@ -88,7 +83,7 @@ public class CategoryController : ApiController
     }
 
     [HttpDelete("{id:int}")]
-    [Authorize(Roles = Role.administrator)]
+    [RoleAuthorize(Roles = Role.administrator)]
     public async Task<ActionResult> DeleteCategory([FromRoute] int id)
     {
         return await mediator.Send(new DeleteCategoryCommand(id)).Then(

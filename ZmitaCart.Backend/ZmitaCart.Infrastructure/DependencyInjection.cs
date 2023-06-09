@@ -61,16 +61,16 @@ public static class DependencyInjection
 			.AddEntityFrameworkStores<ApplicationDbContext>()
 			.AddDefaultTokenProviders();
 
-		services.ConfigureApplicationCookie(options =>
-		{
-			options.Cookie.Name = "auth_cookie";
-			options.Events.OnRedirectToLogin = context =>
-			{
-				context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-				context.RedirectUri = "";
-				return Task.CompletedTask;
-			};
-		});
+		// services.ConfigureApplicationCookie(options =>
+		// {
+		// 	options.Cookie.Name = "auth_cookie";
+		// 	options.Events.OnRedirectToLogin = context =>
+		// 	{
+		// 		context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+		// 		context.RedirectUri = "";
+		// 		return Task.CompletedTask;
+		// 	};
+		// });
 
 		services.AddScoped<PublishDomainEventsInterceptor>();
 

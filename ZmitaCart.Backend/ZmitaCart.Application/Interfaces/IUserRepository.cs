@@ -7,9 +7,10 @@ namespace ZmitaCart.Application.Interfaces;
 
 public interface IUserRepository
 {
+	public Task<Result<UserDataDto>> GetDataAsync(int id);
 	public Task<Result> RegisterAsync(RegisterUserDto dto);
 	public Task<Result<TokensDto>> LoginAsync(LoginUserDto loginUserDto);
-	public Task<Result<TokensDto>> LoginWithRefreshTokenAsync(string? userId, string refreshToken);
+	public Task<Result<TokensDto>> LoginWithRefreshTokenAsync(string refreshToken);
 	public Task<Result<TokensDto>> LoginWithGoogleAsync(string idToken);
 	public Task<Result> LogoutAsync();
 	public Task<Result> AddRoleAsync(string userEmail, string role);

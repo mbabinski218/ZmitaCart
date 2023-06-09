@@ -1,7 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
-using ZmitaCart.Application.Commands.ConversationCommands.SendMessage;
+using ZmitaCart.Application.Commands.ConversationCommands.CreateConversation;
+using ZmitaCart.Application.Common;
+using ZmitaCart.Application.Dtos.ConversationDtos;
+using ZmitaCart.Application.Queries.ConversationQueries.GetAllConversations;
 
 namespace ZmitaCart.API.Controllers;
 
@@ -11,10 +14,20 @@ public class ConversationController : ApiController
 	public ConversationController(IMediator mediator) : base(mediator)
 	{
 	}
-	
-	[HttpPost("message")]
-	public async Task<ActionResult<int>> SendMessage([FromBody] SendMessageCommand command)
+
+	[HttpGet]
+	[RoleAuthorize]
+	public async Task<ActionResult<PaginatedList<ConversationInfoDto>>> GetAllConversations([FromQuery] GetAllConversationsQuery query)
 	{
-		return Ok(await mediator.Send(command));
+		return Ok(await mediator.Send(query));
+	}
+	
+	[HttpPost]
+	[RoleAuthorize]
+	public async Task<ActionResult<int>> CreateConversation([FromQuery] CreateConversationCommand command)
+	{
+		return await mediator.Send(command).Then(
+			s => Ok(s.Value),
+			err => StatusCode(err.StatusCode, err.ToList()));
 	}
 }

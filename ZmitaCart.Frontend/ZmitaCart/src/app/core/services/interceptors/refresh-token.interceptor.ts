@@ -17,9 +17,8 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
-    if (this.userService.isTokenExpired()) {
+    if (this.userService.isTokenExpired())
       this.userService.logout();
-    }
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -38,8 +37,8 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
       return this.userService.refreshToken().pipe(
         switchMap((result) => {
           this.isRefreshing = false;
-          this.refreshTokenSubject.next(result.token);
-          return next.handle(this.addToken(request, result.token));
+          this.refreshTokenSubject.next(result.accessToken);
+          return next.handle(this.addToken(request, result.accessToken));
         }
         ));
     }

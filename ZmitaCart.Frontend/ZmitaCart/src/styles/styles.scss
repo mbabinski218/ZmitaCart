@@ -9,11 +9,11 @@ $frontend-warn: mat.define-palette(mat.$red-palette);
 $my-typography: mat.define-typography-config();
 
 $frontend-theme: mat.define-light-theme((color: (primary: $frontend-primary,
-  accent: $frontend-accent,
-  warn: $frontend-warn,
-),
-  typography: $my-typography,
-));
+        accent: $frontend-accent,
+        warn: $frontend-warn,
+      ),
+      typography: $my-typography,
+    ));
 
 @include mat.all-component-themes($frontend-theme);
 
@@ -80,13 +80,36 @@ body {
   width: 100%;
 }
 
-// img,
-// svg,
-// video {
-//   max-width: 100%;
-//   display: block;
-// }
-//czy nie zepsuje mat-icons
+//usuwanie prompt'a google'owego z prawego rogu ez
+#credential_picker_container {
+  display: none;
+}
+
+.observe-svg {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+
+  filter: brightness(0) saturate(100%) invert(41%) sepia(40%) saturate(4250%) hue-rotate(147deg) brightness(98%) contrast(101%);
+}
+
+.button-allegro {
+  height: 40px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 1000px;
+}
 
 // a {
 //   margin-bottom: 5px;
@@ -135,15 +158,8 @@ body {
 //   color: white !important;
 // }
 
-.button-allegro {
-  height: 40px;
-  font-weight: 600;
-  line-height: 24px;
-  text-align: center;
-  letter-spacing: .4px;
-  text-transform: uppercase;
-  cursor: pointer;
-  text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 1000px;
-}
+
+//złe
+// .mat-mdc-menu-panel.mat-mdc-menu-panel {
+//   width: 280px !important;
+// }

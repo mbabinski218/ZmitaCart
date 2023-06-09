@@ -5,7 +5,7 @@
 >
   <mat-label>
     {{ label }}
-    <ng-container *ngIf="optional">Opcjonalne</ng-container>
+    <ng-container *ngIf="optional">(Opcjonalne)</ng-container>
   </mat-label>
 
   <input
@@ -17,6 +17,7 @@
     [placeholder]="visiblePlaceholder"
     [readonly]="readonly"
     [type]="type"
+    [inputMask]="_mask"
     [errorStateMatcher]="matcher"
     [maxLength]="maxLength"
     [min]="min"

@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.CategoryCommands.CreateCategory;
@@ -8,6 +7,9 @@ using ZmitaCart.Application.Queries.CategoryQueries.GetAllSuperiors;
 using ZmitaCart.Application.Queries.CategoryQueries.GetCategories;
 using ZmitaCart.Application.Commands.CategoryCommands.UpdateCategory;
 using ZmitaCart.Application.Dtos.CategoryDtos;
+using ZmitaCart.Application.Queries.CategoryQueries.GetMostPopularCategories;
+using ZmitaCart.Application.Queries.CategoryQueries.GetParentCategory;
+using ZmitaCart.Application.Queries.CategoryQueries.GetSuperiorsWithChildren;
 using ZmitaCart.Domain.Common;
 
 namespace ZmitaCart.API.Controllers;
@@ -20,53 +22,79 @@ public class CategoryController : ApiController
     }
 
     [HttpPost]
-    [Authorize(Roles = Role.administrator)]
+    [RoleAuthorize(Role.administrator)]
     public async Task<ActionResult<int>> CreateCategory([FromBody] CreateCategoryCommand command)
     {
         return await mediator.Send(command).Then(
             s => Created($"category/{s.Value}", s.Value),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpGet("getBySuperiorId")]
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId([FromQuery] GetCategoriesBySuperiorIdQuery request)
     {
-        return await mediator.Send(request).Then( 
-            s => Ok(s.Value), 
-            err => BadRequest(err.ToList()));
+        return await mediator.Send(request).Then(
+            s => Ok(s.Value),
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpGet("getFewBySuperiorId")]
-    public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId([FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
+    public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId(
+        [FromQuery] GetCategoriesWithChildrenBySuperiorIdQuery request)
     {
-        return await mediator.Send(request).Then( 
-            s => Ok(s.Value), 
-            err => BadRequest(err.ToList()));
+        return await mediator.Send(request).Then(
+            s => Ok(s.Value),
+            err => StatusCode(err.StatusCode, err.ToList()));
+    }
+
+    [HttpGet("getSuperiorsWithChildren")]
+    public async Task<ActionResult<IEnumerable<CategoryDto>>> GetSuperiorsWithChildren(
+        [FromQuery] GetSuperiorsWithChildrenQuery request)
+    {
+        return await mediator.Send(request).Then(
+            s => Ok(s.Value),
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpGet("getAllSuperiors")]
     public async Task<ActionResult<IEnumerable<SuperiorCategoryDto>>> GetCategoriesBySuperiorId()
     {
         return await mediator.Send(new GetAllSuperiorsQuery()).Then(
-            s => Ok(s.Value), 
-            err => BadRequest(err.ToList()));
+            s => Ok(s.Value),
+            err => StatusCode(err.StatusCode, err.ToList()));
+    }
+
+    [HttpGet("getParentCategory")]
+    public async Task<ActionResult<CategoryDto?>> GetParentCategory([FromQuery] GetParentCategoryQuery request)
+    {
+        return await mediator.Send(request).Then(
+            s => Ok(s.Value),
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
     [HttpPut("updateCategory")]
-    [Authorize(Roles = Role.administrator)]
+    [RoleAuthorize(Role.administrator)]
     public async Task<ActionResult<int>> UpdateCategory([FromBody] UpdateCategoryCommand command)
     {
         return await mediator.Send(command).Then(
-            s => Ok(s.Value), 
-            err => BadRequest(err.ToList()));
+            s => Ok(s.Value),
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 
-    [HttpDelete("{Id}")]
-    [Authorize(Roles = Role.administrator)]
-    public async Task<ActionResult> DeleteCategory([FromRoute] DeleteCategoryCommand command)
+    [HttpDelete("{id:int}")]
+    [RoleAuthorize(Roles = Role.administrator)]
+    public async Task<ActionResult> DeleteCategory([FromRoute] int id)
     {
-        return await mediator.Send(command).Then(
+        return await mediator.Send(new DeleteCategoryCommand(id)).Then(
             s => Ok(),
-            err => BadRequest(err.ToList()));
+            err => StatusCode(err.StatusCode, err.ToList()));
+    }
+    
+    [HttpGet("getMostPopular")]
+    public async Task<ActionResult> GetMostPopularCategories([FromQuery] GetMostPopularCategoriesQuery query)
+    {
+        return await mediator.Send(query).Then(
+            s => Ok(s.Value),
+            err => StatusCode(err.StatusCode, err.ToList()));
     }
 }

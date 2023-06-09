@@ -30,7 +30,7 @@ public class OfferRepository : IOfferRepository
 			return Result.Fail(new NotFoundError("User does not exist"));
 		}
 
-		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == offerDto.CategoryId);	
+		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == offerDto.CategoryId);
 		if (category == null)
 		{
 			return Result.Fail(new NotFoundError("Category does not exist"));
@@ -58,7 +58,7 @@ public class OfferRepository : IOfferRepository
 		{
 			return Result.Fail(new UnauthorizedError("User does not have access to this offer"));
 		}
-		
+
 		offer.Title = offerDto.Title ?? offer.Title;
 		offer.Description = offerDto.Description ?? offer.Description;
 		offer.Price = offerDto.Price ?? offer.Price;
@@ -99,24 +99,24 @@ public class OfferRepository : IOfferRepository
 			.ProjectToType<OfferDto>()
 			.FirstOrDefaultAsync();
 
-		return offer == null 
-			? Result.Fail(new NotFoundError("Offer does not exist")) 
+		return offer == null
+			? Result.Fail(new NotFoundError("Offer does not exist"))
 			: Result.Ok(offer);
 	}
 
 	public async Task<Result> AddToFavoritesAsync(int userId, int offerId)
 	{
 		var offer = await _dbContext.Offers.FindAsync(offerId);
-        if(offer == null)
-        { 
-	        return Result.Fail(new NotFoundError("Offer does not exist"));
-        }
+		if (offer == null)
+		{
+			return Result.Fail(new NotFoundError("Offer does not exist"));
+		}
 
 		var user = await _dbContext.Users
-			           .Include(u => u.Favorites)
-			           .FirstOrDefaultAsync(u => u.Id == userId);
-		
-		if(user == null)
+			.Include(u => u.Favorites)
+			.FirstOrDefaultAsync(u => u.Id == userId);
+
+		if (user == null)
 		{
 			return Result.Fail(new NotFoundError("User does not exist"));
 		}
@@ -145,9 +145,10 @@ public class OfferRepository : IOfferRepository
 		return await _dbContext.Users
 			.Where(u => u.Id == userId)
 			.Include(u => u.Favorites)
-			.ThenInclude(uc => uc.Offer)
-			.SelectMany(u => u.Favorites
-				.Select(uc => uc.Offer))
+				.ThenInclude(uc => uc.Offer)
+					.ThenInclude(o => o.User)
+						.ThenInclude(u => u.Address)
+			.SelectMany(u => u.Favorites.Select(uc => uc.Offer))
 			.AsNoTracking()
 			.ProjectToType<OfferInfoDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
@@ -186,7 +187,7 @@ public class OfferRepository : IOfferRepository
 			BoughtAt = DateTimeOffset.Now,
 			TotalPrice = offer.Price * quantity
 		};
-		
+
 		await _dbContext.Bought.AddAsync(bought);
 		await _dbContext.SaveChangesAsync();
 		return Result.Ok();
@@ -197,11 +198,14 @@ public class OfferRepository : IOfferRepository
 		return await _dbContext.Bought
 			.Where(b => b.UserId == userId)
 			.Include(b => b.Offer)
+				.ThenInclude(o => o.User)
+					.ThenInclude(u => u.Address)
 			.ProjectToType<BoughtOfferDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
 	}
 
-	public async Task<Result<PaginatedList<OfferInfoDto>>> SearchOffersAsync(SearchOfferDto search, int? pageNumber = null, int? pageSize = null)
+	public async Task<Result<PaginatedList<OfferInfoDto>>> SearchOffersAsync(SearchOfferDto search, int? pageNumber = null,
+		int? pageSize = null)
 	{
 		var categoriesId = await _dbContext.Database
 			.SqlQuery<int>
@@ -228,8 +232,11 @@ public class OfferRepository : IOfferRepository
 			            && (categoriesId.Contains(o.CategoryId) || o.CategoryId == (search.CategoryId ?? o.CategoryId))
 			            && o.Price >= (search.MinPrice ?? o.Price)
 			            && o.Price <= (search.MaxPrice ?? o.Price)
-			            && o.Condition == (search.Condition ?? o.Condition))
+			            && o.Condition == (search.Condition ?? o.Condition)
+			            && o.IsAvailable == true
+			            && o.UserId != search.UserId)
 			.Include(o => o.User)
+				.ThenInclude(u => u.Address)
 			.Include(o => o.Pictures)
 			.Include(o => o.Favorites)
 			.OrderByIf(o => o.Price, search.PriceAscending)
@@ -239,5 +246,50 @@ public class OfferRepository : IOfferRepository
 			.ToPaginatedListAsync(pageNumber, pageSize);
 
 		return Result.Ok(offers);
+	}
+
+	public async Task<Result<List<NamedList<string, OfferInfoDto>>>> GetOffersByCategoriesNameAsync(
+		IEnumerable<string> categoriesNames, int userId, int size)
+	{
+		var offersId = await _dbContext.Database
+			.SqlQueryRaw<int>
+			($@"
+				SELECT id FROM
+				(
+					SELECT *, ROW_NUMBER() OVER (PARTITION BY CategoryId ORDER BY CreatedAt DESC) AS RowNumber
+					FROM Offers
+					WHERE IsAvailable = 1 AND UserId != {userId} AND CategoryId IN
+					(
+						SELECT Id FROM Categories
+						WHERE Name IN ({string.Join(", ", categoriesNames.Select(s => $"'{s}'"))})
+					)
+				) AS Offers
+				WHERE RowNumber <= {size}	
+			")
+			.ToListAsync();
+
+		var offers = await _dbContext.Offers
+			.Where(o => offersId.Contains(o.Id))
+			.Include(o => o.Category)
+			.Include(o => o.User)
+				.ThenInclude(u => u.Address)
+			.Include(o => o.Pictures)
+			.Include(o => o.Favorites)
+			.AsNoTracking()
+			.ToUniqueListAsync(o => o.Category.Name, o => o.Adapt<OfferInfoDto>());
+
+		return offers;
+	}
+
+	public async Task<Result<PaginatedList<OfferInfoDto>>> GetUserOffersAsync(int userId, int? pageNumber = null, int? pageSize = null)
+	{
+		return await _dbContext.Offers
+			.Where(o => o.UserId == userId)
+			.Include(o => o.User)
+			.Include(o => o.Pictures)
+			.Include(o => o.Favorites)
+			.AsNoTracking()
+			.ProjectToType<OfferInfoDto>()
+			.ToPaginatedListAsync(pageNumber, pageSize);
 	}
 }

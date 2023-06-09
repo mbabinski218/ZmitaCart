@@ -36,12 +36,20 @@ public class UserRepository : IUserRepository
 		_googleAuthentication = googleAuthentication;
 	}
 
+	public async Task<Result<UserDataDto>> GetDataAsync(int id)
+	{
+		var user = await _dbContext.Users
+			.FirstOrDefaultAsync(u => u.Id == id);
+
+		return user is null 
+			? Result.Fail<UserDataDto>(new NotFoundError("User not found")) 
+			: user.Adapt<UserDataDto>();
+	}
+
 	public async Task<Result> RegisterAsync(RegisterUserDto dto)
 	{
 		if (await _userManager.FindByEmailAsync(dto.Email) != null)
-		{
 			return Result.Fail(new AlreadyExistsError("User already exists"));
-		}
 
 		var user = User.Create(dto.Email, dto.FirstName, dto.LastName);
 		var result = await _userManager.CreateAsync(user, dto.Password);
@@ -52,8 +60,11 @@ public class UserRepository : IUserRepository
 			return Result.Fail(new InvalidDataError("Invalid register data", reasons));
 		}
 		
-		var role = dto.IsAdmin ? Role.administrator : Role.user;
+		var role = dto.IsAdmin is true ? Role.administrator : Role.user;
 		await _userManager.AddToRoleAsync(user, role);
+		
+		if (role is Role.administrator)
+			await _userManager.AddToRoleAsync(user, Role.user);
 
 		var claims = new List<Claim>
 		{
@@ -98,13 +109,16 @@ public class UserRepository : IUserRepository
 		};
 	}
 
-	public async Task<Result<TokensDto>> LoginWithRefreshTokenAsync(string? userId, string refreshToken)
+	public async Task<Result<TokensDto>> LoginWithRefreshTokenAsync(string refreshToken)
 	{
-		if (userId == null) 
-			return Result.Fail(new NotFoundError("User not found"));
+		var userToken = await _dbContext.UserTokens.FirstOrDefaultAsync(t => t.Value == refreshToken);
 		
-		var user = await _userManager.FindByIdAsync(userId);
-		if (user == null) 
+		if (userToken is null) 
+			return Result.Fail(new NotFoundError("User does not exist"));
+		
+		var user = await _userManager.FindByIdAsync(userToken.UserId.ToString());
+		
+		if (user is null) 
 			return Result.Fail(new NotFoundError("User does not exist"));
 		
 		foreach(var authenticator in GrantType.SupportedGrantTypes)
@@ -152,20 +166,19 @@ public class UserRepository : IUserRepository
 	public async Task<Result> AddRoleAsync(string userEmail, string role)
 	{
 		var user = await _userManager.FindByEmailAsync(userEmail);
-
+		
 		if (user == null)
-		{
 			return Result.Fail(new NotFoundError("User does not exist"));
-		}
 
 		if (!await _roleManager.RoleExistsAsync(role))
-		{
 			return Result.Fail(new NotFoundError("Role does not exist"));
-		}
+		
+		if (!await _userManager.IsInRoleAsync(user, role))
+			return Result.Fail(new InvalidDataError("User already has this role"));
 
 		await _userManager.AddToRoleAsync(user, role);
 		await _userManager.AddClaimAsync(user, new Claim(ClaimNames.Role, role));
-		
+
 		return Result.Ok();
 	}
 

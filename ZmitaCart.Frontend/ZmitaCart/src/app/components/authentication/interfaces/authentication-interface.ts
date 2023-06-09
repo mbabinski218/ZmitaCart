@@ -12,7 +12,8 @@ export interface UserLogin {
 }
 
 export interface UserAuthorization {
-  token: string,
+  accessToken: string,
+  refreshToken: string,
 }
 
 export interface TokenData {
@@ -21,6 +22,8 @@ export interface TokenData {
   id: string,
   lastName: string,
   role: string,
+  iss: string,
   exp?: number,
   expires_at?: string,
+  refreshToken?: string,
 }

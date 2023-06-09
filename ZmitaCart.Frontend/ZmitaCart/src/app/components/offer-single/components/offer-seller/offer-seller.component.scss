@@ -1,0 +1,43 @@
+.icon {
+  color: grey;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  width: 50%;
+}
+
+.container {
+  display: flex;
+}
+
+.line {
+  border-right: 1px solid #ddd;
+  margin-right: 16px;
+}
+
+.city {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  .icon {
+    color: var(--color-primary);
+  }
+
+  .text {
+    font-weight: 600;
+  }
+}
+
+.fix {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

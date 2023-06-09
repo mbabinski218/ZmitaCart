@@ -1,37 +1,49 @@
 @import 'variables/breakpoints';
 
-pp-layout {
+:host {
   background-color: var(--background-color);
   display: flex;
   min-height: 100vh;
+}
 
-  .main {
-    min-height: 100vh;
-    padding-top: 92px;
-    width: 100%;
+.main {
+  min-height: 100vh;
+  padding-top: 92px;
+  width: 100%;
+}
+
+.content {
+  height: 100%;
+}
+
+.content-inner {
+  min-height: 100%;
+
+  --max-width: 1360px;
+  --padding: 24px;
+
+  padding: 0 var(--padding, 0);
+  max-width: calc(2*var(--padding, 0px) + var(--max-width));
+  margin: 0 auto;
+
+  @media (max-width: $screen-1064) {
+    padding-top: 16px;
+    padding-bottom: 8px;
   }
 
-  .content {
-    height: 100%;
+  @media (min-width: $screen-1200) {
+    --padding: 40px;
   }
+}
 
-  .content-inner {
-    min-height: 100%;
-
-    padding: 0 40px;
-    margin: 0 auto;
-  }
-
-  .overlay {
-    background-color: rgba(0, 0, 0, 0.32);
-    height: 100%;
-    width: 100%;
-    left: 0;
-    pointer-events: auto;
-    position: fixed;
-    top: 0;
-    transform: translate(0, 0);
-    transition: all 0s ease 0s;
-    z-index: 2;
-  }
+.overlay {
+  background-color: rgba(0, 0, 0, 0.32);
+  height: 100%;
+  width: 100%;
+  left: 0;
+  pointer-events: auto;
+  position: fixed;
+  top: 0;
+  transform: translate(0, 0);
+  transition: all 0s ease 0s;
 }

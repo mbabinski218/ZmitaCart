@@ -1,23 +1,22 @@
 ﻿using FluentResults;
 using Microsoft.AspNetCore.Mvc;
+using ZmitaCart.Application.Common.Errors;
 
 namespace ZmitaCart.API.Common;
 
-public class Success<T>
+public class Success<T> : Success
 {
-	public T Value { get; set; }
-	public IReadOnlyCollection<ISuccess> Reasons { get; set; }
+	public T Value { get; }
 
-	public Success(IResult<T> result)
+	public Success(IResult<T> result) : base(result)
 	{
 		Value = result.Value;
-		Reasons = result.Successes;
 	}
 }
 
 public class Success
 {
-	public IReadOnlyCollection<ISuccess> Reasons { get; set; }
+	public IReadOnlyCollection<ISuccess> Reasons { get; }
 
 	public Success(IResultBase result)
 	{
@@ -27,11 +26,19 @@ public class Success
 
 public class Error
 {
-	public IReadOnlyCollection<IError> Reasons { get; set; }
+	public IReadOnlyCollection<IError> Reasons { get; }
+	public int StatusCode { get; }
 
 	public Error(IResultBase result)
 	{
 		Reasons = result.Errors;
+
+		StatusCode = result.Errors.FirstOrDefault() switch
+		{
+			UnauthorizedError => StatusCodes.Status401Unauthorized,
+			NotFoundError => StatusCodes.Status404NotFound,
+			_ => StatusCodes.Status400BadRequest
+		};
 	}
 }
 
@@ -66,6 +73,6 @@ public static class FluentResultsExtensions
 			}
 		}
 
-		return errors.Take(1).ToList();
+		return errors;
 	}
 }

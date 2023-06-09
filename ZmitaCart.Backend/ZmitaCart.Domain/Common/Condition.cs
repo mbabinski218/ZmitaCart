@@ -2,9 +2,9 @@
 
 public static class Condition
 {
-	public const string brandNew = "New";
-	public const string used = "Used";
-	public const string good = "Good";
+	public const string brandNew = "Nowy";
+	public const string used = "Używany";
+	public const string good = "Dobry";
 	
 	public static IEnumerable<string> SupportedConditions
 	{

@@ -21,12 +21,27 @@ export class LoginService {
     private toastMessageService: ToastMessageService,
   ) { }
 
-  login(userData: UserLogin): Observable<unknown> {
-    return this.http.post<UserAuthorization>(`${environment.httpBackend}${Api.LOGIN}`, { email: userData.email, password: userData.password }).pipe(
+  login(userData: Partial<UserLogin>): Observable<UserAuthorization> {
+    return this.http.post<UserAuthorization>(`${environment.httpBackend}${Api.LOGIN}`, { ...userData, grantType: "password" }).pipe(
       tap((token) => {
-        const myToken = token;
-        this.setUserStorage(myToken);
-        this.userService.setUserToken(myToken.token);
+        this.setUserStorage(token);
+        this.userService.setUserToken(token.accessToken);
+      }),
+      catchError((err: HttpErrorResponse) => {
+        const error = err.error as string[];
+
+        this.toastMessageService.notifyOfError(error[0]);
+
+        return of(null);
+      })
+    );
+  }
+
+  googleLogin(token: string): Observable<UserAuthorization> {
+    return this.http.post<UserAuthorization>(`${environment.httpBackend}${Api.LOGIN}`, { idToken: token, grantType: "google" }).pipe(
+      tap((token) => {
+        this.setUserStorage(token);
+        this.userService.setUserToken(token.accessToken);
       }),
       catchError((err: HttpErrorResponse) => {
         const error = err.error as string[];
@@ -39,11 +54,13 @@ export class LoginService {
   }
 
   private setUserStorage(token: UserAuthorization) {
-    const decodedToken: TokenData = jwt_decode(token.token);
+    const decodedToken: TokenData = jwt_decode(token.accessToken);
 
-    const { email, exp, firstName, id, lastName, role } = decodedToken;
+    const { email, exp, firstName, id, iss, lastName, role } = decodedToken;
+    const refreshToken = token.refreshToken;
+    
     this.localStorageService.setItem<TokenData>(KeyStorage.USER, {
-      email, firstName, id, lastName, role, expires_at: addSeconds(new Date(), exp).toISOString()
+      refreshToken, email, firstName, id, iss, lastName, role, expires_at: addSeconds(new Date(), exp).toISOString()
     });
   }
 }

@@ -9,4 +9,5 @@ public class SearchOfferDto
 	public decimal? MaxPrice { get; set; }
 	public bool? PriceAscending { get; set; }
 	public bool? CreatedAscending { get; set; }
+	public int? UserId { get; set; }
 }

@@ -28,6 +28,22 @@ public class GetBoughtOffersHandler : IRequestHandler<GetBoughtOffersQuery, Resu
 		
 		var userId = int.Parse(_currentUserService.UserId);
 		
-		return await _offerRepository.GetBoughtAsync(userId, request.PageNumber, request.PageSize);
+		var offers =  await _offerRepository.GetBoughtAsync(userId, request.PageNumber, request.PageSize);
+
+		if (offers.IsFailed)
+		{
+			return Result.Fail(offers.Errors);
+		}
+		
+		var favorites = await _offerRepository.GetFavoritesOffersIdsAsync(userId);
+		
+		if (favorites.IsFailed)
+		{
+			return Result.Fail(favorites.Errors);
+		}
+		
+		offers.Value.Items.ForEach(b => b.Offer.IsFavourite = favorites.Value.Contains(b.Offer.Id));
+		
+		return offers;
 	}
 }

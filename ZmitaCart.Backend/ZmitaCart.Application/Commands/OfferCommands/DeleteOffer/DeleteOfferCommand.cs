@@ -3,7 +3,4 @@ using MediatR;
 
 namespace ZmitaCart.Application.Commands.OfferCommands.DeleteOffer;
 
-public record DeleteOfferCommand : IRequest<Result>
-{
-	public int Id { get; set; }
-}
+public record DeleteOfferCommand(int Id) : IRequest<Result>;

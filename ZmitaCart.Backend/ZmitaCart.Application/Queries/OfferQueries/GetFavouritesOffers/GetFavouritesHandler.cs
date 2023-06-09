@@ -27,6 +27,14 @@ public class GetFavoritesHandler : IRequestHandler<GetFavouritesOffersQuery, Res
 		}
 		
 		var userId = int.Parse(_currentUserService.UserId);
-		return await _offerRepository.GetFavoritesOffersAsync(userId, request.PageNumber, request.PageSize);
+		var offers = await _offerRepository.GetFavoritesOffersAsync(userId, request.PageNumber, request.PageSize);
+		
+		if (offers.IsFailed)
+		{
+			return Result.Fail(offers.Errors);
+		}
+		
+		offers.Value.Items.ForEach(o => o.IsFavourite = true);
+		return offers;
 	}
 }

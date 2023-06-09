@@ -1,7 +1,8 @@
-﻿using Mapster;
-using MapsterMapper;
+﻿using FluentResults;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common;
+using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.ConversationDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
@@ -13,21 +14,27 @@ namespace ZmitaCart.Infrastructure.Repositories;
 public class ConversationRepository : IConversationRepository
 {
 	private readonly ApplicationDbContext _dbContext;
-	private readonly IMapper _mapper;
 
-	public ConversationRepository(ApplicationDbContext dbContext, IMapper mapper)
+	public ConversationRepository(ApplicationDbContext dbContext)
 	{
 		_dbContext = dbContext;
-		_mapper = mapper;
 	}
 
-	public async Task<int> CreateConversationAsync(int userId, int offerId)
+	public async Task<Result<int>> CreateConversationAsync(int offerId, int userId)
 	{
-		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId) 
-		    ?? throw new NotFoundException("User does not exist");
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+		if (user is null)
+		{
+			return Result.Fail(new UnauthorizedError("User does not exist"));
+		}
+
+		var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId);
 		
-		var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId) 
-		    ?? throw new NotFoundException("Offer does not exist");
+		if (offer is null)
+		{
+			return Result.Fail(new UnauthorizedError("Offer does not exist"));
+		}
 
 		var conversation = new Conversation
 		{
@@ -121,5 +128,14 @@ public class ConversationRepository : IConversationRepository
 			.Where(uc => uc.ConversationId == chat)
 			.Select(uc => uc.UserId)
 			.ToListAsync();
+	}
+
+	public async Task<int> IsChatExists(int offerId, int userId)
+	{
+		return await _dbContext.Chats
+			.Include(c => c.Conversation)
+			.Where(c => c.UserId == userId && c.Conversation.OfferId == offerId)
+			.Select(c => c.ConversationId)
+			.FirstOrDefaultAsync();
 	}
 }

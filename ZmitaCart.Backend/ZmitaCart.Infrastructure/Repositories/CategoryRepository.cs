@@ -108,9 +108,9 @@ public class CategoryRepository : ICategoryRepository
         {
             return Result.Ok();
         }
-        
-        return category.Children.Select(child => CheckChildrenId(child, parentId)).Any(result => result.IsFailed) 
-            ? Result.Fail(new ArgumentError("Category cannot have itself as a child")) 
+
+        return category.Children.Select(child => CheckChildrenId(child, parentId)).Any(result => result.IsFailed)
+            ? Result.Fail(new ArgumentError("Category cannot have itself as a child"))
             : Result.Ok();
     }
 
@@ -140,13 +140,90 @@ public class CategoryRepository : ICategoryRepository
             .ToListAsync();
     }
 
-    public async Task<Result<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId(int superiorId, int? childrenCount)
+    public async Task<Result<IEnumerable<CategoryDto>>> GetSuperiorsWithFewChildren(int? childrenCount)
+    {
+        var categories = await _dbContext.Categories
+            .Where(c => c.ParentId == null)
+            .Include(c => c.Children)
+            .ProjectToType<CategoryDto>()
+            .ToListAsync();
+
+        childrenCount ??= 0; //get superiors only
+
+        foreach (var category in categories)
+        {
+            await FillChildren(category.Children, childrenCount.Value);
+        }
+
+        return categories;
+    }
+
+    public async Task<Result<CategoryDto?>> GetParentCategory(int id)
+    {
+        return await _dbContext.Categories.Where(c => c.Id == id).ProjectToType<CategoryDto>().FirstOrDefaultAsync();
+    }
+
+    //TODO przerobic na rekurencyjne query jak w ofertach
+    //To ogolnie jest ZLE zrobione ale dziala
+    public async Task<Result<List<string>>> GetMostPopularCategoriesAsync(int numberOfCategories)
+    {
+        // var superiors = await GetAllSuperiors();
+        //
+        // if(superiors.IsFailed)
+        // {
+        //     return Result.Fail(new NotFoundError("No categories found"));
+        // }
+        //
+        // var superiorsId = superiors.Value.Select(s => s.Id).ToList();
+        
+        // var childrenId = await _dbContext.Categories
+        //     .Where(c => superiorsId.Contains(c.ParentId ?? 0))
+        //     .Select(c => c.Id)
+        //     .ToListAsync();
+
+        
+        // foreach (var id in childrenId)
+        // {
+        //     var temp = await GetCategoriesIdBySuperiorId(id);
+        //     if(temp.IsFailed) continue;
+        //
+        //     var categoriesId = temp.Value.ToList();
+        //
+        //     var offersCount = await _dbContext.Offers.Where(o => categoriesId.Contains(o.CategoryId)).CountAsync();
+        //
+        //     stats.Add(id, offersCount);
+        // }
+        
+        var categoriesId = await _dbContext.Categories.Select(c => c.Id).ToListAsync();
+        var stats = new Dictionary<int, int>();
+        
+        foreach (var id in categoriesId)
+        {
+            var offersCount = await _dbContext.Offers.Where(o => o.CategoryId == id).CountAsync();
+
+            stats.Add(id, offersCount);
+        }
+        
+        var categories = await _dbContext.Categories
+            .Where(c => categoriesId.Contains(c.Id))
+            .ToListAsync();
+        
+        var result =  categories.OrderByDescending(c => stats[c.Id])
+            .Select(c => c.Name)
+            .Take(numberOfCategories)
+            .ToList();
+        
+        return result;
+    }
+
+    //TODO przerobic na rekurencyjne query jak w ofertach
+    public async Task<Result<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId(int superiorId, int? childrenCount = null)
     {
         if (await _dbContext.Categories.AnyAsync(c => c.Id == superiorId) is false)
         {
             return Result.Fail(new NotFoundError("Superior category with input id doesn't exist"));
         }
-        
+
         var categories = await _dbContext.Categories
             .Where(c => c.Id == superiorId)
             .Include(c => c.Children)
@@ -162,7 +239,7 @@ public class CategoryRepository : ICategoryRepository
 
         return categories;
     }
-    
+
     private async Task FillChildren(IEnumerable<CategoryDto?>? children, int childrenCount)
     {
         if (childrenCount == 0 || children is null) return;

@@ -1,62 +1,46 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using ZmitaCart.Application.Events;
-using ZmitaCart.Application.Hubs;
-using ZmitaCart.Domain.Common;
+using ZmitaCart.API.Common;
+using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Domain.Events;
 
 namespace ZmitaCart.API.Hubs;
 
-[Authorize(Roles = Role.user + "," + Role.administrator)]
-public class ChatHub : Hub, IChatHub
+public class ChatHub : Hub
 {
 	private readonly IPublisher _mediator;
+	private readonly IConversationRepository _conversationRepository;
 
-	public ChatHub(IPublisher mediator)
+	public ChatHub(IPublisher mediator, IConversationRepository conversationRepository)
 	{
 		_mediator = mediator;
+		_conversationRepository = conversationRepository;
 	}
 
-	public async Task JoinAsync(int chat, CancellationToken cancellationToken)
-	{
-		try
-		{
-			await Groups.AddToGroupAsync(Context.ConnectionId, chat.ToString(), cancellationToken);
-			await ConnectAsync();
-			await _mediator.Publish(new JoinedChat(chat), cancellationToken);
-		}
-		catch
-		{
-			await DisconnectAsync();
-			throw;
-		}
-	}
-	
-	public async Task RestoreMessagesAsync(int userId, string user, int chat, string text, DateTimeOffset date, CancellationToken cancellationToken)
-	{
-		await Clients.Caller.SendAsync("ReceiveMessage", new
-		{
-			UserId = userId,
-			UserName = user, 
-			Date = date, 
-			Content = text
-		}, cancellationToken);
-	}
-	
-	public async Task SendMessageAsync(string user, int chat, string text, DateTimeOffset date, CancellationToken cancellationToken)
-	{
-		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", new
-		{
-			UserName = user, 
-			Date = date, 
-			Content = text
-		}, cancellationToken);
+	public async Task Join(int chat, string userId)
+	{ 
+		await Groups.AddToGroupAsync(Context.ConnectionId, chat.ToString());
+
+		var messages = await _conversationRepository.GetMessagesAsync(chat);
 		
-		await _mediator.Publish(new MessageSent(user, chat, text), cancellationToken);
+		foreach (var message in messages)
+		{
+			await RestoreMessages(message.UserId, message.UserName, message.Date, message.Text);
+		}
 	}
 	
-	private async Task ConnectAsync() => await Clients.Client(Context.ConnectionId).SendAsync("Connected");
-
-	private async Task DisconnectAsync() => await Clients.Client(Context.ConnectionId).SendAsync("Disconnected");
+	public async Task RestoreMessages(int userId, string user, DateTimeOffset date, string text)
+	{
+		await Clients.Caller.SendAsync(
+			"ReceiveMessage", userId, user, date, text);
+	}
 	
+	public async Task SendMessage(int chat, string userId, string userName, string text)
+	{
+		await Clients.Group(chat.ToString()).SendAsync(
+			"ReceiveMessage", int.Parse(userId), userName, DateTimeOffset.Now, text);
+
+		await _mediator.Publish(new MessageSent(userId, chat, text));
+	}
 }

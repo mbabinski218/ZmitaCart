@@ -1,6 +1,10 @@
-﻿namespace ZmitaCart.Application.Services;
+﻿using System.IdentityModel.Tokens.Jwt;
+
+namespace ZmitaCart.Application.Services;
 
 public interface ICurrentUserService
 {
-	string? UserId { get; }
+	public JwtSecurityToken? UserToken { get; }
+	public string? UserId { get; }
+	public string? UserRole { get; }
 }

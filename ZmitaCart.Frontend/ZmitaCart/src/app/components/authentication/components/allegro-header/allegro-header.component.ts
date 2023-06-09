@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -9,7 +9,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   imports: [CommonModule, MatSnackBarModule, RouterModule],
   templateUrl: './allegro-header.component.html',
   styleUrls: ['./allegro-header.component.scss'],
-  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AllegroHeaderComponent {

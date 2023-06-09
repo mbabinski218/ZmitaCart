@@ -10,4 +10,7 @@ public interface ICategoryRepository
     Task<Result> Delete(int id);
     Task<Result<IEnumerable<SuperiorCategoryDto>>> GetAllSuperiors();
     Task<Result<IEnumerable<CategoryDto>>> GetCategoriesBySuperiorId(int superiorId, int? childrenCount);
+    Task<Result<IEnumerable<CategoryDto>>> GetSuperiorsWithFewChildren(int? childrenCount);
+    Task<Result<CategoryDto?>> GetParentCategory(int id);
+    Task<Result<List<string>>> GetMostPopularCategoriesAsync(int numberOfCategories);
 }

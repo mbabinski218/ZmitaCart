@@ -1,0 +1,28 @@
+.title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.line {
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+  margin-block: 18px 6px;
+}
+
+.grey {
+  color: rgb(118, 118, 118);
+  line-height: 16.1px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

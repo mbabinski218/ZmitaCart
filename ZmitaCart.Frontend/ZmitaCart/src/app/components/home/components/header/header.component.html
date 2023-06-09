@@ -5,12 +5,22 @@
       (mouseleave)="overlayService.setState(false)"
       (mouseenter)="overlayService.setState(true)"
     >
-      <div class="icon icon-menu"></div>
+      <mat-icon
+        class="svg svg-menu"
+        svgIcon="menu"
+      >
+      </mat-icon>
 
-      <pp-categories-menu *ngIf="isShowCategories$ | async"></pp-categories-menu>
+      <pp-categories-menu
+        *ngIf="isShowCategories$ | async"
+        [categories]="superiorCategories$ | async"
+      ></pp-categories-menu>
     </div>
 
-    <div class="image">
+    <div
+      class="image cursor-pointer"
+      [routerLink]="['/']"
+    >
       <img
         class="img"
         src="https://allegrolokalnie.pl/images/lokalnie-logo.svg"
@@ -23,11 +33,12 @@
           placeholder="czego szukasz?"
           class="input"
         >
-        <div
+        <mat-icon
           *ngIf="!isBig"
-          class="icon icon-find fix cursor-pointer"
+          class="svg fix"
+          svgIcon="find"
         >
-        </div>
+        </mat-icon>
       </div>
 
       <div class="categories-form">
@@ -38,49 +49,46 @@
           >
             --brak--
           </option>
-          <option value="dog">Dog</option>
-          <option value="cat">Cat</option>
-          <option value="hamster">Hamster</option>
-          <option value="parrot">Parrot</option>
-          <option value="spider">Spider</option>
-          <option value="goldfish">Goldfish</option>
+          <ng-container *ngFor="let category of superiorCategories$ | async">
+            <option [value]="category.id">
+              {{ category.name }}
+            </option>
+          </ng-container>
         </select>
-        <div class="icon icon-find fix cursor-pointer"></div>
+        <mat-icon
+          class="svg fix"
+          svgIcon="find"
+        >
+        </mat-icon>
       </div>
     </form>
 
     <div class="actions">
-      <div
+      <mat-icon
         *ngIf="!isBig"
         [routerLink]="ADD_OFFER_LINK"
-        class="icon icon-add"
+        class="svg"
+        svgIcon="add"
       >
-      </div>
-      <div class="icon icon-heart"></div>
-      <div class="icon icon-chat"></div>
-      <div
-        class="icon icon-user"
-        [matMenuTriggerFor]="accountMenu"
+      </mat-icon>
+      <mat-icon
+        class="svg"
+        svgIcon="heart"
+        (click)="navigateTo('observed')"
       >
-        <mat-menu
-          #accountMenu="matMenu"
-          xPosition="before"
-        >
-          <button
-            mat-menu-item
-            class="iconsHover"
-            [routerLink]="LOGIN_LINK"
-          >
-            <mat-icon svgIcon="allegro"></mat-icon>
-            <span>Zaloguj się</span>
-          </button>
-        </mat-menu>
-      </div>
+      </mat-icon>
+      <mat-icon
+        class="svg"
+        svgIcon="chat"
+        (click)="navigateTo('chats')"
+      >
+      </mat-icon>
+      <pp-login-menu></pp-login-menu>
     </div>
 
     <a
       *ngIf="isBig"
-      class="button"
+      class="button button-allegro"
       [routerLink]="ADD_OFFER_LINK"
     >
       Wystaw

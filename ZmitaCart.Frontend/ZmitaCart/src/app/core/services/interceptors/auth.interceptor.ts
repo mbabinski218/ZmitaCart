@@ -7,31 +7,36 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserService } from '@core/services/authorization/user.service';
+import { LocalStorageService } from '../localStorage/local-storage.service';
+import { KeyStorage } from '@core/enums/key-storage.enum';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private localStorageService: LocalStorageService,
   ) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
-    if (!this.userService.isAuthenticated() && this.userService.getCaptchaToken()) {
-      request = request.clone({
-        setHeaders: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'g-recaptcha-response': this.userService.getCaptchaToken(),
-        }
-      });
-    }
+    // if (!this.userService.isAuthenticated() && this.userService.getCaptchaToken()) {
+    //   request = request.clone({
+    //     setHeaders: {
+    //       'Content-Type': 'application/x-www-form-urlencoded',
+    //       'g-recaptcha-response': this.userService.getCaptchaToken(),
+    //     }
+    //   });
+    // }
+    const token = this.localStorageService.getItem<string>(KeyStorage.USER_TOKEN);
 
-    if (!request.url.startsWith("/assets/i18n"))
-      request = request.clone({
-        setHeaders: {
-          'Authorization': `bearer ${this.userService.getUserToken()}`,
-        }
-      });
+    request = request.clone({
+      setHeaders: {
+        'Authorization': `bearer ${isEmpty(token) ? undefined : token}`,
+        // 'Authorization': `bearer ${this.userService.getUserToken()}`,
+      }
+    });
 
     return next.handle(request);
   }

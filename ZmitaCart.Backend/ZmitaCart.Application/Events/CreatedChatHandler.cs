@@ -17,6 +17,8 @@ public class CreatedChatHandler : INotificationHandler<CreatedChat>
 	{
 		var userId = int.Parse(notification.UserId);
 		
-		notification.ChatId = await _conversationRepository.CreateConversationAsync(userId, notification.OfferId);
+		var chatId = await _conversationRepository.IsChatExists(notification.OfferId, userId);
+		
+		notification.ChatId = chatId ?? await _conversationRepository.CreateConversationAsync(userId, notification.OfferId);
 	}
 }

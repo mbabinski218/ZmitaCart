@@ -2,10 +2,8 @@
 
 public class BoughtOfferDto
 {
-	public int Id { get; set; }
-	public decimal Price { get; set; }
-	public string Title { get; set; } = null!;
-	public int Quantity { get; set; }
+	public OfferInfoDto Offer { get; set; } = null!;
 	public DateTimeOffset BoughtAt { get; set; }
+	public int BoughtQuantity { get; set; }
 	public decimal TotalPrice { get; set; }
 }

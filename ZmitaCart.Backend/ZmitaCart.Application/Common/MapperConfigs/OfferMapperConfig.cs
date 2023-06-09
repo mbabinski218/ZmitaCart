@@ -23,8 +23,17 @@ public class OfferMapperConfig : IRegister
 				: src.Pictures.Select(p => p.Name));
 
 		config.ForType<Bought, BoughtOfferDto>()
-			.Map(dest => dest.Id, src => src.Offer.Id)
-			.Map(dest => dest.Price, src => src.Offer.Price)
-			.Map(dest => dest.Title, src => src.Offer.Title);
+			.Map(dest => dest.Offer.Id, src => src.Offer.Id)
+			.Map(dest => dest.Offer.Price, src => src.Offer.Price)
+			.Map(dest => dest.Offer.Title, src => src.Offer.Title)
+			.Map(dest => dest.Offer.City, src => src.User.Address.City)
+			.Map(dest => dest.Offer.Quantity, src => src.Offer.Quantity)
+			.Map(dest => dest.Offer.IsAvailable, src => src.Offer.IsAvailable)
+			.Map(dest => dest.Offer.ImageName, src => !src.Offer.Pictures.Any()
+				? null
+				: src.Offer.Pictures.OrderBy(p => p.CreationTime).First().Name)
+			.Map(dest => dest.Offer.AuthorEmail, src => src.User.Email)
+			.Map(dest => dest.Offer.AuthorName, src => src.User.FirstName)
+			.Map(dest => dest.BoughtQuantity, src => src.Quantity);
 	}
 }

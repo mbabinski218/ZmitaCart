@@ -9,7 +9,7 @@ public class OfferMapperConfig : IRegister
 	public void Register(TypeAdapterConfig config)
 	{
 		config.ForType<Offer, OfferInfoDto>()
-			.Map(dest => dest.Address, src => src.User.Address)
+			.Map(dest => dest.City, src => src.User.Address.City)
 			.Map(dest => dest.ImageName, src => !src.Pictures.Any()
 				? null
 				: src.Pictures.OrderBy(p => p.CreationTime).First().Name)

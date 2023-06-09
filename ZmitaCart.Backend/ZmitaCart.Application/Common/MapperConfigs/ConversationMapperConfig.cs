@@ -9,7 +9,7 @@ public class ConversationMapperConfig : IRegister
 	public void Register(TypeAdapterConfig config)
 	{
 		config.ForType<Message, MessageDto>()
-			.Map(dest => dest.User, src => src.User.UserName);
+			.Map(dest => dest.UserName, src => src.User.FirstName);
 
 		config.ForType<UserConversation, ConversationInfoDto>()
 			.Map(dest => dest.OfferId, src => src.Conversation.OfferId)

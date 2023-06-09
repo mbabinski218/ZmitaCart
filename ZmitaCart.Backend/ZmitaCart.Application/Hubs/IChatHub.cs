@@ -3,7 +3,8 @@ namespace ZmitaCart.Application.Hubs;
 
 public interface IChatHub
 {
-	public Task Join(int chat);
-	public Task RestoreMessages(int userId, string user, int chat, string text);
-	public Task SendMessage(string user, int chat, string text);
+	public Task Create(int offerId, string userId);
+	public Task Join(int chat, string userId);
+	public Task RestoreMessages(int userId, string user, DateTimeOffset date, string text);
+	public Task SendMessage(int chat, string userId, string userName, string text);
 }

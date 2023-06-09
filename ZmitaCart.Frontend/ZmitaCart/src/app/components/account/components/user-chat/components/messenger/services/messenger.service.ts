@@ -25,16 +25,27 @@ export class MessengerService {
 
     this.hubConnection.start()
       .then(() => {
-        this.hubConnection.invoke("Join", 0);
+        const userId = this.userService.userAuthorization().id;
+        const chatId = 2;
+        const offerId = 40;
+
+        // Do nowego
+        //this.hubConnection.invoke("Create", offerId, userId);
+
+        // Do istniejacego
+        this.hubConnection.invoke("Join", chatId, userId);
       });
   }
 
   sendMessage(message: string) {
     const authorName = this.userService.userAuthorization().firstName;
-    const chat = 0;
+    const authorId = this.userService.userAuthorization().id;
+    const chatId = 2;
 
-    this.hubConnection.invoke("SendMessage", "kraol", chat, message);
+    this.hubConnection.invoke("SendMessage", chatId, authorId, authorName, message);
   }
+
+  // this.hubConnection.on("ReceiveMessage", (AuthorId : number, AuthorName : string, Date : date, Content : string)
 
 
   // connect(): void {

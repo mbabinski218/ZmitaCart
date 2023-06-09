@@ -17,46 +17,53 @@ public class ChatHub : Hub, IChatHub
 		_mediator = mediator;
 	}
 
-	public async Task Join(int chat)
+	public async Task Create(int offerId, string userId)
 	{
-		try
-		{
-			await Groups.AddToGroupAsync(Context.ConnectionId, chat.ToString());
-			//await Connect();
-			//await _mediator.Publish(new JoinedChat(chat));
-		}
-		catch
-		{
-			await Disconnect();
-			throw;
-		}
-	}
-	
-	public async Task RestoreMessages(int userId, string user, int chat, string text)
-	{
-		await Clients.Caller.SendAsync("ReceiveMessage", new
-		{
-			UserId = userId,
-			UserName = user, 
-			Date = DateTimeOffset.Now, 
-			Content = text
-		});
-	}
-	
-	public async Task SendMessage(string user, int chat, string text)
-	{
-		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", new
-		{
-			UserName = user, 
-			Date = DateTimeOffset.Now, 
-			Content = text
-		});
+		var createdChatEvent = new CreatedChat(userId, offerId);
+		await _mediator.Publish(createdChatEvent);
 		
-		await _mediator.Publish(new MessageSent(user, chat, text));
+		await Groups.AddToGroupAsync(Context.ConnectionId, createdChatEvent.ChatId.ToString());
 	}
 	
-	private async Task Connect() => await Clients.Client(Context.ConnectionId).SendAsync("Connected");
-
-	private async Task Disconnect() => await Clients.Client(Context.ConnectionId).SendAsync("Disconnected");
+	public async Task Join(int chat, string userId)
+	{ 
+		await Groups.AddToGroupAsync(Context.ConnectionId, chat.ToString());
+		await _mediator.Publish(new JoinedChat(chat, userId));
+	}
 	
+	public async Task RestoreMessages(int userId, string user, DateTimeOffset date, string text)
+	{
+		var message = new Message
+		{
+			AuthorId = userId,
+			AuthorName = user,
+			Date = date,
+			Content = text
+		};
+		
+		await Clients.Caller.SendAsync("ReceiveMessage", message);
+	}
+	
+	public async Task SendMessage(int chat, string userId, string userName, string text)
+	{
+		var message = new Message
+		{
+			AuthorId = int.Parse(userId),
+			AuthorName = userName,
+			Date = DateTimeOffset.Now,
+			Content = text
+		};
+		
+		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", message);
+
+		await _mediator.Publish(new MessageSent(userId, chat, text));
+	}
+}
+
+internal class Message
+{
+	public int AuthorId { get; set; }
+	public string AuthorName { get; set; } = null!;
+	public DateTimeOffset Date { get; set; }
+	public string Content { get; set; } = null!;
 }

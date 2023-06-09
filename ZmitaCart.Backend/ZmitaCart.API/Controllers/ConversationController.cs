@@ -14,14 +14,7 @@ public class ConversationController : ApiController
 	public ConversationController(IMediator mediator) : base(mediator)
 	{
 	}
-	
-	[HttpPost("message")]
-	//[RoleAuthorize]
-	public async Task<ActionResult<int>> SendMessage([FromBody] SendMessageCommand command)
-	{
-		return Ok(await mediator.Send(command));
-	}
-	
+
 	[HttpGet]
 	//[RoleAuthorize]
 	public async Task<ActionResult<PaginatedList<ConversationInfoDto>>> GetAllConversations([FromQuery] GetAllConversationsQuery query)

@@ -43,7 +43,7 @@ builder.Services.AddSignalR(options => options.EnableDetailedErrors = true);
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IChatHub, ChatHub>();
+builder.Services.AddSingleton<IChatHub, ChatHub>();
 builder.Services.AddCors(options => options.AddPolicy("corsapp", corsBuilder =>
     corsBuilder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader().AllowCredentials()));
 

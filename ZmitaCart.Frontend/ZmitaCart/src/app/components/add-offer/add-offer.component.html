@@ -9,21 +9,38 @@
         <p class="subInfoLabel">Możesz dodać do 15 zdjęć w dowolnym formacie</p>
       </div>
     </div>
+
     <hr>
-    <div class="addPhotos">
-      <button mat-raised-button>Wybierz zdjęcia z dysku</button>
-      <input
-        type="file"
-        id="fileInput"
-        accept="image/*" multiple
-        (change)="onFileSelected($event)"
-      />
+
+    <div class="addPhotos" [ngClass]="{'dragOver': isDragOver}" (drop)="onDrop($event)" (dragover)="onDragOver($event)"
+         (mouseleave)="isDragOver=false" (dragleave)="onDragLeave($event)" #dropZone>
+
+      <div class=" button-allegro photos" *ngIf="!isDragOver">
+        Wybierz zdjęcia z dysku
+        <input
+          type="file"
+          id="fileInput"
+          accept="image/*" multiple
+          (change)="onFileSelected($event)"
+        />
+      </div>
+
+      <h4 class="orDragAndDrop" *ngIf="!isDragOver">lub przeciągnij i upuść zdjęcia tutaj
+      </h4>
+
+      <div class="draggingMessage" *ngIf="isDragOver">
+        Tu upuść swoje zdjęcia
+      </div>
     </div>
 
-    <div class="imagePreviewWrapper">
+    <div class="imagePreviewWrapper" *ngIf="selectedImages">
       <div class="imagePreview" *ngFor="let preview of previews; index as i">
         <img [src]="preview" alt="preview"/>
-        <button class="deletePhotoBtn" (click)="deleteImage(i)">delete</button>
+        <button class="deletePhotoBtn" (click)="deleteImage(i)">
+          <span class="material-symbols-outlined">
+            remove
+          </span>
+        </button>
       </div>
     </div>
 
@@ -48,10 +65,11 @@
       <div class="addCategory">
         <label>Kategoria</label>
         <em class="required">*</em>
-        <button class="loadCategoriesButton" (click)="loadCategories=true" *ngIf="!loadCategories">PRZEGLĄDAJ
+        <button class="loadCategoriesButton" (click)="loadSuperiorCategories()" *ngIf="!subCategories">PRZEGLĄDAJ
           WSZYSTKIE KATEGORIE
         </button>
-        <div class="categoryPicker" *ngIf="loadCategories">
+
+        <div class="categoryPicker" *ngIf="subCategories">
 
           <pp-category-selector [item]="subCategories"
                                 [children]="children"
@@ -82,9 +100,13 @@
 
       <div class="quantity">
         <label>Liczba przedmiotów</label>
-        <input type="text" formControlName="quantity" class="customForm" id="qForm">
+        <input type="text" pattern="[a-zA-Z]+" formControlName="quantity" class="customForm" id="qForm" min="1">
       </div>
-      <button type="submit">submit</button>
+      <div class="createOfferWrapper">
+        <button type="submit" class="button-allegro submit" [disabled]="!createOffer.valid && !validateProps()">Utwórz
+          ofertę
+        </button>
+      </div>
       <div class="blank"></div>
     </div>
   </form>

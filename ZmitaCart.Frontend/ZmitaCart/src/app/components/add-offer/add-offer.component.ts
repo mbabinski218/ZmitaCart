@@ -1,4 +1,11 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component, ElementRef,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
@@ -27,15 +34,17 @@ export class AddOfferComponent implements OnInit {
   price: number;
   quantity: number;
   condition: Condition;
-  subCategories: Category[];
+  subCategories: Category[] = null;
   children: Category[];
   pickedCategory: Category = null;
   headCategory: Category;
   parentCategory?: Category;
   isInSubCategories: boolean;
-  loadCategories: boolean;
   selectedImages: File[];
   previews: string[] = [];
+  isDragOver: boolean;
+
+  @ViewChild('dropZone', {static: true}) dropZone!: ElementRef;
 
   items: ConditionType[] = [{
     title: "Używany",
@@ -57,8 +66,8 @@ export class AddOfferComponent implements OnInit {
   ngOnInit(): void {
     this.createOffer = new FormGroup({
       title: new FormControl(null as string, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
-      description: new FormControl(null as string, []),
-      price: new FormControl(null as number, Validators.required),
+      description: new FormControl(null as string, [Validators.required]),
+      price: new FormControl(null as number, [Validators.required, Validators.pattern('[0-9]*')]),
       quantity: new FormControl(1),
 
     });
@@ -66,18 +75,21 @@ export class AddOfferComponent implements OnInit {
     this.createOffer.get('title').valueChanges.subscribe((res: string) => {
       this.characterCount = res.length;
     });
+  }
 
-    //TODO zrobic żeby ładowały sie po kliknięciu a nie w inicie
+  loadSuperiorCategories() {
     this.categoryService.getSuperiorsWithChildren(1)
       .subscribe(res => {
         this.subCategories = res;
         this.children = this.subCategories;
+        this.cdr.detectChanges();
       });
-
   }
 
   public SetCondition(event: Condition) {
+    console.log("condNum " + event)
     this.condition = event;
+    console.log(this.condition);
   }
 
   public getParentCategory(parentId: number) {
@@ -137,9 +149,7 @@ export class AddOfferComponent implements OnInit {
     }
   }
 
-
-  onFileSelected(event: any) {
-    this.selectedImages = event.target.files;
+  handleImages() {
     for (let i = 0; i < this.selectedImages.length; i++) {
       const reader = new FileReader();
 
@@ -152,25 +162,57 @@ export class AddOfferComponent implements OnInit {
     }
   }
 
+  onFileSelected(event: any) {
+    this.selectedImages = event.target.files;
+    this.handleImages();
+  }
+
   deleteImage(index: number) {
     this.selectedImages = Array.from(this.selectedImages).filter((file, i) => i !== index);
     this.previews.splice(index, 1);
   }
 
-  // title: string, desc: string, price: number, quantity: number, condition: string, categoryId: number, pics: File[]
   addOffer() {
     const title: string = this.createOffer.value.title;
     const desc: string = this.createOffer.value.description;
     const price: number = this.createOffer.value.price;
     const quantity: number = this.createOffer.value.quantity;
 
-    console.log("title: " + title);
-    console.log("desc: " + desc);
-    console.log("price: " + price.toString());
-    console.log("quantity: " + quantity.toString());
-    console.log("condition: " + Condition[this.condition]);
-
     this.offerService.createOffer(title, desc, price, quantity, Condition[this.condition], this.pickedCategory.id, this.selectedImages).subscribe(res =>
       console.log(res));
+  }
+
+  validateProps(): boolean {
+    return !!(this.condition && this.pickedCategory);
+  }
+
+  onDrop(event: DragEvent) {
+    this.isDragOver = false;
+    event.preventDefault();
+    const files = event.dataTransfer?.files;
+    this.selectedImages = Array.from(files);
+    this.handleImages();
+    console.log(this.isDragOver);
+  }
+
+  onDragOver(event: DragEvent) {
+    this.isDragOver = true;
+    console.log(this.isDragOver);
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  onDragLeave(event: DragEvent) {
+    this.isDragOver = false;
+    event.preventDefault();
+    event.stopPropagation();
+    // console.log("funkcja onDragLeave");
+    // const dropZoneElement = this.dropZone.nativeElement;
+    // const isInsideDropZone = dropZoneElement.contains(event.relatedTarget as Node);
+    // if (!isInsideDropZone) {
+    //   console.log("jestem w if")
+    //   this.isDragOver = true;
+    // }
+
   }
 }

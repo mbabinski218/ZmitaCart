@@ -91,16 +91,16 @@ public static class DependencyInjection
 
 		services.AddAuthentication(options =>
 			{
-				options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 			})
 			.AddJwtBearer(options =>
 			{
 				options.TokenValidationParameters = new TokenValidationParameters
 				{
-					ValidateIssuer = true,
-					ValidateLifetime = true,
+					ValidateIssuer = false,
+					ValidateAudience = false,
 					ValidateIssuerSigningKey = true,
-					ValidIssuer = configuration[jwtSettings.Issuer],
 					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
 				};
 			})

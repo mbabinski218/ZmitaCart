@@ -28,7 +28,7 @@ public class UserController : ApiController
 	}
 
 	[HttpGet]
-	//[RoleAuthorize]
+	[RoleAuthorize]
 	public async Task<ActionResult<UserDataDto>> GetUserData()
 	{
 		return await mediator.Send(new GetDataQuery()).Then(
@@ -53,7 +53,7 @@ public class UserController : ApiController
 	}
 
 	[HttpPost("logout")]
-	//[RoleAuthorize]
+	[RoleAuthorize]
 	public async Task<ActionResult> Logout()
 	{
 		return await mediator.Send(new LogoutUserQuery()).Then(
@@ -62,7 +62,7 @@ public class UserController : ApiController
 	}
 
 	[HttpPost("addRole")]
-	//[RoleAuthorize(Role.administrator)]
+	[RoleAuthorize(Role.administrator)]
 	public async Task<ActionResult> AddRoleForUser([FromBody] AddRoleForUserCommand command)
 	{
 		return await mediator.Send(command).Then(
@@ -71,7 +71,7 @@ public class UserController : ApiController
 	}
 
 	[HttpPut("updateCredentials")]
-	//[RoleAuthorize]
+	[RoleAuthorize]
 	public async Task<ActionResult> UpdateCredentials([FromBody] UpdateCredentialsCommand command)
 	{
 		return await mediator.Send(command).Then(
@@ -80,7 +80,7 @@ public class UserController : ApiController
 	}
 
 	[HttpPost("feedback")]
-	//[RoleAuthorize]
+	[RoleAuthorize]
 	public async Task<ActionResult<int>> GiveFeedback([FromBody] GiveFeedbackCommand command)
 	{
 		return await mediator.Send(command).Then(
@@ -89,7 +89,7 @@ public class UserController : ApiController
 	}
 
 	[HttpPut("feedback")]
-	//[RoleAuthorize]
+	[RoleAuthorize]
 	public async Task<ActionResult<int>> UpdateFeedback([FromBody] UpdateFeedbackCommand command)
 	{
 		return await mediator.Send(command).Then(
@@ -98,7 +98,7 @@ public class UserController : ApiController
 	}
 
 	[HttpDelete("feedback/{id:int}")]
-	//[RoleAuthorize]
+	[RoleAuthorize]
 	public async Task<ActionResult> DeleteFeedback([FromRoute] int id)
 	{
 		return await mediator.Send(new DeleteFeedbackCommand(id)).Then(
@@ -115,7 +115,7 @@ public class UserController : ApiController
 	}
 	
 	[HttpGet("offer")]
-	//[RoleAuthorize]
+	[RoleAuthorize]
 	public async Task<ActionResult<PaginatedList<OfferInfoDto>>> GetUserOffers([FromQuery] GetUserOffersQuery query)
 	{
 		return await mediator.Send(query).Then(

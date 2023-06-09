@@ -23,7 +23,7 @@ public class CategoryController : ApiController
     }
 
     [HttpPost]
-    //[RoleAuthorize(Role.administrator)]
+    [RoleAuthorize(Role.administrator)]
     public async Task<ActionResult<int>> CreateCategory([FromBody] CreateCategoryCommand command)
     {
         return await mediator.Send(command).Then(
@@ -74,7 +74,7 @@ public class CategoryController : ApiController
     }
 
     [HttpPut("updateCategory")]
-    //[RoleAuthorize(Role.administrator)]
+    [RoleAuthorize(Role.administrator)]
     public async Task<ActionResult<int>> UpdateCategory([FromBody] UpdateCategoryCommand command)
     {
         return await mediator.Send(command).Then(
@@ -83,7 +83,7 @@ public class CategoryController : ApiController
     }
 
     [HttpDelete("{id:int}")]
-    //[RoleAuthorize(Roles = Role.administrator)]
+    [RoleAuthorize(Roles = Role.administrator)]
     public async Task<ActionResult> DeleteCategory([FromRoute] int id)
     {
         return await mediator.Send(new DeleteCategoryCommand(id)).Then(

@@ -230,7 +230,8 @@ public class OfferRepository : IOfferRepository
 			            && o.Price >= (search.MinPrice ?? o.Price)
 			            && o.Price <= (search.MaxPrice ?? o.Price)
 			            && o.Condition == (search.Condition ?? o.Condition)
-			            && o.IsAvailable == true)
+			            && o.IsAvailable == true
+			            && o.UserId != search.UserId)
 			.Include(o => o.User)
 			.Include(o => o.Pictures)
 			.Include(o => o.Favorites)
@@ -244,7 +245,7 @@ public class OfferRepository : IOfferRepository
 	}
 
 	public async Task<Result<List<NamedList<string, OfferInfoDto>>>> GetOffersByCategoriesNameAsync(
-		IEnumerable<string> categoriesNames, int size)
+		IEnumerable<string> categoriesNames, int userId, int size)
 	{
 		var offersId = await _dbContext.Database
 			.SqlQueryRaw<int>
@@ -253,7 +254,7 @@ public class OfferRepository : IOfferRepository
 				(
 					SELECT *, ROW_NUMBER() OVER (PARTITION BY CategoryId ORDER BY CreatedAt DESC) AS RowNumber
 					FROM Offers
-					WHERE IsAvailable = 1 AND CategoryId IN
+					WHERE IsAvailable = 1 AND UserId != {userId} AND CategoryId IN
 					(
 						SELECT Id FROM Categories
 						WHERE Name IN ({string.Join(", ", categoriesNames.Select(s => $"'{s}'"))})

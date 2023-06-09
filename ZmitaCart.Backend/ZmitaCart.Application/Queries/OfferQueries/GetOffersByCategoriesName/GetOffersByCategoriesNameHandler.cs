@@ -22,7 +22,8 @@ public class GetOffersByCategoriesNameHandler : IRequestHandler<GetOffersByCateg
 	public async Task<Result<List<NamedList<string, OfferInfoDto>>>> Handle(GetOffersByCategoriesNameQuery request,
 		CancellationToken cancellationToken)
 	{
-		var offers = await _offerRepository.GetOffersByCategoriesNameAsync(request.CategoriesNames, request.Size);
+		var offers = await _offerRepository.GetOffersByCategoriesNameAsync(
+			request.CategoriesNames, int.Parse(_currentUserService.UserId ?? "0"), request.Size);
 
 		if (offers.IsFailed)
 		{

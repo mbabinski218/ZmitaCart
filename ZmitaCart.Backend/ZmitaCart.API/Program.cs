@@ -25,10 +25,7 @@ builder.Services.AddSwaggerGen(options =>
     options.DescribeAllParametersInCamelCase();
 });
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
-builder.Services.AddSignalR(o=>
-{
-    o.EnableDetailedErrors = true;
-});
+builder.Services.AddSignalR(o => { o.EnableDetailedErrors = true; });
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();

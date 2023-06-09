@@ -24,6 +24,7 @@ public class SearchOffersHandler : IRequestHandler<SearchOffersQuery, Result<Pag
 	public async Task<Result<PaginatedList<OfferInfoDto>>> Handle(SearchOffersQuery request, CancellationToken cancellationToken)
 	{
 		var dto = _mapper.Map<SearchOfferDto>(request);
+		dto.UserId = int.Parse(_currentUserService.UserId ?? "0");
 		
 		if (_currentUserService.UserId is null)
 		{

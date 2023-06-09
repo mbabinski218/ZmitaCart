@@ -12,7 +12,9 @@ public class OfferMapperConfig : IRegister
 			.Map(dest => dest.Address, src => src.User.Address)
 			.Map(dest => dest.ImageName, src => !src.Pictures.Any()
 				? null
-				: src.Pictures.OrderBy(p => p.CreationTime).First().Name);
+				: src.Pictures.OrderBy(p => p.CreationTime).First().Name)
+			.Map(dest => dest.AuthorEmail, src => src.User.Email)
+			.Map(dest => dest.AuthorName, src => src.User.FirstName);
 
 		config.ForType<Offer, OfferDto>()
 			.Map(dest => dest.Address, src => src.User.Address)

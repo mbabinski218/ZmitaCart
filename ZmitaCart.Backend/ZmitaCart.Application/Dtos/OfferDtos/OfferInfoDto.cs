@@ -12,4 +12,6 @@ public class OfferInfoDto
     public int Quantity { get; set; }
     public string? ImageName { get; set; }
     public bool IsFavourite { get; set; } = false;
+    public string AuthorName { get; set; } = null!;
+    public string AuthorEmail { get; set; } = null!;
 }

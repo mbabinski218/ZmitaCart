@@ -17,14 +17,6 @@ public class ChatHub : Hub, IChatHub
 		_mediator = mediator;
 	}
 
-	public async Task Create(int offerId, string userId)
-	{
-		var createdChatEvent = new CreatedChat(userId, offerId);
-		await _mediator.Publish(createdChatEvent);
-		
-		await Groups.AddToGroupAsync(Context.ConnectionId, createdChatEvent.ChatId.ToString());
-	}
-	
 	public async Task Join(int chat, string userId)
 	{ 
 		await Groups.AddToGroupAsync(Context.ConnectionId, chat.ToString());

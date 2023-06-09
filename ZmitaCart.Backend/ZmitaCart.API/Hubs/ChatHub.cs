@@ -25,37 +25,15 @@ public class ChatHub : Hub, IChatHub
 	
 	public async Task RestoreMessages(int userId, string user, DateTimeOffset date, string text)
 	{
-		var message = new Message
-		{
-			AuthorId = userId,
-			AuthorName = user,
-			Date = date,
-			Content = text
-		};
-		
-		await Clients.Caller.SendAsync("ReceiveMessage", message);
+		await Clients.Caller.SendAsync(
+			"ReceiveMessage", userId, user, date, text);
 	}
 	
 	public async Task SendMessage(int chat, string userId, string userName, string text)
 	{
-		var message = new Message
-		{
-			AuthorId = int.Parse(userId),
-			AuthorName = userName,
-			Date = DateTimeOffset.Now,
-			Content = text
-		};
-		
-		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", message);
+		await Clients.Group(chat.ToString()).SendAsync(
+			"ReceiveMessage", int.Parse(userId), userName, DateTimeOffset.Now, text);
 
 		await _mediator.Publish(new MessageSent(userId, chat, text));
 	}
-}
-
-internal class Message
-{
-	public int AuthorId { get; set; }
-	public string AuthorName { get; set; } = null!;
-	public DateTimeOffset Date { get; set; }
-	public string Content { get; set; } = null!;
 }

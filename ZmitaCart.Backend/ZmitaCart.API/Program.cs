@@ -4,7 +4,6 @@ using ZmitaCart.API.Common;
 using ZmitaCart.API.Hubs;
 using ZmitaCart.API.Services;
 using ZmitaCart.Application;
-using ZmitaCart.Application.Hubs;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
 using ZmitaCart.Infrastructure;
@@ -43,7 +42,6 @@ builder.Services.AddSignalR(options => options.EnableDetailedErrors = true);
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddSingleton<IChatHub, ChatHub>();
 builder.Services.AddCors(options => options.AddPolicy("corsapp", corsBuilder =>
     corsBuilder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader().AllowCredentials()));
 

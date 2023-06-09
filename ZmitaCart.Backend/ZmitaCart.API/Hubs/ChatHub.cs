@@ -1,26 +1,33 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using ZmitaCart.Application.Hubs;
-using ZmitaCart.Domain.Common;
+using ZmitaCart.API.Common;
+using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Events;
 
 namespace ZmitaCart.API.Hubs;
 
-[Authorize(Roles = Role.user + "," + Role.administrator)]
-public class ChatHub : Hub, IChatHub
+public class ChatHub : Hub
 {
 	private readonly IPublisher _mediator;
+	private readonly IConversationRepository _conversationRepository;
 
-	public ChatHub(IPublisher mediator)
+	public ChatHub(IPublisher mediator, IConversationRepository conversationRepository)
 	{
 		_mediator = mediator;
+		_conversationRepository = conversationRepository;
 	}
 
 	public async Task Join(int chat, string userId)
 	{ 
 		await Groups.AddToGroupAsync(Context.ConnectionId, chat.ToString());
-		await _mediator.Publish(new JoinedChat(chat, userId));
+
+		var messages = await _conversationRepository.GetMessagesAsync(chat);
+		
+		foreach (var message in messages)
+		{
+			await RestoreMessages(message.UserId, message.UserName, message.Date, message.Text);
+		}
 	}
 	
 	public async Task RestoreMessages(int userId, string user, DateTimeOffset date, string text)

@@ -145,9 +145,10 @@ public class OfferRepository : IOfferRepository
 		return await _dbContext.Users
 			.Where(u => u.Id == userId)
 			.Include(u => u.Favorites)
-			.ThenInclude(uc => uc.Offer)
-			.SelectMany(u => u.Favorites
-				.Select(uc => uc.Offer))
+				.ThenInclude(uc => uc.Offer)
+					.ThenInclude(o => o.User)
+						.ThenInclude(u => u.Address)
+			.SelectMany(u => u.Favorites.Select(uc => uc.Offer))
 			.AsNoTracking()
 			.ProjectToType<OfferInfoDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
@@ -197,6 +198,8 @@ public class OfferRepository : IOfferRepository
 		return await _dbContext.Bought
 			.Where(b => b.UserId == userId)
 			.Include(b => b.Offer)
+				.ThenInclude(o => o.User)
+					.ThenInclude(u => u.Address)
 			.ProjectToType<BoughtOfferDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
 	}
@@ -233,6 +236,7 @@ public class OfferRepository : IOfferRepository
 			            && o.IsAvailable == true
 			            && o.UserId != search.UserId)
 			.Include(o => o.User)
+				.ThenInclude(u => u.Address)
 			.Include(o => o.Pictures)
 			.Include(o => o.Favorites)
 			.OrderByIf(o => o.Price, search.PriceAscending)
@@ -268,6 +272,7 @@ public class OfferRepository : IOfferRepository
 			.Where(o => offersId.Contains(o.Id))
 			.Include(o => o.Category)
 			.Include(o => o.User)
+				.ThenInclude(u => u.Address)
 			.Include(o => o.Pictures)
 			.Include(o => o.Favorites)
 			.AsNoTracking()

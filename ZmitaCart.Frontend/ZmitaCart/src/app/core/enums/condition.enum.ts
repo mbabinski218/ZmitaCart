@@ -1,5 +1,5 @@
 export enum Condition {
-  "Used",
-  "Good",
-  "New"
+  "Używany",
+  "Dobry",
+  "Nowy"
 }

@@ -1,5 +1,5 @@
 <div class="container">
-  <form [formGroup]="createOffer">
+  <form [formGroup]="createOffer" (ngSubmit)="addOffer()">
     <div class="addPhotosInfo">
       <div class="addPhotosInfo--side ">
         <img src="assets/images/camera-add.svg" alt="camera"/>
@@ -16,8 +16,17 @@
         type="file"
         id="fileInput"
         accept="image/*" multiple
+        (change)="onFileSelected($event)"
       />
     </div>
+
+    <div class="imagePreviewWrapper">
+      <div class="imagePreview" *ngFor="let preview of previews; index as i">
+        <img [src]="preview" alt="preview"/>
+        <button class="deletePhotoBtn" (click)="deleteImage(i)">delete</button>
+      </div>
+    </div>
+
     <hr>
 
     <div class="addOfferProps">
@@ -75,7 +84,7 @@
         <label>Liczba przedmiotów</label>
         <input type="text" formControlName="quantity" class="customForm" id="qForm">
       </div>
-      <button mat-raised-button class="customButton" id="submitBtn">wystaw ogłoszenie</button>
+      <button type="submit">submit</button>
       <div class="blank"></div>
     </div>
   </form>

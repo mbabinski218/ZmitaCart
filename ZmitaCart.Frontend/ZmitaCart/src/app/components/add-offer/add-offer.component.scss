@@ -168,3 +168,30 @@ pp-add-offer {
 .loadCategoriesButton:hover {
   cursor: pointer;
 }
+
+.imagePreviewWrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.imagePreview img {
+  margin-right: 20px;
+  max-width: 200px;
+  border: 1px #FF5C00 solid;
+  border-radius: 0.8rem;
+  padding: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
+}
+
+.imagePreview {
+  position: relative;
+}
+
+.deletePhotoBtn {
+  position: absolute;
+  left: 0;
+  top: 0;
+}

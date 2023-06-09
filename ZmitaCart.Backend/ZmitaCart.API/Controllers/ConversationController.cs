@@ -16,7 +16,7 @@ public class ConversationController : ApiController
 	}
 
 	[HttpGet]
-	//[RoleAuthorize]
+	[RoleAuthorize]
 	public async Task<ActionResult<PaginatedList<ConversationInfoDto>>> GetAllConversations([FromQuery] GetAllConversationsQuery query)
 	{
 		return Ok(await mediator.Send(query));

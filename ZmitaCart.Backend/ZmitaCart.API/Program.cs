@@ -15,9 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("auth", new OpenApiSecurityScheme
     {
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
         In = ParameterLocation.Header,
         Scheme = JwtBearerDefaults.AuthenticationScheme,
         Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
@@ -31,13 +31,12 @@ builder.Services.AddSwaggerGen(options =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme, 
-                    Id = "oauth2"
+                    Id = "auth"
                 }
             },
             Array.Empty<string>()
         }
     });
-    options.OperationFilter<SecurityRequirementsOperationFilter>();
     options.DescribeAllParametersInCamelCase();
 });
 builder.Services.AddScoped<ErrorHandlingMiddleware>();

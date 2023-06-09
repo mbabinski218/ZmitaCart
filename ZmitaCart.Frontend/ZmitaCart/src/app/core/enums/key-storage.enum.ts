@@ -1,4 +1,4 @@
 export enum KeyStorage {
   USER = 'USER',
-  USERR = 'USERe',
+  USER_TOKEN = 'USER_TOKEN',
 }

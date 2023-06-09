@@ -1,0 +1,101 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.price {
+  font-size: 36px;
+  line-height: 46.8px;
+  font-weight: 600;
+  padding-bottom: 4px;
+
+  .zl {
+    font-size: 24px;
+    line-height: 28.8px;
+    font-weight: 600;
+  }
+}
+
+.button {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  text-decoration: none;
+  transition: background-color .3s ease;
+  padding: 8px 16px;
+  border-radius: 1000px;
+  border: 1px solid transparent;
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.buy {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.chat {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  gap: 8px;
+
+  &-icon {
+    transform: scaleX(-1);
+    filter: brightness(0) saturate(100%) invert(31%) sepia(82%) saturate(752%) hue-rotate(215deg) brightness(91%) contrast(79%);
+  }
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+
+  .text {
+    font-size: 18px;
+    line-height: 26px;
+    font-weight: 600;
+  }
+
+  .svg {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+
+    filter: brightness(0) saturate(100%) invert(41%) sepia(40%) saturate(4250%) hue-rotate(147deg) brightness(98%) contrast(101%);
+  }
+}
+
+.quantity {
+  font-size: 12px;
+  line-height: 16px;
+  color: rgb(118, 118, 118);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+}

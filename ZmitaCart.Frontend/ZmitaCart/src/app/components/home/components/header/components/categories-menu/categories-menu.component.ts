@@ -5,7 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { HeaderService } from '@components/home/components/api/header.service';
 import { Observable, tap } from 'rxjs';
 import { SubcategoriesMenuComponent } from '@components/home/components/header/components/categories-menu/subcategories-menu/subcategories-menu.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { RoutesPath } from '@core/enums/routes-path.enum';
 
 @Component({
   selector: 'pp-categories-menu',
@@ -27,23 +28,22 @@ export class CategoriesMenuComponent {
   constructor(
     private headerService: HeaderService,
     private router: Router,
-    private route: ActivatedRoute,
   ) { }
 
   openSubCategories(category: SuperiorCategories): void {
-    this.subcategories$ = this.headerService.getSubCategories(category.id).pipe(
-      tap((res) => {
-        if (!(res.children && res.children.length > 0)) {
-          this.categories.find((res) => res === category).isClickable = true;
-        }
-      })
-    );
+    this.subcategories$ = this.headerService.getSubCategories(category.id);
+    // .pipe(
+    //   tap((res) => {
+    //     if (!(res.children && res.children.length > 0)) {
+    //       this.categories.find((res) => res === category).isClickable = true;
+    //     }
+    //   })
+    // );
   }
 
   openCategory(categoryName: string): void {
-    void this.router.navigate(['.'], {
-      relativeTo: this.route,
-      queryParams: { category: categoryName },
+    void this.router.navigate([`${RoutesPath.HOME}/${RoutesPath.OFFERS_FILTERED}`], {
+      queryParams: { c: categoryName },
     });
   }
 }

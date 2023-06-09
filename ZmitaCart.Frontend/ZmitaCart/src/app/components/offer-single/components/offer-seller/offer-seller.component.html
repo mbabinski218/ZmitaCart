@@ -1,0 +1,11 @@
+<div class="container">
+  <div class="info">
+    <mat-icon class="icon material-icons-outlined">account_circle</mat-icon>
+    <span>Sprzedaje {{ details.user.firstName }} ({{ details.user.email }})</span>
+  </div>
+  <div class="line"></div>
+  <div class="city">
+    <mat-icon class="icon material-icons-outlined">location_on</mat-icon>
+    <span class="text">{{ details.address.city || '-' }}</span>
+  </div>
+</div>

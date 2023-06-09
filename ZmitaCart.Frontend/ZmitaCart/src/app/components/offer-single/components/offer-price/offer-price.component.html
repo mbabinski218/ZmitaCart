@@ -1,0 +1,56 @@
+<div class="title">
+  <span class="text">{{ details.title }}</span>
+  <div
+    (click)="observe()"
+    class="svg cursor-pointer"
+  >
+    OBSERWUJ
+    <mat-icon [svgIcon]="details.isFavourite ? 'heart-filled' : 'heart'"></mat-icon>
+  </div>
+</div>
+
+<div
+  *ngIf="details.quantity > 1"
+  class="quantity"
+>
+  <span>dostępne: {{ details.quantity }} szt.</span>
+  <div class="buttons">
+    <button
+      [disabled]="currentQuantity <= 1"
+      mat-icon-button
+      (click)="add(-1)"
+    >
+      <mat-icon>remove</mat-icon>
+    </button>
+    {{ currentQuantity }}
+    <button
+      [disabled]="currentQuantity >= details.quantity"
+      mat-icon-button
+      (click)="add(1)"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="price">
+  {{ (details.price | ppFixPrice) || '-' }}<span class="zl"> zł</span>
+</div>
+
+<div
+  *ngIf="details.isAvailable"
+  class="buy button"
+>
+  KUP TERAZ
+</div>
+<div
+  class="chat button"
+  (click)="navigateTo('chats')"
+>
+  <mat-icon
+    class="chat-icon"
+    svgIcon="chat"
+  >
+  </mat-icon>
+  NAPISZ
+</div>

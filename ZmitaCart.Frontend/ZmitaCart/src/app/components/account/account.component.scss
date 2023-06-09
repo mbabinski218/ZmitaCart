@@ -2,23 +2,68 @@
 
 pp-account {
   .container {
-    // max-width: 140.8rem;
-    // height: 100%;
-    // padding-inline: 2.4rem;
-    // margin-left: auto;
-    // margin-right: auto;
-
     padding-top: 20px;
 
     display: flex;
     gap: 20px;
   }
 
+  .box {
+    border-radius: 0.8rem;
+    box-shadow: 0 1px 1px 0 rgba(10, 22, 70, .1), 0 0 1px 0 rgba(10, 22, 70, .06);
+    background-color: #fff;
+    padding: 16px;
+  }
+
+  .header {
+    box-sizing: inherit;
+    position: relative;
+    height: unset;
+    min-height: 5rem;
+    border-radius: 0.8rem 0.8rem 0 0;
+    border-bottom: 1px solid #e7e7e7;
+    padding: 1.6rem 2.6rem;
+    background: #fff;
+    text-align: unset;
+
+    .text {
+      font-size: 1.45rem;
+      line-height: 1;
+      font-weight: 600;
+      text-align: unset;
+      color: unset;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
+    border-radius: 0 0 0.8rem 0.8rem;
+    margin: auto;
+    padding: 1.6rem;
+    background: #fff;
+
+    .text {
+      padding-top: 2.4rem;
+      padding-bottom: 2.4rem;
+      color: #484848;
+      font-size: 1.08rem;
+      text-align: center;
+      display: block;
+      max-width: 80vw;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
   .mat-button-toggle-group-appearance-standard.mat-button-toggle-vertical .mat-button-toggle+.mat-button-toggle {
     border: 0;
   }
 
-  .mat-button-toggle-standalone.mat-button-toggle-appearance-standard, .mat-button-toggle-group-appearance-standard {
+  .mat-button-toggle-standalone.mat-button-toggle-appearance-standard,
+  .mat-button-toggle-group-appearance-standard {
     border: 0;
   }
 

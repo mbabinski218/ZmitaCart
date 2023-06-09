@@ -30,7 +30,7 @@ public class JoinedChatHandler : INotificationHandler<JoinedChat>
 		
 		foreach (var message in messages)
 		{
-			await _chatHub.RestoreMessages(message.UserId, message.User, notification.Chat, message.Text, message.Date, cancellationToken);
+			await _chatHub.RestoreMessages(message.UserId, message.User, notification.Chat, message.Text);
 		}
 	}
 }

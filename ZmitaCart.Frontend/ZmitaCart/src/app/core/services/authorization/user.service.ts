@@ -28,6 +28,8 @@ export class UserService {
 
   setUserToken(token: string): void {
     this.userToken = token;
+
+    this.localStorageService.setItem<string>(KeyStorage.USER_TOKEN, token);
   }
 
   getUserToken(): string {
@@ -94,7 +96,7 @@ export class UserService {
 
     const { email, exp, firstName, id, iss, lastName, role } = decodedToken;
     const refreshToken = token.refreshToken;
-    
+
     this.localStorageService.setItem<TokenData>(KeyStorage.USER, {
       refreshToken, email, firstName, id, iss, lastName, role, expires_at: addSeconds(new Date(), exp).toISOString()
     });

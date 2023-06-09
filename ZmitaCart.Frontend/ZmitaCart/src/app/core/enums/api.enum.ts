@@ -9,6 +9,14 @@ export enum Api {
   GET_SUPERIOR_CATEGORIES = '/category/getAllSuperiors',
   GET_SUB_CATEGORIES = '/category/getBySuperiorId',
   GET_SUB_CATEGORIES_FEW = '/category/getFewBySuperiorId',
+  CATEGORIES_POPULAR = '/category/getMostPopular',
 
-  OFFER = '/offer'
+  OFFER = '/offer',
+  OFFER_SINGLE = '/offer/:id',
+  OFFER_MAIN = '/offer/byCategoriesName',
+  OFFER_ADD_TO_FAVOURITES = '/offer/addToFavorites/:id',
+
+  FILE = '/File',
+
+  CONVERSATION = '/conversation',
 }

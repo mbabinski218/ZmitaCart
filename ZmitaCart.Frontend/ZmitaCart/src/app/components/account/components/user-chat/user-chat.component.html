@@ -1,0 +1,25 @@
+<div class="biggi">
+  <div class="main">
+    <div class="header">
+      <ng-container *ngIf="currentChat$ | async as currentChat">
+        <p class="name">{{ currentChat.withUser }}</p>
+        <div
+          class="cursor-pointer data"
+          (click)="details(currentChat.offerId)"
+        >
+          <span class="title">{{ currentChat.offerTitle }}</span>
+          <p><span class="price">{{ currentChat.offerPrice }}</span> zł</p>
+        </div>
+      </ng-container>
+    </div>
+    <pp-messenger></pp-messenger>
+  </div>
+
+  <div class="info">
+    <ng-container *ngIf="currentChat$ | async as currentChat">
+      <pp-offer [currentChat]="currentChat"></pp-offer>
+    </ng-container>
+
+    <pp-chats></pp-chats>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+.img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  margin-bottom: 16px;
+}
+
+.component {
+  display: flex;
+  gap: 10px;
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .price {
+      font-weight: 600;
+    }
+  }
+}
+
+.buy {
+  margin-top: 18px;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 8px 16px;
+  border-radius: 1000px;
+  width: 100%;
+
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  text-decoration: none;
+  transition: background-color .3s ease;
+}

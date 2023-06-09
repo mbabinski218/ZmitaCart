@@ -4,7 +4,7 @@
       class="item"
       *ngFor="let category of categories"
       (mouseenter)="openSubCategories(category)"
-      (click)="category.isClickable && openCategory(category.name)"
+      (click)="openCategory(category.name)"
     >
       <mat-icon>{{ category.iconName }}</mat-icon>
       <div class="fix">
@@ -24,13 +24,18 @@
           class="flex-item"
           *ngIf="child.children && child.children.length > 0; else noKids"
         >
-          <span class="isMain">{{ child.name }}</span>
+          <span
+            class="data"
+            (click)="openCategory(child.name)"
+          >
+            {{ child.name }}
+          </span>
           <pp-subcategories-menu [subcategories]="child.children"></pp-subcategories-menu>
         </div>
 
         <ng-template #noKids>
           <div
-            class="isMain change flex-item"
+            class="data"
             (click)="openCategory(child.name)"
           >
             {{ child.name }}

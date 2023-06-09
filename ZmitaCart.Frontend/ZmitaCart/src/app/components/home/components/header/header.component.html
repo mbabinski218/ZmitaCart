@@ -74,13 +74,13 @@
       <mat-icon
         class="svg"
         svgIcon="heart"
-        [routerLink]="RoutesPath.ACCOUNT"
-        fragment="observed"
+        (click)="navigateTo('observed')"
       >
       </mat-icon>
       <mat-icon
         class="svg"
         svgIcon="chat"
+        (click)="navigateTo('chats')"
       >
       </mat-icon>
       <pp-login-menu></pp-login-menu>

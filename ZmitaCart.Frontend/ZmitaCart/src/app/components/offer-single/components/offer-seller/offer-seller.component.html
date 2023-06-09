@@ -1,11 +1,19 @@
 <div class="container">
   <div class="info">
-    <mat-icon class="icon material-icons-outlined">account_circle</mat-icon>
-    <span>Sprzedaje {{ details.user.firstName }} ({{ details.user.email }})</span>
+    <div class="fix">
+      <mat-icon class="icon material-icons-outlined">account_circle</mat-icon>
+      Sprzedaje {{ details.user.firstName }} ({{ details.user.email }})
+    </div>
+    <div class="fix">
+      <mat-icon class="icon material-icons-outlined">call</mat-icon>
+      {{ details.user.phoneNumber || '-' }}
+    </div>
   </div>
   <div class="line"></div>
   <div class="city">
     <mat-icon class="icon material-icons-outlined">location_on</mat-icon>
-    <span class="text">{{ details.address.city || '-' }}</span>
+    <span class="text">
+      {{ (details.address | ppAddress) || '-' }}
+    </span>
   </div>
 </div>

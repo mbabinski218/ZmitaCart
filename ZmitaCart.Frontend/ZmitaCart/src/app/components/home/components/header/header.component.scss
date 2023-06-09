@@ -4,7 +4,7 @@
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 3;
+  z-index: 1;
 }
 
 .svg {
@@ -203,19 +203,8 @@
     grid-area: button;
 
     margin-left: 32px;
-    display: block !important;
     width: 162px;
     height: 40px;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 24px;
-    text-align: center;
-    letter-spacing: .4px;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 1000px;
     color: #fff;
     background-color: #6256b1;
   }

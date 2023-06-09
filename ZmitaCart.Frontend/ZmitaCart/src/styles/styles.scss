@@ -75,13 +75,31 @@ body {
   display: none;
 }
 
-// img,
-// svg,
-// video {
-//   max-width: 100%;
-//   display: block;
-// }
-//czy nie zepsuje mat-icons
+.observe-svg {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+
+  filter: brightness(0) saturate(100%) invert(41%) sepia(40%) saturate(4250%) hue-rotate(147deg) brightness(98%) contrast(101%);
+}
+
+.button-allegro {
+  height: 40px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 1000px;
+}
 
 // a {
 //   margin-bottom: 5px;

@@ -12,6 +12,7 @@ import { OfferDescriptionComponent } from './components/offer-description/offer-
 import { OfferSellerComponent } from './components/offer-seller/offer-seller.component';
 import { OfferPriceComponent } from './components/offer-price/offer-price.component';
 import { OfferDeliveryComponent } from './components/offer-delivery/offer-delivery.component';
+import { stringMask } from '@shared/utils/string-mask';
 
 @Component({
   selector: 'pp-offer-single',
@@ -45,6 +46,15 @@ export class OfferSingleComponent implements OnInit {
           const wholeName = this.imageUrl + name;
           this.images.push(new ImageItem({ src: wholeName, thumb: wholeName }));
         });
+      }),
+      map((res) => {
+        return {
+          ...res,
+          user: {
+            ...res.user,
+            phoneNumber: stringMask('Numer telefonu', res.user.phoneNumber),
+          }
+        };
       })
     );
   }

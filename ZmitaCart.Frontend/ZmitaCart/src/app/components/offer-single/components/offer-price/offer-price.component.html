@@ -2,9 +2,9 @@
   <span class="text">{{ details.title }}</span>
   <div
     (click)="observe()"
-    class="svg cursor-pointer"
+    class="observe-svg cursor-pointer"
   >
-    OBSERWUJ
+    {{ details.isFavourite ? 'OBSERWUJESZ' : 'OBSERWUJ'}}
     <mat-icon [svgIcon]="details.isFavourite ? 'heart-filled' : 'heart'"></mat-icon>
   </div>
 </div>
@@ -20,15 +20,15 @@
       mat-icon-button
       (click)="add(-1)"
     >
-      <mat-icon>remove</mat-icon>
+      <mat-icon class="amount-button">remove</mat-icon>
     </button>
-    {{ currentQuantity }}
+    <span class="amount-number">{{ currentQuantity }}</span>
     <button
       [disabled]="currentQuantity >= details.quantity"
       mat-icon-button
       (click)="add(1)"
     >
-      <mat-icon>add</mat-icon>
+      <mat-icon class="amount-button">add</mat-icon>
     </button>
   </div>
 </div>
@@ -39,12 +39,12 @@
 
 <div
   *ngIf="details.isAvailable"
-  class="buy button"
+  class="button-allegro buy"
 >
   KUP TERAZ
 </div>
 <div
-  class="chat button"
+  class="button-allegro chat"
   (click)="navigateTo('chats')"
 >
   <mat-icon

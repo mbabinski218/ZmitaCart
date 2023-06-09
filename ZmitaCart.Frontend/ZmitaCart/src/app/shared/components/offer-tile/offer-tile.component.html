@@ -1,0 +1,58 @@
+<ng-container *ngIf="items.length">
+  <div
+    class="item"
+    *ngFor="let item of items"
+  >
+    <img
+      class="img cursor-pointer"
+      [src]="item.imageName ? imageUrl + item.imageName : 'https://upload.wikimedia.org/wikipedia/commons/5/55/Brak_obrazka.svg'"
+      (click)="details(item.id)"
+    >
+
+    <div class="component">
+      <div class="data">
+        <p
+          class="title cursor-pointer"
+          (click)="details(item.id)"
+        >
+          {{ item.title }}
+        </p>
+        <div class="condition">
+          <mat-icon class="icon material-icons-outlined">verified</mat-icon>
+          Stan: {{ item.condition || '-' }}
+        </div>
+        <div class="price">{{ (item?.price | ppFixPrice) || '-' }}<span class="zl"> zł</span></div>
+      </div>
+
+      <div class="user">
+        <mat-icon class="icon material-icons-outlined">person</mat-icon>
+        {{ item.authorName }} ({{ item.authorEmail }})
+      </div>
+    </div>
+
+    <div class="right">
+      <div
+        (click)="observe(item)"
+        class="observe-svg cursor-pointer svg"
+      >
+        {{ item.isFavourite ? 'OBSERWUJESZ' : 'OBSERWUJ'}}
+        <mat-icon [svgIcon]="item.isFavourite ? 'heart-filled' : 'heart'"></mat-icon>
+      </div>
+
+      <div>
+        <div
+          *ngIf="item.isAvailable"
+          class="button-allegro buy"
+        >
+          KUP TERAZ
+        </div>
+
+        <div class="city">
+          <mat-icon class="icon material-icons-outlined">location_on</mat-icon>
+          {{ item.city || '-' }}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</ng-container>

@@ -16,18 +16,16 @@ pp-account {
   }
 
   .header {
-    box-sizing: inherit;
-    position: relative;
-    height: unset;
-    min-height: 5rem;
     border-radius: 0.8rem 0.8rem 0 0;
     border-bottom: 1px solid #e7e7e7;
     padding: 1.6rem 2.6rem;
     background: #fff;
-    text-align: unset;
+
+    display: flex;
+    justify-content: space-between;
 
     .text {
-      font-size: 1.45rem;
+      font-size: 23px;
       line-height: 1;
       font-weight: 600;
       text-align: unset;
@@ -42,7 +40,7 @@ pp-account {
     box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
     border-radius: 0 0 0.8rem 0.8rem;
     margin: auto;
-    padding: 1.6rem;
+    padding: 25.6px;
     background: #fff;
 
     .text {

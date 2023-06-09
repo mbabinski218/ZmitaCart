@@ -1,8 +1,47 @@
-<div class="box">
-  <div class="header">
-    <div class="text">Obserwowane</div>
-  </div>
-  <div class="content">
-    <div class="text">W tej chwili nie obserwujesz żadnych ogłoszeń.</div>
+<div class="header">
+  <div class="text">Obserwowane</div>
+  <div class="pagination">
+    <mat-icon
+      [class.hide]="!canGo.left"
+      class="cursor-pointer"
+      (click)="nextPage(-1)"
+    >
+      arrow_back_ios
+    </mat-icon>
+    <div class="page">
+      <input
+        class="input"
+        type="number"
+        [value]="currentPage"
+        #pageNumberInput
+        (keydown.enter)="changeToPage(pageNumberInput.value)"
+      >
+      <span>z {{ allPages }}</span>
+    </div>
+    <mat-icon
+      [class.hide]="!canGo.right"
+      class="cursor-pointer"
+      (click)="nextPage(1)"
+    >
+      arrow_forward_ios
+    </mat-icon>
   </div>
 </div>
+<div class="content">
+  <ng-container *ngIf="favourites$ | async as favourites; else loading">
+    <ng-container *ngIf="favourites.items.length; else noData">
+      <pp-offer-tile [items]="favourites.items"></pp-offer-tile>
+    </ng-container>
+  </ng-container>
+</div>
+
+
+<ng-template #noData>
+  <div class="text">W tej chwili nie obserwujesz żadnych ogłoszeń.</div>
+</ng-template>
+
+<ng-template #loading>
+  <div class="center">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

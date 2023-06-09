@@ -13,16 +13,18 @@ export interface SingleOffer {
     lastName: string,
     phoneNumber: string,
   },
-  address: {
-    country: string,
-    city: string,
-    street: string,
-    postalCode: number,
-    houseNumber: number,
-    apartmentNumber: number,
-  },
+  address: OfferAddress,
   picturesNames: [
     string,
   ],
   isFavourite: boolean,
+}
+
+export interface OfferAddress {
+  country: string,
+  city: string,
+  street: string,
+  postalCode: number,
+  houseNumber: number,
+  apartmentNumber: number,
 }

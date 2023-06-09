@@ -1,6 +1,6 @@
 import { Router } from '@angular/router';
 import { UserService } from '@core/services/authorization/user.service';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ppFixPricePipe } from '@shared/pipes/fix-price.pipe';
@@ -17,7 +17,8 @@ import { RoutingService } from '@shared/services/routing.service';
   providers: [OfferMainService],
   templateUrl: './offer-price.component.html',
   styleUrls: ['./offer-price.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class OfferPriceComponent {
 

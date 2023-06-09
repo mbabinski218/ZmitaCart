@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using ZmitaCart.Application.Events;
 using ZmitaCart.Application.Hubs;
 using ZmitaCart.Domain.Common;
+using ZmitaCart.Domain.Events;
 
 namespace ZmitaCart.API.Hubs;
 

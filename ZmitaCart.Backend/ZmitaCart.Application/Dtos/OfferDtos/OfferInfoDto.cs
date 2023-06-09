@@ -1,5 +1,3 @@
-using ZmitaCart.Domain.ValueObjects;
-
 namespace ZmitaCart.Application.Dtos.OfferDtos;
 
 public class OfferInfoDto

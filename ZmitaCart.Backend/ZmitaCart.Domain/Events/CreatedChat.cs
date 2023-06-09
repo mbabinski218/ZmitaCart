@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace ZmitaCart.Application.Events;
+namespace ZmitaCart.Domain.Events;
 
 public record CreatedChat(string UserId, int OfferId) : INotification
 {

@@ -1,5 +1,5 @@
 ﻿using MediatR;
 
-namespace ZmitaCart.Application.Events;
+namespace ZmitaCart.Domain.Events;
 
 public record JoinedChat(int Chat, string UserId) : INotification;

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Domain.Events;
 
 namespace ZmitaCart.Application.Events;
 

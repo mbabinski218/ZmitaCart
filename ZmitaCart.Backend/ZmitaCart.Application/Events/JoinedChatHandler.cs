@@ -1,8 +1,8 @@
 ﻿using MediatR;
-using Microsoft.IdentityModel.Tokens;
 using ZmitaCart.Application.Hubs;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Services;
+using ZmitaCart.Domain.Events;
 
 namespace ZmitaCart.Application.Events;
 

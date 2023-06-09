@@ -9,11 +9,11 @@ $frontend-warn: mat.define-palette(mat.$red-palette);
 $my-typography: mat.define-typography-config();
 
 $frontend-theme: mat.define-light-theme((color: (primary: $frontend-primary,
-        accent: $frontend-accent,
-        warn: $frontend-warn,
-      ),
-      typography: $my-typography,
-    ));
+  accent: $frontend-accent,
+  warn: $frontend-warn,
+),
+  typography: $my-typography,
+));
 
 @include mat.all-component-themes($frontend-theme);
 
@@ -134,3 +134,16 @@ body {
 // .mat-mdc-raised-button:not(:disabled) {
 //   color: white !important;
 // }
+
+.button-allegro {
+  height: 40px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 1000px;
+}

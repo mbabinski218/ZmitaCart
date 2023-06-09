@@ -1,0 +1,56 @@
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 48
+}
+
+.categoryInfo {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 1.2rem 20px;
+  width: 100%;
+  max-width: 50rem;
+  font-size: 1.6rem;
+  background-color: #fff;
+  border: none;
+  border-bottom: 1px solid #f7f7f7;
+}
+
+.btn:hover {
+  cursor: default;
+}
+
+.btn:not(.header):hover {
+  cursor: pointer;
+  background-color: #fafafa;
+}
+
+.categoryName {
+  margin-left: 20px;
+}
+
+.arrowRight {
+  margin-left: auto;
+}
+
+.btn.header {
+  display: flex;
+  align-items: center;
+}
+
+.btn.goBack {
+  flex: 0 0 100%;
+}
+
+.goBackToCategory {
+  align-items: center;
+  margin-left: 15px;
+  font-size: 1.4rem;
+  color: #2bb9a3;
+  font-weight: 600;
+}

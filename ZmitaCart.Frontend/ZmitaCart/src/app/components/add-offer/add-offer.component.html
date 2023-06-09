@@ -1,23 +1,113 @@
 <div class="container">
-  <div class="addPhotosInfo">
-    <div class="addPhotosInfo--side ">
-      <!--    jak coś to nie działało z lokalnych plików ściaganie tego svg ZAMIENIC NA MAT ICON-->
-      <img src="https://lokalnie-prod-assets.storage.googleapis.com/ui/versions/12515bbe/assets/camera.5577f27d.svg"/>
+  <form [formGroup]="createOffer" (ngSubmit)="addOffer()">
+    <div class="addPhotosInfo">
+      <div class="addPhotosInfo--side ">
+        <img src="assets/images/camera-add.svg" alt="camera"/>
+      </div>
+      <div class="addPhotoLabel">
+        <p>Dodaj zdjęcia</p>
+        <p class="subInfoLabel">Możesz dodać do 15 zdjęć w dowolnym formacie</p>
+      </div>
     </div>
-    <div class="addPhotoLabel">
-      <p>Dodaj zdjęcia</p>
-      <p class="subInfoLabel">Możesz dodać do 15 zdjęć w dowolnym formacie</p>
+
+    <hr>
+
+    <div class="addPhotos" [ngClass]="{'dragOver': isDragOver}" (drop)="onDrop($event)" (dragover)="onDragOver($event)"
+         (mouseleave)="isDragOver=false" (dragleave)="onDragLeave($event)" #dropZone>
+
+      <div class=" button-allegro photos" *ngIf="!isDragOver">
+        Wybierz zdjęcia z dysku
+        <input
+          type="file"
+          id="fileInput"
+          accept="image/*" multiple
+          (change)="onFileSelected($event)"
+        />
+      </div>
+
+      <h4 class="orDragAndDrop" *ngIf="!isDragOver">lub przeciągnij i upuść zdjęcia tutaj
+      </h4>
+
+      <div class="draggingMessage" *ngIf="isDragOver">
+        Tu upuść swoje zdjęcia
+      </div>
     </div>
-  </div>
-  <hr>
-  <button mat-raised-button class="selectFromDrive">Wybierz zdjęcia z dysku</button>
-  <div class="addPhotos">
-    <input
-      type="file"
-      id="fileInput"
-      accept="image/*" multiple
-    />
-    <p class="subInfoLabel">Możesz dodać do 15 zdjęć w dowolnym formacie</p>
-  </div>
-  <div class="addOfferProps"></div>
+
+    <div class="imagePreviewWrapper" *ngIf="selectedImages">
+      <div class="imagePreview" *ngFor="let preview of previews; index as i">
+        <img [src]="preview" alt="preview"/>
+        <button class="deletePhotoBtn" (click)="deleteImage(i)">
+          <span class="material-symbols-outlined">
+            remove
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="addOfferProps">
+      <div class="addTitle">
+        <label>Nazwa</label>
+        <em class="required">*</em>
+        <input formControlName="title" placeholder="Wpisz, co chcesz sprzedać" class="customForm"
+               maxlength="50">
+        <div class="titleLength">{{characterCount ?? 0}} / 50</div>
+      </div>
+
+      <div class="addDescription">
+        <label>Opis</label>
+        <em class="required">*</em>
+        <textarea formControlName="description" placeholder="Powiedz kupującym coś więcej"
+                  class="customForm"></textarea>
+      </div>
+
+      <div class="addCategory">
+        <label>Kategoria</label>
+        <em class="required">*</em>
+        <button class="loadCategoriesButton" (click)="loadSuperiorCategories()" *ngIf="!subCategories">PRZEGLĄDAJ
+          WSZYSTKIE KATEGORIE
+        </button>
+
+        <div class="categoryPicker" *ngIf="subCategories">
+
+          <pp-category-selector [item]="subCategories"
+                                [children]="children"
+                                [isInSubCat]="isInSubCategories"
+                                (componentClicked)="goForward($event)"
+                                (goBackClicked)="goBack($event)"
+                                [headCategory]="headCategory"
+                                [parentCategory]="parentCategory"
+          ></pp-category-selector>
+
+        </div>
+        <span *ngIf="pickedCategory">Wybrana kategoria: {{pickedCategory.name }}</span>
+      </div>
+
+      <div class="condition">
+        <label>Stan przedmiotu</label>
+        <em class="required">*</em>
+        <ul class="conditionSelect">
+          <pp-condition-wrapper [items]="items" (componentClicked)="SetCondition($event)"></pp-condition-wrapper>
+        </ul>
+      </div>
+
+      <div class="price">
+        <label>Cena przedmiotu</label>
+        <em class="required">*</em>
+        <input type="text" formControlName="price" placeholder="0,00" class="customForm">
+      </div>
+
+      <div class="quantity">
+        <label>Liczba przedmiotów</label>
+        <input type="text" pattern="[a-zA-Z]+" formControlName="quantity" class="customForm" id="qForm" min="1">
+      </div>
+      <div class="createOfferWrapper">
+        <button type="submit" class="button-allegro submit" [disabled]="!createOffer.valid && !validateProps()">Utwórz
+          ofertę
+        </button>
+      </div>
+      <div class="blank"></div>
+    </div>
+  </form>
 </div>

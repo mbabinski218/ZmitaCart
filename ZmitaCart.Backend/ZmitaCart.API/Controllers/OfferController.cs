@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.OfferCommands.AddToFavorites;

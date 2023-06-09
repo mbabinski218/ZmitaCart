@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
-using ZmitaCart.Application.Commands.ConversationCommands.SendMessage;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.ConversationDtos;
 using ZmitaCart.Application.Queries.ConversationQueries.GetAllConversations;

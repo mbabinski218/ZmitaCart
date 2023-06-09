@@ -10,5 +10,5 @@ public interface IConversationRepository
 	public Task<PaginatedList<ConversationInfoDto>> GetConversationsAsync(int userId, int? pageNumber = null, int? pageSize = null);
 	public Task<IEnumerable<MessageDto>> GetMessagesAsync(int chat);
 	public Task<IEnumerable<int>> GetConversationUserIds(int chat);
-	public Task<bool> IsChatExists(int chat);
+	public Task<int?> IsChatExists(int offerId, int userId);
 }

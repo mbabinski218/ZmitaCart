@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
 using ZmitaCart.API.Common;
 using ZmitaCart.API.Hubs;
 using ZmitaCart.API.Services;

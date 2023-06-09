@@ -119,9 +119,12 @@ public class ConversationRepository : IConversationRepository
 			.Select(uc => uc.UserId)
 			.ToListAsync();
 	}
-	
-	public async Task<bool> IsChatExists(int chat)
+
+	public async Task<int?> IsChatExists(int offerId, int userId)
 	{
-		return await _dbContext.Conversations.AnyAsync(c => c.Id == chat);
+		return await _dbContext.Chats
+			.Where(c => c.UserId == userId && c.Conversation.OfferId == offerId)
+			.Select(c => c.ConversationId)
+			.FirstOrDefaultAsync();
 	}
 }

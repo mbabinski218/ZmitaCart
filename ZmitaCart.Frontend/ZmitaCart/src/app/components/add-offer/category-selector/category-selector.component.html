@@ -1,7 +1,7 @@
 <header class="categoryInfo" *ngIf="isInSubCat">
   <div class="btn goBack" (click)="goBack(parentCategory)">
     <span class="arrowRight">
-    <span class="material-symbols-outlined">chevron_left</span>
+    <mat-icon>chevron_left</mat-icon>
     </span>
     <span class="goBackToCategory" *ngIf="parentCategory && parentCategory!==undefined else elseBlock">
       cofnij do: {{parentCategory.name}}
@@ -15,18 +15,18 @@
 
   </div>
   <h3 class="btn header" *ngIf="headCategory!==undefined">
-    <span class="material-symbols-outlined">{{headCategory.iconName}}</span>
+    <mat-icon>{{headCategory.iconName}}</mat-icon>
     <span class="categoryName">{{headCategory.name}}</span>
   </h3>
 </header>
 
 <section class="categoryInfo" *ngIf="item.name">
-  <span class="material-symbols-outlined">{{item?.iconName ?? ''}}</span>
+  <mat-icon>{{item?.iconName ?? ''}}</mat-icon>
   <span class="categoryName">{{item.name}}</span>
   <span class="arrowRight" *ngIf="item.children!==null">
-    <span class="material-symbols-outlined">
+    <mat-icon>
     chevron_right
-    </span>
+    </mat-icon>
 </span>
 </section>
 

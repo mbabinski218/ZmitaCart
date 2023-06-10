@@ -18,11 +18,14 @@ import {ConditionWrapperComponent} from "@components/add-offer/condition-wrapper
 import {ConditionType} from "@components/add-offer/interfaces/ConditionType";
 import {CategorySelectorComponent} from "@components/add-offer/category-selector/category-selector.component";
 import {OfferService} from "@components/add-offer/api/offer.service";
+import {RouterLink} from "@angular/router";
+import {RoutesPath} from '@core/enums/routes-path.enum';
+
 
 @Component({
   selector: 'pp-add-offer',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, ConditionWrapperComponent, CategorySelectorComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, ConditionWrapperComponent, CategorySelectorComponent, RouterLink],
   templateUrl: './add-offer.component.html',
   styleUrls: ['./add-offer.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -156,6 +159,8 @@ export class AddOfferComponent implements OnInit {
   }
 
   handleImages() {
+    this.previews = [];
+
     for (let i = 0; i < this.selectedImages.length; i++) {
       const reader = new FileReader();
 

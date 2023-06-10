@@ -32,18 +32,7 @@ export interface UserCredentialsShow {
 }
 
 export interface Chats {
-  items: [
-    {
-      conversationId: number,
-      withUser: string,
-      lastMessage: string,
-      lastMessageCreatedAt: Date,
-      offerId: number,
-      offerTitle: string,
-      offerImageUrl: string,
-      offerPrice: string,
-    },
-  ],
+  items: SingleChat[],
   pageNumber: number,
   totalPages: number,
   totalCount: number,
@@ -51,8 +40,8 @@ export interface Chats {
   hasNextPage: boolean,
 }
 
-export interface FavouriteOffers {
-  items: FavouriteItem[],
+export interface AccountOffers {
+  items: OfferItem[],
   pageNumber: number,
   totalPages: number,
   totalCount: number,
@@ -60,7 +49,7 @@ export interface FavouriteOffers {
   hasNextPage: boolean,
 }
 
-export interface FavouriteItem {
+export interface OfferItem {
   id: number,
   title: string,
   price: number,
@@ -80,7 +69,8 @@ export interface SingleChat {
   offerTitle: string,
   offerImageUrl: string,
   offerPrice: string,
-  conversationId?: number,
+  id?: number,
   lastMessage?: string,
   lastMessageCreatedAt?: Date,
+  hidden?: boolean,
 }

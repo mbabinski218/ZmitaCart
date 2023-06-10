@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OfferMainService } from '@components/offers-main/api/offers-main.service';
-import { Observable, filter, map, switchMap, tap } from 'rxjs';
+import { Observable, filter, switchMap, tap } from 'rxjs';
 import { MainOffers, Offers } from '@components/offers-main/interfaces/offers-main.interface';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CarouselComponent } from '@shared/components/carousel/carousel.component';
@@ -29,6 +29,7 @@ export class OffersMainComponent implements OnInit {
     private offerMainService: OfferMainService,
     private userService: UserService,
     private router: Router,
+    private ref: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
@@ -42,12 +43,10 @@ export class OffersMainComponent implements OnInit {
       return void this.router.navigateByUrl(`${RoutesPath.AUTHENTICATION}/${RoutesPath.LOGIN}`);
 
     this.offerMainService.addToFavourites(item.id).pipe(
-      // filter((res) => !!res),
-      // tap(() => item.isFavourite = !item.isFavourite),
+      filter((res) => !!res),
+      tap(() => item.isFavourite = !item.isFavourite),
+      tap(() => this.ref.detectChanges()),
     ).subscribe();
-
-    item.isFavourite = !item.isFavourite;
-    //TODO czemu to nie działa w tapie lub subscribie??
   }
 
   details(id: number): void {

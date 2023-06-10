@@ -88,40 +88,6 @@
   }
 }
 
-.svg {
-  align-self: self-end;
-}
-
-.buy {
-  background-color: var(--color-allegro);
-  width: 180px;
-  margin-bottom: 14px;
-  color: white;
-}
-
-.right {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 15px 15px 15px 0;
-}
-
-.city {
-  font-size: 12px;
-  line-height: 16px;
-  color: rgb(118, 118, 118);
-  font-style: italic;
-  padding: 0 14px 10px 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 2px;
-
-  .icon {
-    font-size: 17px;
-    width: 17px;
-    height: 17px;
-    color: rgb(118, 118, 118);
-  }
+.not-available {
+  background-color: rgba(0, 0, 0, 15%);
 }

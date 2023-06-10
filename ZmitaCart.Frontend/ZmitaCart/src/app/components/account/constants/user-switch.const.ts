@@ -12,7 +12,7 @@ export const USER_SWITCHES: UserSwitch[] = [
     value: 'observed',
   },
   {
-    name: 'Oferty użytkownika',
+    name: 'Moje oferty',
     value: 'offers',
   },
   {

@@ -1,77 +1,62 @@
 import { Injectable } from '@angular/core';
 import { UserService } from '@core/services/authorization/user.service';
-import { HubConnectionBuilder } from '@microsoft/signalr';
-import { RxStomp, RxStompConfig } from '@stomp/rx-stomp';
-import { IFrame, StompHeaders } from '@stomp/stompjs';
-import { BehaviorSubject, Observable, Subject, Subscription, takeUntil } from 'rxjs';
+import { HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { MessageStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class MessengerService {
 
-  constructor(private userService: UserService) {}
-
-  rxStomp: RxStomp;
-  onDestroy$: Subject<void>;
-  isConnected$ = new BehaviorSubject<boolean>(false);
-  connectionStatus$ = new BehaviorSubject<number>(0);
-  subscription: Subscription;
+  constructor(private userService: UserService) { }
 
   hubConnection: signalR.HubConnection;
 
-  startConnection() {
-    this.hubConnection = new HubConnectionBuilder().withUrl('http://localhost:5102/ChatHub').build();
+  chatId: number;
+  authorId: string;
+  authorName: string;
 
-    this.hubConnection.start()
-      .then(() => {
-        const userId = this.userService.userAuthorization().id;
-        const chatId = 2;
-        const offerId = 40;
+  private messageStream$ = new BehaviorSubject<MessageStream>(null);
 
-        // Do nowego
-        //this.hubConnection.invoke("Create", offerId, userId);
+  buildConnection(chatId: number): void {
+    if (!this.hubConnection) {
+      this.authorId = this.userService.userAuthorization().id;
+      this.authorName = this.userService.userAuthorization().firstName;
+      this.hubConnection = new HubConnectionBuilder().configureLogging(LogLevel.None).withUrl('http://localhost:5102/ChatHub').build();
+    }
 
-        // Do istniejacego
-        this.hubConnection.invoke("Join", chatId, userId);
-      });
+    if (this.hubConnection.state === HubConnectionState.Disconnected || this.hubConnection.state === HubConnectionState.Disconnecting) {
+      this.startConnection(chatId);
+    } else {
+      this.hubConnection.stop()
+        .finally(() => this.startConnection(chatId));
+    }
   }
 
   sendMessage(message: string) {
-    const authorName = this.userService.userAuthorization().firstName;
-    const authorId = this.userService.userAuthorization().id;
-    const chatId = 2;
-
-    this.hubConnection.invoke("SendMessage", chatId, authorId, authorName, message);
+    this.hubConnection.invoke("SendMessage", this.chatId, this.authorId, this.authorName, message)
+      .catch((err) => console.log(err));
   }
 
-  // this.hubConnection.on("ReceiveMessage", (AuthorId : number, AuthorName : string, Date : date, Content : string)
+  getMessageStream(): Observable<MessageStream> {
+    return this.messageStream$.asObservable();
+  }
 
+  private startConnection(chatId: number) {
+    this.chatId = chatId;
 
-  // connect(): void {
-  //   this.rxStomp = new RxStomp();
-  //   this.onDestroy$ = new Subject<void>();
+    this.hubConnection.start()
+      .then(() => {
+        this.hubConnection.invoke("Join", this.chatId, this.authorId)
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
 
-  //   const connection = new HubConnectionBuilder()
-  //     .withUrl('http://localhost:5102/ChatHub')
-  //     .build();
+    this.setReceiver();
+  }
 
-  //   const rxStompConfig: RxStompConfig = {
-  //     // heartbeatIncoming: 2000,
-  //     // heartbeatOutgoing: 2000,
-  //     // reconnectDelay: 2000,
-  //     webSocketFactory: () => connection.stream,
-  //     beforeConnect: () => {
-  //       return new Promise<void>((resolve) => {
-  //         connection.start().then(() => {
-  //           resolve();
-  //         });
-  //       });
-  //     },
-  //   };
-
-  //   this.rxStomp.configure(rxStompConfig);
-  //   this.rxStomp.activate();
-  // }
-
+  private setReceiver(): void {
+    this.hubConnection.on("ReceiveMessage", (authorId: number, authorName: string, date: Date, content: string) => {
+      this.messageStream$.next({ authorId, authorName, date, content });
+    });
+  }
 }

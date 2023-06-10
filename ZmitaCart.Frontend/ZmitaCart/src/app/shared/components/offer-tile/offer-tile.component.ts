@@ -1,41 +1,58 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FavouriteItem } from '@components/account/interfaces/account.interface';
+import { OfferItem } from '@components/account/interfaces/account.interface';
 import { MatIconModule } from '@angular/material/icon';
 import { ppFixPricePipe } from '@shared/pipes/fix-price.pipe';
-import { OfferMainService } from '@components/offers-main/api/offers-main.service';
 import { Router } from '@angular/router';
 import { RoutesPath } from '@core/enums/routes-path.enum';
+import { FavouriteBuyComponent } from './components/favourite-buy/favourite-buy.component';
+import { EditDeleteComponent } from './components/edit-delete/edit-delete.component';
+import { OfferSingleService } from '@components/offer-single/api/offer-single.service';
+import { Observable, Subject, filter, takeUntil, tap } from 'rxjs';
+import { ToastMessageService } from '../toast-message/services/toast-message.service';
 
 @Component({
   selector: 'pp-offer-tile',
   standalone: true,
-  imports: [CommonModule, MatIconModule, ppFixPricePipe],
-  providers: [OfferMainService],
+  imports: [CommonModule, MatIconModule, ppFixPricePipe, FavouriteBuyComponent, EditDeleteComponent],
+  providers: [OfferSingleService],
   templateUrl: './offer-tile.component.html',
   styleUrls: ['./offer-tile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OfferTileComponent {
+export class OfferTileComponent implements OnDestroy {
 
-  @Input() items: FavouriteItem[];
-  @Input() origin: 'favourites' | 'bought' | 'filtered' | 'users';
+  @Input() items: OfferItem[];
+  @Input() origin: 'favourites' | 'bought' | 'filtered' | 'user-offers';
 
   readonly imageUrl = 'http://localhost:5102/File?name=';
+  private onDestroy$ = new Subject<void>();
+
+  siema: Observable<boolean>;
 
   constructor(
-    private offerMainService: OfferMainService,
     private router: Router,
+    private offerSingleService: OfferSingleService,
+    private toastMessageService: ToastMessageService,
+    private ref: ChangeDetectorRef,
   ) { }
 
-  observe(item: FavouriteItem): void {
-    this.offerMainService.addToFavourites(item.id).pipe(
-    ).subscribe();
-
-    item.isFavourite = !item.isFavourite;
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
   details(id: number): void {
     void this.router.navigateByUrl(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${id}`);
+  }
+
+  deleteOffer(item: OfferItem) {
+    this.offerSingleService.deleteOffer(String(item.id)).pipe(
+      filter((res) => !!res),
+      tap(() => this.items = this.items.filter((res) => res !== item)),
+      tap(() => this.toastMessageService.notifyOfSuccess('Usunięto ofertę')),
+      tap(() => this.ref.detectChanges()),
+      takeUntil(this.onDestroy$),
+    ).subscribe();
   }
 }

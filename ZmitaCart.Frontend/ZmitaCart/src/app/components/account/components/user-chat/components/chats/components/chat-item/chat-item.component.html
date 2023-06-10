@@ -1,0 +1,18 @@
+<img
+  class="img"
+  [src]="currentChat.offerImageUrl ? imageUrl + currentChat.offerImageUrl : 'https://upload.wikimedia.org/wikipedia/commons/5/55/Brak_obrazka.svg'"
+>
+<div class="data">
+  <div class="info text">
+    <div class="limit limit-top">{{ currentChat.withUser }}</div>
+    <span>{{ (currentChat.lastMessageCreatedAt | date: 'dd.MM.yyyy, HH:mm') ?? '' }}</span>
+  </div>
+  <p>{{ currentChat.lastMessage ? currentChat.lastMessage : 'Nowa wiadomość' }}</p>
+  <div class="text flex flex-space">
+    <div class="flex">
+      <b>Odnośnie:&nbsp;</b>
+      <div class="limit limit-bottom">{{ currentChat.offerTitle }}</div>
+    </div>
+    <div>{{ currentChat.offerPrice }} zł</div>
+  </div>
+</div>

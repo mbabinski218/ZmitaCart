@@ -1,6 +1,7 @@
 <ng-container *ngIf="items.length">
   <div
     class="item"
+    [class.not-available]="!item.isAvailable"
     *ngFor="let item of items"
   >
     <img
@@ -24,35 +25,32 @@
         <div class="price">{{ (item?.price | ppFixPrice) || '-' }}<span class="zl"> zł</span></div>
       </div>
 
-      <div class="user">
+      <div
+        *ngIf="origin !== 'user-offers'"
+        class="user"
+      >
         <mat-icon class="icon material-icons-outlined">person</mat-icon>
         {{ item.authorName }} ({{ item.authorEmail }})
       </div>
     </div>
 
-    <div class="right">
-      <div
-        (click)="observe(item)"
-        class="observe-svg cursor-pointer svg"
-      >
-        {{ item.isFavourite ? 'OBSERWUJESZ' : 'OBSERWUJ'}}
-        <mat-icon [svgIcon]="item.isFavourite ? 'heart-filled' : 'heart'"></mat-icon>
-      </div>
+    <pp-edit-delete
+      *ngIf="origin === 'user-offers'"
+      [item]="item"
+      (deleteOffer)="deleteOffer(item)"
+    >
+    </pp-edit-delete>
 
-      <div>
-        <div
-          *ngIf="item.isAvailable"
-          class="button-allegro buy"
-        >
-          KUP TERAZ
-        </div>
+    <!-- <pp-bought-info
+      *ngIf="origin === 'bought'"
+      [item]="item"
+    >
+    </pp-bought-info> -->
 
-        <div class="city">
-          <mat-icon class="icon material-icons-outlined">location_on</mat-icon>
-          {{ item.city || '-' }}
-        </div>
-      </div>
-
-    </div>
+    <pp-favourite-buy
+      *ngIf="origin === 'favourites' || origin === 'filtered'"
+      [item]="item"
+    >
+    </pp-favourite-buy>
   </div>
 </ng-container>

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AccountService } from '@components/account/api/account.service';
 import { OfferSingleService } from '@components/offer-single/api/offer-single.service';
-import { Observable, filter, map, shareReplay, switchMap } from 'rxjs';
+import { Observable, filter, map, of, shareReplay, switchMap, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SingleChat } from '@components/account/interfaces/account.interface';
 import { ppFixPricePipe } from '@shared/pipes/fix-price.pipe';
@@ -23,6 +23,7 @@ import { OfferComponent } from './components/offer/offer.component';
 export class UserChatComponent implements OnInit {
 
   currentChat$: Observable<SingleChat>;
+  offerId: string;
 
   constructor(
     private offerSingleService: OfferSingleService,
@@ -35,6 +36,7 @@ export class UserChatComponent implements OnInit {
     this.currentChat$ = this.route.queryParams.pipe(
       map(({ id }) => id as string),
       filter((id) => !!id),
+      tap((res) => this.offerId = res),
       switchMap((id) => this.offerSingleService.getOffer(id)),
       shareReplay(),
       map((res) => {
@@ -45,11 +47,15 @@ export class UserChatComponent implements OnInit {
           offerImageUrl: res.picturesNames ? res.picturesNames[0] : '',
           offerPrice: this.ppFixPricePipe.transform(res.price),
         };
-      })
+      }),
     );
   }
 
   details(id: number): void {
     void this.router.navigateByUrl(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${id}`);
+  }
+
+  newCurrentChat(currentChat: SingleChat): void {
+    this.currentChat$ = of(currentChat);
   }
 }

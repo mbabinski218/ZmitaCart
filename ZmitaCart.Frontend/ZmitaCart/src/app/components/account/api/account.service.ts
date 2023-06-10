@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Api } from '@core/enums/api.enum';
 import { environment } from '@env/environment';
 import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
-import { Chats, CredentialsForm, FavouriteOffers, UserCredentials } from '@components/account/interfaces/account.interface';
+import { Chats, CredentialsForm, AccountOffers, UserCredentials } from '@components/account/interfaces/account.interface';
 import { Observable, catchError, map, of } from 'rxjs';
 
 @Injectable()
@@ -19,9 +19,7 @@ export class AccountService {
       map(() => true),
       catchError((err: HttpErrorResponse) => {
         const error = err.error as string[];
-
         this.toastMessageService.notifyOfError(error[0]);
-
         return of(false);
       })
     );
@@ -31,53 +29,58 @@ export class AccountService {
     return this.http.get<UserCredentials>(`${environment.httpBackend}${Api.USER_CREDENTIALS}`).pipe(
       catchError((err: HttpErrorResponse) => {
         const error = err.error as string[];
-
         this.toastMessageService.notifyOfError(error[0]);
-
         return of();
       })
     );
   }
 
-  getUserOffers(): Observable<any> {
-    return this.http.get<any>(`${environment.httpBackend}${Api.USER_OFFERS}`).pipe(
-      //   catchError((err: HttpErrorResponse) => {
-      //     const error = err.error as string[];
-
-      //     this.toastMessageService.notifyOfError(error[0]);
-
-      //     return of();
-      //   })
-    );
-  }
-
-  getAllChats(pageNumber: number): Observable<Chats> {
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', 4);
-
-    return this.http.get<Chats>(`${environment.httpBackend}${Api.CONVERSATION}`, { params }).pipe(
-      catchError((err: HttpErrorResponse) => {
-        const error = err.error as string[];
-
-        this.toastMessageService.notifyOfError(error[0]);
-
-        return of();
-      })
-    );
-  }
-
-  getFavourites(pageNumber: number): Observable<FavouriteOffers> {
+  getUserOffers(pageNumber: number): Observable<AccountOffers> {
     const params = new HttpParams()
       .set('pageNumber', pageNumber)
       .set('pageSize', 10);
 
-    return this.http.get<FavouriteOffers>(`${environment.httpBackend}${Api.OFFER_FAVOURITES}`, { params }).pipe(
+    return this.http.get<AccountOffers>(`${environment.httpBackend}${Api.USER_OFFERS}`, { params }).pipe(
       catchError((err: HttpErrorResponse) => {
         const error = err.error as string[];
-
         this.toastMessageService.notifyOfError(error[0]);
+        return of();
+      })
+    );
+  }
 
+  getAllChats(): Observable<Chats> {
+    return this.http.get<Chats>(`${environment.httpBackend}${Api.CONVERSATION}`).pipe(
+      catchError((err: HttpErrorResponse) => {
+        const error = err.error as string[];
+        this.toastMessageService.notifyOfError(error[0]);
+        return of();
+      })
+    );
+  }
+
+  createNewChat(id: string): Observable<number> {
+    const params = new HttpParams()
+      .set('offerId', id);
+
+    return this.http.post<number>(`${environment.httpBackend}${Api.CONVERSATION}`, {}, { params }).pipe(
+      catchError((err: HttpErrorResponse) => {
+        const error = err.error as string[];
+        this.toastMessageService.notifyOfError(error[0]);
+        return of();
+      })
+    );
+  }
+
+  getFavourites(pageNumber: number): Observable<AccountOffers> {
+    const params = new HttpParams()
+      .set('pageNumber', pageNumber)
+      .set('pageSize', 10);
+
+    return this.http.get<AccountOffers>(`${environment.httpBackend}${Api.OFFER_FAVOURITES}`, { params }).pipe(
+      catchError((err: HttpErrorResponse) => {
+        const error = err.error as string[];
+        this.toastMessageService.notifyOfError(error[0]);
         return of();
       })
     );

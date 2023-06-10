@@ -1,6 +1,6 @@
 import { Router } from '@angular/router';
 import { UserService } from '@core/services/authorization/user.service';
-import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ppFixPricePipe } from '@shared/pipes/fix-price.pipe';
@@ -9,6 +9,7 @@ import { SingleOffer } from '@components/offer-single/interfaces/offer-single.in
 import { MatButtonModule } from '@angular/material/button';
 import { RoutesPath } from '@core/enums/routes-path.enum';
 import { RoutingService } from '@shared/services/routing.service';
+import { filter, tap } from 'rxjs';
 
 @Component({
   selector: 'pp-offer-price',
@@ -31,6 +32,7 @@ export class OfferPriceComponent {
     private userService: UserService,
     private router: Router,
     private routingService: RoutingService,
+    private ref: ChangeDetectorRef,
   ) { }
 
   observe(): void {
@@ -38,9 +40,10 @@ export class OfferPriceComponent {
       return void this.router.navigateByUrl(`${RoutesPath.AUTHENTICATION}/${RoutesPath.LOGIN}`);
 
     this.offerMainService.addToFavourites(this.details.id).pipe(
-    ).subscribe();
-
-    this.details.isFavourite = !this.details.isFavourite;
+      filter((res) => !!res),
+      tap(() => this.details.isFavourite = !this.details.isFavourite),
+      tap(() => this.ref.detectChanges()),
+      ).subscribe();
   }
 
   add(val: number) {

@@ -14,14 +14,15 @@
   gap: 15px;
 
   .main {
-    flex: 1.65;
+    flex: 1.5;
 
     .header {
       padding: 10px;
-      min-height: unset;
       border-radius: 8px;
       border-bottom: 0;
       margin-bottom: 8px;
+      flex-direction: column;
+      min-height: 66px;
 
       .data {
         display: flex;

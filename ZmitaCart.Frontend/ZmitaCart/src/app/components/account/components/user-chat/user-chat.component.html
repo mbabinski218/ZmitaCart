@@ -1,25 +1,36 @@
-<div class="biggi">
-  <div class="main">
-    <div class="header">
-      <ng-container *ngIf="currentChat$ | async as currentChat">
-        <p class="name">{{ currentChat.withUser }}</p>
+<ng-container *ngIf="{ currentChat: currentChat$ | async } as data">
+  <div class="biggi">
+    <div class="main">
+      <div class="header">
+        <p class="name">{{ data.currentChat?.withUser }}</p>
         <div
           class="cursor-pointer data"
-          (click)="details(currentChat.offerId)"
+          (click)="details(data.currentChat?.offerId)"
         >
-          <span class="title">{{ currentChat.offerTitle }}</span>
-          <p><span class="price">{{ currentChat.offerPrice }}</span> zł</p>
+          <span class="title">{{ data.currentChat?.offerTitle }}</span>
+          <p>
+            <span class="price">
+              {{ data.currentChat?.offerPrice }}
+            </span>
+            {{ data.currentChat?.offerPrice !== null ? 'zł' : '' }}
+          </p>
         </div>
-      </ng-container>
+      </div>
+      <pp-messenger
+        [offerId]="offerId"
+        [currentChat]="data.currentChat"
+      >
+      </pp-messenger>
     </div>
-    <pp-messenger></pp-messenger>
-  </div>
 
-  <div class="info">
-    <ng-container *ngIf="currentChat$ | async as currentChat">
-      <pp-offer [currentChat]="currentChat"></pp-offer>
-    </ng-container>
+    <div class="info">
+      <pp-offer [currentChat]="data.currentChat"></pp-offer>
 
-    <pp-chats></pp-chats>
+      <pp-chats
+        [currentChat]="data.currentChat"
+        (newCurrentChat)="newCurrentChat($event)"
+      >
+      </pp-chats>
+    </div>
   </div>
-</div>
+</ng-container>

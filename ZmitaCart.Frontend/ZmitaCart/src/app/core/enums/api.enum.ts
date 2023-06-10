@@ -6,7 +6,6 @@ export enum Api {
   GET_SUPERIORS_WITH_CHILDREN = '/category/getSuperiorsWithChildren',
   GET_PARENT_CATEGORY = '/category/getParentCategory',
 
-  ADD_OFFER = '/offer/',
   LOGOUT = '/user/logout',
   USER_CREDENTIALS_UPDATE = '/user/updateCredentials',
   USER_CREDENTIALS = '/user',
@@ -27,3 +26,4 @@ export enum Api {
 
   CONVERSATION = '/conversation',
 }
+ 

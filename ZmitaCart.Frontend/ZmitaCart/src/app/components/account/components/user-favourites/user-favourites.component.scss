@@ -36,6 +36,12 @@ pp-user-favourites {
     margin-inline: 10px;
   }
 
+  .footer {
+    display: flex;
+    align-items: center;
+    align-self: center;
+  }
+
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -45,5 +51,4 @@ pp-user-favourites {
   input[type=number] {
     -moz-appearance: textfield;
   }
-
 }

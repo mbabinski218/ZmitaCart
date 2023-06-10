@@ -1,0 +1,67 @@
+:host {
+  cursor: pointer;
+  display: flex;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
+  border-radius: 8px;
+  min-height: 70px;
+  padding: 16px;
+  gap: 12px;
+}
+
+.img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 30px;
+  align-self: center;
+}
+
+.data {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+
+  @media (max-width: 1300px) {
+    flex-direction: column;
+  }
+}
+
+.text {
+  font-size: 12px;
+  color: rgb(118, 118, 118);
+  line-height: 16px;
+}
+
+.limit {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &-top {
+    max-width: 140px;
+  }
+
+  &-bottom {
+    max-width: 90px;
+  }
+}
+
+.flex {
+  display: flex;
+
+  &-space {
+    justify-content: space-between;
+
+    @media (max-width: 1300px) {
+      flex-direction: column;
+    }
+  }
+}

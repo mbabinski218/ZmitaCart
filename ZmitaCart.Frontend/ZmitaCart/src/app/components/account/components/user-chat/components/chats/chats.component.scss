@@ -1,15 +1,9 @@
-:host {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
 .component {
-  display: flex;
-  flex-direction: column;
   overflow-y: auto;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
+  max-height: 581px;
+  padding-inline: 10px;
 
   .heading {
     background-color: #f7f7f7;
@@ -18,6 +12,11 @@
     justify-content: flex-start;
     width: 100%;
     padding: 16px;
+    width: 360px;
+
+    @media (max-width: 1300px) {
+      width: 240px;
+    }
 
     .title {
       font-weight: 600;
@@ -27,5 +26,9 @@
       margin: 0;
     }
   }
+}
 
+.currentChat {
+  border: 1px solid #00a790;
+  background-color: #f2fbf9;
 }

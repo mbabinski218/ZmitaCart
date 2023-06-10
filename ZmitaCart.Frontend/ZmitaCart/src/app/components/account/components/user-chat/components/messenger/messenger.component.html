@@ -1,5 +1,5 @@
 <div class="messages">
-  <button (click)="start()">sieeema</button>
+  <pp-messages [messages]="messages$ | async"></pp-messages>
 </div>
 
 <div class="form">
@@ -7,11 +7,10 @@
     <textarea
       #myTextarea
       class="textarea"
-    >
-  </textarea>
+    ></textarea>
     <mat-icon
       class="icon icon material-icons-outlined cursor-pointer"
-      (click)="getValueFromTextarea()"
+      (click)="sendMessage()"
     >
       send
     </mat-icon>

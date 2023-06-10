@@ -86,14 +86,27 @@ public class ConversationRepository : IConversationRepository
 		_ = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId)
 		    ?? throw new NotFoundException("User does not exist");
 
-		return await _dbContext.Conversations
-			.Where(c => c.UserConversations.Any(uc => uc.UserId == userId))
+		var conversation = await _dbContext.Conversations
 			.Include(c => c.UserConversations)
 			.Include(c => c.Messages)
+			.Where(c => c.UserConversations.Any(uc => uc.UserId == userId))
+			.Where(c => c.Messages.Any())
 			.Include(c => c.Offer)
+				.ThenInclude(o => o.Pictures)
 			.ProjectToType<ConversationInfoDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
+		
+		foreach (var c in conversation.Items)
+		{
+			var user = (await _dbContext.Chats
+				.Include(ch => ch.User)
+				.FirstAsync(ch => ch.ConversationId == c.Id && ch.UserId != userId)).User;
 
+			c.WithUser = $"{user.FirstName} {user.LastName}";
+		}
+
+		return conversation;
+		
 		// var chats =  await _dbContext.Chats
 		// 	.Where(uc => uc.UserId == userId)
 		// 	.Include(uc => uc.Conversation)

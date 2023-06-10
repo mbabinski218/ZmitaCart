@@ -2,7 +2,7 @@
 
 public class ConversationInfoDto
 {
-	public int ConversationId { get; set; }
+	public int Id { get; set; }
 	public string WithUser { get; set; } = null!;
 	public string? LastMessage { get; set; } 
 	public DateTimeOffset? LastMessageCreatedAt { get; set; }

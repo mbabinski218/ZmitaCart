@@ -15,14 +15,27 @@ public class ConversationMapperConfig : IRegister
 			.Map(dest => dest.OfferId, src => src.Conversation.OfferId)
 			.Map(dest => dest.OfferTitle, src => src.Conversation.Offer.Title)
 			.Map(dest => dest.OfferPrice, src => src.Conversation.Offer.Price)
-			.Map(dest => dest.OfferImageUrl, src => !src.Conversation.Offer.Pictures.Any()
-				? null
-				: Path.Combine(Path.GetFullPath("wwwroot"), src.Conversation.Offer.Pictures.OrderBy(p => p.CreationTime).First().Name))
+			.Map(dest => dest.OfferImageUrl, src => src.Conversation.Offer.Pictures.Any()
+				? src.Conversation.Offer.Pictures.OrderBy(p => p.CreationTime).First().Name
+				: null)
 			.Map(dest => dest.LastMessage, src => 
 				src.Conversation.Messages.OrderByDescending(m => m.Date).First().Text)
 			.Map(dest => dest.LastMessageCreatedAt, src => 
 				src.Conversation.Messages.OrderByDescending(m => m.Date).First().Date)
 			.Map(dest => dest.WithUser, src => GetUserInfo(src));
+
+		config.ForType<Conversation, ConversationInfoDto>()
+			.Map(dest => dest.OfferId, src => src.OfferId)
+			.Map(dest => dest.OfferTitle, src => src.Offer.Title)
+			.Map(dest => dest.OfferPrice, src => src.Offer.Price)
+			.Map(dest => dest.OfferImageUrl, src => src.Offer.Pictures.Any()
+				? src.Offer.Pictures.OrderBy(p => p.CreationTime).First().Name
+				: null)
+			.Map(dest => dest.LastMessage, src =>
+				src.Messages.OrderByDescending(m => m.Date).First().Text)
+			.Map(dest => dest.LastMessageCreatedAt, src =>
+				src.Messages.OrderByDescending(m => m.Date).First().Date);
+		//.Map(dest => dest.WithUser, src => GetUserInfo(src));
 	}
 	
 	private string GetUserInfo(UserConversation src)

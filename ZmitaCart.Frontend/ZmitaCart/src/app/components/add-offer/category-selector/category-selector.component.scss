@@ -12,10 +12,10 @@
 }
 
 .btn {
-  padding: 1.2rem 20px;
+  padding: .72rem 15px;
   width: 100%;
-  max-width: 50rem;
-  font-size: 1.6rem;
+  //max-width: 30em;
+  font-size: .96rem;
   background-color: #fff;
   border: none;
   border-bottom: 1px solid #f7f7f7;
@@ -50,7 +50,8 @@
 .goBackToCategory {
   align-items: center;
   margin-left: 15px;
-  font-size: 1.4rem;
+  font-size: .9rem;
   color: #2bb9a3;
   font-weight: 600;
+  text-transform: uppercase;
 }

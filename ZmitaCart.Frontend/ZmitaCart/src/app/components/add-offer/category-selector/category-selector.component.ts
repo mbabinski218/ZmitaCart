@@ -28,8 +28,8 @@ export class CategorySelectorComponent {
     this.componentClicked.emit(id);
   }
 
-  goBack(id: Category) {
-    this.goBackClicked.emit(id);
+  goBack(category: Category) {
+    this.goBackClicked.emit(category);
   }
 
 }

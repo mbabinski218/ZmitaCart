@@ -1,28 +1,27 @@
 <header class="categoryInfo" *ngIf="isInSubCat">
   <div class="btn goBack" (click)="goBack(parentCategory)">
-    <!--    tu bedzie strzałeczka-->
     <span class="arrowRight">
     <span class="material-symbols-outlined">chevron_left</span>
     </span>
     <span class="goBackToCategory" *ngIf="parentCategory && parentCategory!==undefined else elseBlock">
-    COFNIJ DO: {{parentCategory.name.toUpperCase() }}
+      cofnij do: {{parentCategory.name}}
     </span>
 
     <ng-template #elseBlock>
     <span class="goBackToCategory">
-      COFNIJ DO: WSZYSTKIE KATEGORIE
+      cofnij do: wszystkie kategorie
     </span>
     </ng-template>
 
   </div>
-  <h3 class="btn header">
+  <h3 class="btn header" *ngIf="headCategory!==undefined">
     <span class="material-symbols-outlined">{{headCategory.iconName}}</span>
     <span class="categoryName">{{headCategory.name}}</span>
   </h3>
 </header>
 
 <section class="categoryInfo" *ngIf="item.name">
-  <span class="material-symbols-outlined">{{item.iconName}}</span>
+  <span class="material-symbols-outlined">{{item?.iconName ?? ''}}</span>
   <span class="categoryName">{{item.name}}</span>
   <span class="arrowRight" *ngIf="item.children!==null">
     <span class="material-symbols-outlined">

@@ -87,14 +87,11 @@ export class AddOfferComponent implements OnInit {
   }
 
   public SetCondition(event: Condition) {
-    console.log("condNum " + event)
     this.condition = event;
-    console.log(this.condition);
   }
 
   public getParentCategory(parentId: number) {
     //patrzymy na kategorie nadrzędne
-    console.log("pobieranie dzieci");
     if (parentId === null) {
       this.parentCategory = null;
       return;
@@ -114,7 +111,6 @@ export class AddOfferComponent implements OnInit {
 
     this.categoryService.getFewBySuperiorId(event.id, 2).subscribe(res => {
       if (res[0].children !== null) {
-        console.log("sprawdzam czy ma dzieci");
         this.subCategories = res;
         this.headCategory = this.subCategories[0];
         this.children = this.subCategories[0].children;
@@ -123,7 +119,6 @@ export class AddOfferComponent implements OnInit {
         this.pickedCategory = res[0];
       }
       this.cdr.detectChanges();
-      console.log(this.pickedCategory);
     });
   }
 
@@ -173,13 +168,15 @@ export class AddOfferComponent implements OnInit {
   }
 
   addOffer() {
-    const title: string = this.createOffer.value.title;
-    const desc: string = this.createOffer.value.description;
-    const price: number = this.createOffer.value.price;
-    const quantity: number = this.createOffer.value.quantity;
+    if (this.createOffer.valid && this.validateProps()) {
+      const title: string = this.createOffer.value.title;
+      const desc: string = this.createOffer.value.description;
+      const price: number = this.createOffer.value.price;
+      const quantity: number = this.createOffer.value.quantity;
 
-    this.offerService.createOffer(title, desc, price, quantity, Condition[this.condition], this.pickedCategory.id, this.selectedImages).subscribe(res =>
-      console.log(res));
+      this.offerService.createOffer(title, desc, price, quantity, Condition[this.condition], this.pickedCategory.id, this.selectedImages).subscribe(res =>
+        console.log(res));
+    }
   }
 
   validateProps(): boolean {
@@ -192,12 +189,10 @@ export class AddOfferComponent implements OnInit {
     const files = event.dataTransfer?.files;
     this.selectedImages = Array.from(files);
     this.handleImages();
-    console.log(this.isDragOver);
   }
 
   onDragOver(event: DragEvent) {
     this.isDragOver = true;
-    console.log(this.isDragOver);
     event.preventDefault();
     event.stopPropagation();
   }

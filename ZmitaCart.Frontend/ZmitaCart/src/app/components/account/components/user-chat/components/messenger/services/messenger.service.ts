@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { UserService } from '@core/services/authorization/user.service';
-import { HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import { Observable, Subject } from 'rxjs';
 import { MessageStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
 
 @Injectable()
 export class MessengerService {
 
+  private hubConnection: signalR.HubConnection;
+  private chatId: number;
+  private authorId: string;
+  private authorName: string;
+  private receiverSet = false;
+
+  private messageStream$ = new Subject<MessageStream>;
+
   constructor(private userService: UserService) { }
-
-  hubConnection: signalR.HubConnection;
-
-  chatId: number;
-  authorId: string;
-  authorName: string;
-
-  private messageStream$ = new BehaviorSubject<MessageStream>(null);
 
   buildConnection(chatId: number): void {
     if (!this.hubConnection) {
@@ -24,12 +24,11 @@ export class MessengerService {
       this.hubConnection = new HubConnectionBuilder().configureLogging(LogLevel.None).withUrl('http://localhost:5102/ChatHub').build();
     }
 
-    if (this.hubConnection.state === HubConnectionState.Disconnected || this.hubConnection.state === HubConnectionState.Disconnecting) {
-      this.startConnection(chatId);
-    } else {
-      this.hubConnection.stop()
-        .finally(() => this.startConnection(chatId));
-    }
+    this.hubConnection.stop()
+      .finally(() => {
+        this.messageStream$.next(null);
+        this.startConnection(chatId);
+      });
   }
 
   sendMessage(message: string) {
@@ -51,12 +50,14 @@ export class MessengerService {
       })
       .catch((err) => console.log(err));
 
-    this.setReceiver();
+    if (!this.receiverSet)
+      this.setReceiver();
   }
 
   private setReceiver(): void {
+    this.receiverSet = true;
     this.hubConnection.on("ReceiveMessage", (authorId: number, authorName: string, date: Date, content: string) => {
-      this.messageStream$.next({ authorId, authorName, date, content });
-    });
-  }
+      this.messageStream$.next({ authorId, authorName, date, content, fromCurrentUser: authorId === Number(this.authorId) });
+  });
+}
 }

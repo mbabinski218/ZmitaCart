@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MessengerService } from './services/messenger.service';
 import { AccountService } from '@components/account/api/account.service';
 import { SingleChat } from '@components/account/interfaces/account.interface';
-import { Observable, filter, tap } from 'rxjs';
+import { BehaviorSubject, Observable, filter, tap, Subject, takeUntil, map } from 'rxjs';
 import { MessageStream } from '../../interfaces/chat.interfaces';
 import { MessagesComponent } from './components/messages/messages.component';
 
@@ -17,11 +17,14 @@ import { MessagesComponent } from './components/messages/messages.component';
   styleUrls: ['./messenger.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MessengerComponent implements OnInit {
+export class MessengerComponent implements OnInit, OnDestroy {
 
   @Input() set currentChat(chat: SingleChat) {
-    if (chat)
+    if (chat) {
+      this.allMessages$.next([]);
       this.messengerService.buildConnection(chat.id);
+      this.isChat = !!chat;
+    }
   }
 
   @Input() set offerId(id: string) {
@@ -33,7 +36,9 @@ export class MessengerComponent implements OnInit {
 
   @ViewChild('myTextarea', { static: false }) myTextarea: ElementRef<HTMLTextAreaElement>;
 
-  messages$: Observable<MessageStream>;
+  allMessages$ = new BehaviorSubject<MessageStream[]>([]);
+  onDestroy$ = new Subject<void>();
+  isChat: boolean;
 
   constructor(
     private messengerService: MessengerService,
@@ -41,16 +46,31 @@ export class MessengerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.messages$ = this.messengerService.getMessageStream().pipe(
+    this.messengerService.getMessageStream().pipe(
       filter((res) => !!res),
-      tap((res) => console.log(res))
-    );
+      map((res) => ({
+        ...res,
+        date: new Date(res.date),
+      })),
+      takeUntil(this.onDestroy$),
+    ).subscribe((res) => {
+      this.allMessages$.next([
+        ...this.allMessages$.value,
+        res,
+      ]);
+    });
   }
 
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
+  }
 
   sendMessage() {
     const textareaValue = this.myTextarea.nativeElement.value;
-    this.messengerService.sendMessage(textareaValue);
-    this.myTextarea.nativeElement.value = '';
+    if (textareaValue) {
+      this.messengerService.sendMessage(textareaValue);
+      this.myTextarea.nativeElement.value = '';
+    }
   }
 }

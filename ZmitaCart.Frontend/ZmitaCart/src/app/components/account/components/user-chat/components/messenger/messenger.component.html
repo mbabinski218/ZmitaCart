@@ -1,14 +1,17 @@
 <div class="messages">
-  <pp-messages [messages]="messages$ | async"></pp-messages>
+  <pp-messages [allMessages]="allMessages$ | async"></pp-messages>
 </div>
 
 <div class="form">
   <div class="area">
     <textarea
+      [disabled]="!isChat"
       #myTextarea
       class="textarea"
+      (keydown.enter)="sendMessage(); $event.preventDefault();"
     ></textarea>
     <mat-icon
+      *ngIf="isChat"
       class="icon icon material-icons-outlined cursor-pointer"
       (click)="sendMessage()"
     >

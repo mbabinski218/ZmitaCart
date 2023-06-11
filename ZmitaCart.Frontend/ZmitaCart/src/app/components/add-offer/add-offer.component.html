@@ -1,3 +1,8 @@
+<a class="button goHomeBtn" [routerLink]="['/']">
+  <mat-icon>
+    arrow_back
+  </mat-icon>
+</a>
 <div class="container">
   <form [formGroup]="createOffer" (ngSubmit)="addOffer()">
     <div class="addPhotosInfo">
@@ -37,9 +42,9 @@
       <div class="imagePreview" *ngFor="let preview of previews; index as i">
         <img [src]="preview" alt="preview"/>
         <button class="deletePhotoBtn" (click)="deleteImage(i)">
-          <span class="material-symbols-outlined">
+          <mat-icon class="material-symbols-outlined">
             remove
-          </span>
+          </mat-icon>
         </button>
       </div>
     </div>
@@ -62,7 +67,7 @@
                   class="customForm"></textarea>
       </div>
 
-      <div class="addCategory">
+      <div class="addCategory" style="margin-bottom: 50px">
         <label>Kategoria</label>
         <em class="required">*</em>
         <button class="loadCategoriesButton" (click)="loadSuperiorCategories()" *ngIf="!subCategories">PRZEGLĄDAJ
@@ -81,7 +86,11 @@
           ></pp-category-selector>
 
         </div>
-        <span *ngIf="pickedCategory">Wybrana kategoria: {{pickedCategory.name }}</span>
+
+        <span class="pickedCategory" *ngIf="pickedCategory">
+          Wybrana kategoria: {{pickedCategory.name }}
+        </span>
+
       </div>
 
       <div class="condition">
@@ -100,10 +109,10 @@
 
       <div class="quantity">
         <label>Liczba przedmiotów</label>
-        <input type="text" pattern="[a-zA-Z]+" formControlName="quantity" class="customForm" id="qForm" min="1">
+        <input type="text" formControlName="quantity" class="customForm" id="qForm" min="1" pattern="^(?=.*[1-9])\d+$">
       </div>
       <div class="createOfferWrapper">
-        <button type="submit" class="button-allegro submit" [disabled]="!createOffer.valid && !validateProps()">Utwórz
+        <button type="submit" class="button-allegro submit" [disabled]="!createOffer.valid || !validateProps()">Utwórz
           ofertę
         </button>
       </div>

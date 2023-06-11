@@ -1,4 +1,27 @@
 pp-add-offer {
+  .goHomeBtn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #FF5C00;
+    opacity: 1;
+    color: white;
+    border: none;
+    transform: translate(25%, 25%);
+    cursor: pointer;
+  }
+
+  .goHomeBtn:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+
   .container {
     background-color: #fff;
     width: 40%;
@@ -87,7 +110,6 @@ pp-add-offer {
   }
 
   input[type="file"]::file-selector-button {
-    //opacity: 0;
     cursor: pointer;
   }
 
@@ -142,6 +164,7 @@ pp-add-offer {
 
   .customForm:hover {
     border: 1px solid #cfcccc;
+    transition: border 0.2s ease;
   }
 
   .addDescription {
@@ -158,6 +181,31 @@ pp-add-offer {
     list-style-type: none;
   }
 
+  .loadCategoriesButton {
+    display: block;
+    margin-top: 10px;
+    font-size: .9rem;
+    font-weight: 600;
+    background-color: #fff;
+    border: none;
+    color: #2bb9a3;
+    margin-bottom: 50px;
+    text-transform: uppercase;
+  }
+
+  .loadCategoriesButton:hover {
+    cursor: pointer;
+  }
+
+  .pickedCategory {
+    display: flex;
+    justify-content: flex-end;
+    max-width: 30rem;
+    font-weight: 500;
+    color: #7770bd;
+    margin-top: 5px;
+  }
+
   .categoryPicker {
     margin-top: 10px;
     height: 100%;
@@ -165,7 +213,6 @@ pp-add-offer {
     border: 1px solid #e7e7e7;;
     max-width: 30rem;
     overflow: auto;
-    margin-bottom: 50px;
   }
 
   .price {
@@ -188,22 +235,6 @@ pp-add-offer {
   .blank {
     margin-bottom: 50px;
   }
-}
-
-.loadCategoriesButton {
-  display: block;
-  margin-top: 10px;
-  font-size: .9rem;
-  font-weight: 600;
-  background-color: #fff;
-  border: none;
-  color: #2bb9a3;
-  margin-bottom: 50px;
-  text-transform: uppercase;
-}
-
-.loadCategoriesButton:hover {
-  cursor: pointer;
 }
 
 .imagePreviewWrapper {
@@ -249,7 +280,8 @@ pp-add-offer {
 }
 
 .deletePhotoBtn:hover {
-  background-color: #ff833d;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
 }
 
 .button-allegro.photos {
@@ -258,12 +290,12 @@ pp-add-offer {
   background-color: #edecf7;
   border: none;
   font-weight: 550;
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
 .button-allegro.photos:hover {
   opacity: 1;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 
 .createOfferWrapper {

@@ -1,11 +1,12 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Category} from "@components/add-offer/interfaces/Category";
+import {MatIconModule} from "@angular/material/icon";
 
 @Component({
   selector: 'pp-category-selector',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './category-selector.component.html',
   styleUrls: ['./category-selector.component.scss'],
   encapsulation: ViewEncapsulation.None,

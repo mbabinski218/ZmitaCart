@@ -18,11 +18,14 @@ import {ConditionWrapperComponent} from "@components/add-offer/condition-wrapper
 import {ConditionType} from "@components/add-offer/interfaces/ConditionType";
 import {CategorySelectorComponent} from "@components/add-offer/category-selector/category-selector.component";
 import {OfferService} from "@components/add-offer/api/offer.service";
+import {RouterLink} from "@angular/router";
+import {RoutesPath} from '@core/enums/routes-path.enum';
+
 
 @Component({
   selector: 'pp-add-offer',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, ConditionWrapperComponent, CategorySelectorComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, ConditionWrapperComponent, CategorySelectorComponent, RouterLink],
   templateUrl: './add-offer.component.html',
   styleUrls: ['./add-offer.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -67,13 +70,24 @@ export class AddOfferComponent implements OnInit {
     this.createOffer = new FormGroup({
       title: new FormControl(null as string, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
       description: new FormControl(null as string, [Validators.required]),
-      price: new FormControl(null as number, [Validators.required, Validators.pattern('[0-9]*')]),
-      quantity: new FormControl(1),
-
+      price: new FormControl(null as number, [Validators.required, Validators.pattern("^\\d+(?:\\,\\d{2})?$")]),
+      quantity: new FormControl(1, [Validators.pattern("^(?=.*[1-9])\\d+$")]),
     });
 
     this.createOffer.get('title').valueChanges.subscribe((res: string) => {
       this.characterCount = res.length;
+    });
+
+    const qControl = this.createOffer.get('quantity');
+
+    qControl.valueChanges.subscribe((res: string) => {
+      if (res.length === 0) {
+        qControl.setValue(1);
+      }
+      if (!qControl.valid) {
+        const val = res.replace(/\D/g, '');
+        qControl.setValue(val);
+      }
     });
   }
 
@@ -145,6 +159,8 @@ export class AddOfferComponent implements OnInit {
   }
 
   handleImages() {
+    this.previews = [];
+
     for (let i = 0; i < this.selectedImages.length; i++) {
       const reader = new FileReader();
 
@@ -168,15 +184,16 @@ export class AddOfferComponent implements OnInit {
   }
 
   addOffer() {
-    if (this.createOffer.valid && this.validateProps()) {
-      const title: string = this.createOffer.value.title;
-      const desc: string = this.createOffer.value.description;
-      const price: number = this.createOffer.value.price;
-      const quantity: number = this.createOffer.value.quantity;
+    if (!this.createOffer.valid || !this.validateProps())
+      return;
 
-      this.offerService.createOffer(title, desc, price, quantity, Condition[this.condition], this.pickedCategory.id, this.selectedImages).subscribe(res =>
-        console.log(res));
-    }
+    const title: string = this.createOffer.value.title;
+    const desc: string = this.createOffer.value.description;
+    const price: number = this.createOffer.value.price;
+    const quantity: number = this.createOffer.value.quantity;
+
+    this.offerService.createOffer(title, desc, price, quantity, Condition[this.condition], this.pickedCategory.id, this.selectedImages).subscribe(res =>
+      console.log(res));
   }
 
   validateProps(): boolean {

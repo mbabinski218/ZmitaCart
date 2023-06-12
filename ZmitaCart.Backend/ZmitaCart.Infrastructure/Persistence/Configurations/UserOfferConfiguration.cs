@@ -14,7 +14,6 @@ public class UserOfferConfiguration : IEntityTypeConfiguration<UserOffer>
 		userOfferModelBuilder
 			.HasKey(uo => new { uo.OfferId, uo.UserId });
 		
-		//TODO zmienic bo nie mozna usuwac jak sa w ulubionych
 		userOfferModelBuilder
 			.HasOne(uo => uo.Offer)
 			.WithMany(o => o.Favorites)

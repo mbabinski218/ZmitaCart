@@ -27,7 +27,6 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, i
     public DbSet<Conversation> Conversations { get; set; } = null!;
     public DbSet<UserConversation> Chats { get; set; } = null!;
     public DbSet<Message> Messages { get; set; } = null!;
-    public DbSet<CategoryOffer> CategoryOffers { get; set; } = null!;
     public DbSet<Picture> Pictures { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -10,19 +10,4 @@ public class Message : Entity<int>
 	public virtual User User { get; set; } = null!;
 	public int ConversationId { get; set; }
 	public virtual Conversation Conversation { get; set; } = null!;
-	
-	public static Message Create(int userId, User user, int conversationId, Conversation conversation, string text)
-	{
-		var message = new Message
-		{
-			Text = text,
-			UserId = userId,
-			User = user,
-			ConversationId = conversationId,
-			Conversation = conversation,
-			Date = DateTimeOffset.Now
-		};
-
-		return message;
-	}
 }

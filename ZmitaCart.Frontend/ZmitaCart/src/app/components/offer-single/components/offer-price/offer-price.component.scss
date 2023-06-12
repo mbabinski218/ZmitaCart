@@ -16,9 +16,11 @@ pp-offer-price {
   }
 
   .buy {
-    background-color: var(--color-primary);
-    color: white;
     margin-bottom: 12px;
+
+
+    // background-color: var(--color-primary);
+    // color: white;
   }
 
   .chat {
@@ -85,4 +87,5 @@ pp-offer-price {
     --mat-mdc-button-persistent-ripple-color: transparent;
     --mat-mdc-button-ripple-color: transparent;
   }
+
 }

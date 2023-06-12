@@ -37,12 +37,24 @@
   {{ (details.price | ppFixPrice) || '-' }}<span class="zl"> zł</span>
 </div>
 
-<div
+<!-- <div
   *ngIf="details.isAvailable"
   class="button-allegro buy"
 >
   KUP TERAZ
-</div>
+</div> -->
+
+<google-pay-button
+  *ngIf="details.isAvailable && userLogged"
+  class="buy"
+  environment="TEST"
+  buttonSizeMode="fill"
+  buttonColor="white"
+  [paymentRequest]="paymentRequest"
+  (loadpaymentdata)="onLoadPaymentData()"
+>
+</google-pay-button>
+
 <div
   class="button-allegro chat"
   (click)="navigateTo('chats')"

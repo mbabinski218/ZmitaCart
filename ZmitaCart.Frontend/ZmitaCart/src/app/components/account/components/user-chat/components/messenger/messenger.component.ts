@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MessengerService } from './services/messenger.service';
 import { AccountService } from '@components/account/api/account.service';
 import { SingleChat } from '@components/account/interfaces/account.interface';
-import { BehaviorSubject, Observable, filter, tap, Subject, takeUntil, map } from 'rxjs';
+import { BehaviorSubject, filter, Subject, takeUntil, map } from 'rxjs';
 import { MessageStream } from '../../interfaces/chat.interfaces';
 import { MessagesComponent } from './components/messages/messages.component';
 
@@ -34,6 +34,8 @@ export class MessengerComponent implements OnInit, OnDestroy {
       });
   }
 
+  @Output() newMessageEmitter = new EventEmitter<MessageStream>();
+
   @ViewChild('myTextarea', { static: false }) myTextarea: ElementRef<HTMLTextAreaElement>;
 
   allMessages$ = new BehaviorSubject<MessageStream[]>([]);
@@ -54,6 +56,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
       })),
       takeUntil(this.onDestroy$),
     ).subscribe((res) => {
+      this.newMessageEmitter.emit(res);
       this.allMessages$.next([
         ...this.allMessages$.value,
         res,

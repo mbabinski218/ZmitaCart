@@ -19,6 +19,7 @@ export enum Api {
   OFFER = '/offer',
   OFFER_FAVOURITES = '/offer/favorites',
   OFFER_SINGLE = '/offer/:id',
+  OFFER_BUY = '/offer/buy',
   OFFER_MAIN = '/offer/byCategoriesName',
   OFFER_ADD_TO_FAVOURITES = '/offer/addToFavorites/:id',
 

@@ -34,4 +34,15 @@ export class OfferSingleService {
       })
     );
   }
+
+  buy(offerId: number, quantity: number): Observable<boolean> {
+    return this.http.post<boolean>(`${environment.httpBackend}${Api.OFFER_BUY}`, { offerId, quantity }).pipe(
+      map(() => true),
+      catchError((err: HttpErrorResponse) => {
+        const error = err.error as string[];
+        this.toastMessageService.notifyOfError(error[0]);
+        return of(false);
+      })
+    );
+  }
 }

@@ -22,10 +22,10 @@ export class AddressFormComponent implements OnDestroy {
   private onDestroy$ = new Subject<void>();
 
   form = new FormGroup({
-    phoneNumber: new FormControl('', Validators.required),
-    country: new FormControl('', Validators.required),
-    city: new FormControl('', Validators.required),
-    street: new FormControl('', Validators.required),
+    phoneNumber: new FormControl(null as string, Validators.required),
+    country: new FormControl(null as string, Validators.required),
+    city: new FormControl(null as string, Validators.required),
+    street: new FormControl(null as string, Validators.required),
     postalCode: new FormControl(null as number, Validators.required),
     houseNumber: new FormControl(null as number, Validators.required),
     apartmentNumber: new FormControl(null as number),

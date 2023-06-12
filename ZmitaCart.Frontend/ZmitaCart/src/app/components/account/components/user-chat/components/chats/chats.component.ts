@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Chats, SingleChat } from '@components/account/interfaces/account.interface';
-import { Observable, map, of, tap } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { AccountService } from '@components/account/api/account.service';
 import { ChatItemComponent } from './components/chat-item/chat-item.component';
+import { MessageStream } from '../../interfaces/chat.interfaces';
 
 @Component({
   selector: 'pp-chats',
@@ -16,6 +17,14 @@ import { ChatItemComponent } from './components/chat-item/chat-item.component';
 export class ChatsComponent implements OnInit {
 
   @Input() currentChat: SingleChat;
+  @Input() set newLastMessage(message: MessageStream) {
+    if (message)
+      this.currentChat = {
+        ...this.currentChat,
+        lastMessage: message.content,
+        lastMessageCreatedAt: message.date,
+      };
+  }
 
   @Output() newCurrentChat = new EventEmitter<SingleChat>();
 
@@ -34,18 +43,24 @@ export class ChatsComponent implements OnInit {
         if (!this.currentChat)
           return res;
 
-        return this.filterChats(this.currentChat, res);
+        return this.filterChats(this.currentChat, res, true);
       })
     );
   }
 
   changeCurrentChat(currentChat: SingleChat, allChats: Chats): void {
-    this.previousChats$ = of(this.filterChats(currentChat, allChats));
+    this.previousChats$ = of(this.filterChats(currentChat, allChats, false));
 
     this.newCurrentChat.emit(currentChat);
   }
 
-  private filterChats(currentChat: SingleChat, allChats: Chats): Chats {
+  private filterChats(currentChat: SingleChat, allChats: Chats, append: boolean): Chats {
+    if (append)
+      allChats = {
+        ...allChats,
+        items: [currentChat, ...allChats.items]
+      };
+
     return {
       ...allChats,
       items: allChats.items.map((res) => {

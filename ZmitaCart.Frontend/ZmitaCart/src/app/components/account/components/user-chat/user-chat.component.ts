@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AccountService } from '@components/account/api/account.service';
 import { OfferSingleService } from '@components/offer-single/api/offer-single.service';
-import { Observable, filter, map, of, shareReplay, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, Observable, filter, map, of, shareReplay, switchMap, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SingleChat } from '@components/account/interfaces/account.interface';
 import { ppFixPricePipe } from '@shared/pipes/fix-price.pipe';
@@ -10,6 +10,7 @@ import { RoutesPath } from '@core/enums/routes-path.enum';
 import { ChatsComponent } from './components/chats/chats.component';
 import { MessengerComponent } from './components/messenger/messenger.component';
 import { OfferComponent } from './components/offer/offer.component';
+import { MessageStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
 
 @Component({
   selector: 'pp-user-chat',
@@ -23,6 +24,7 @@ import { OfferComponent } from './components/offer/offer.component';
 export class UserChatComponent implements OnInit {
 
   currentChat$: Observable<SingleChat>;
+  newLastMessage$ = new BehaviorSubject<MessageStream>(null);
   offerId: string;
 
   constructor(
@@ -46,6 +48,7 @@ export class UserChatComponent implements OnInit {
           offerTitle: res.title,
           offerImageUrl: res.picturesNames ? res.picturesNames[0] : '',
           offerPrice: this.ppFixPricePipe.transform(res.price),
+          forcedToHistory: true,
         };
       }),
     );
@@ -57,5 +60,9 @@ export class UserChatComponent implements OnInit {
 
   newCurrentChat(currentChat: SingleChat): void {
     this.currentChat$ = of(currentChat);
+  }
+
+  newMessageEmitter(message: MessageStream): void {
+    this.newLastMessage$.next(message);
   }
 }

@@ -19,6 +19,7 @@
       <pp-messenger
         [offerId]="offerId"
         [currentChat]="data.currentChat"
+        (newMessageEmitter)="newMessageEmitter($event)"
       >
       </pp-messenger>
     </div>
@@ -27,6 +28,7 @@
       <pp-offer [currentChat]="data.currentChat"></pp-offer>
 
       <pp-chats
+        [newLastMessage]="newLastMessage$ | async"
         [currentChat]="data.currentChat"
         (newCurrentChat)="newCurrentChat($event)"
       >

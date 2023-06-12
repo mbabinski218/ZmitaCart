@@ -72,5 +72,7 @@ export interface SingleChat {
   id?: number,
   lastMessage?: string,
   lastMessageCreatedAt?: Date,
+
   hidden?: boolean,
+  forcedToHistory?: boolean,
 }

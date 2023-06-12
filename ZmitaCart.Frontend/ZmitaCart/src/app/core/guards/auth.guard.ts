@@ -9,7 +9,7 @@ export const isUserLoggedInGuard = (route: ActivatedRouteSnapshot, state: Router
   if (authService.isAuthenticated())
     return true;
 
-  void router.navigateByUrl(`${RoutesPath.HOME}/${RoutesPath.OFFERS}`);
+  void router.navigateByUrl(`${RoutesPath.AUTHENTICATION}/${RoutesPath.LOGIN}`);
 };
 
 export const isUserNotLoggedInGuard = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {

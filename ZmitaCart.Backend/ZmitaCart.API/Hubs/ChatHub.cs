@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using ZmitaCart.API.Common;
 using ZmitaCart.Application.Dtos.ConversationDtos;
 using ZmitaCart.Application.Queries.ConversationQueries.GetAllConversations;
 using ZmitaCart.Application.Queries.ConversationQueries.GetAllMessages;
@@ -12,7 +13,6 @@ namespace ZmitaCart.API.Hubs;
 public class ChatHub : Hub
 {
 	private readonly IMediator _mediator;
-	private bool _isConnected;
 
 	public ChatHub(IMediator mediator)
 	{
@@ -47,8 +47,6 @@ public class ChatHub : Hub
 		{
 			await RestoreConversation(conversation);
 		}
-		
-		_isConnected = true;
 	}
 	
 	public async Task RestoreMessages(int chat, string user)
@@ -64,6 +62,7 @@ public class ChatHub : Hub
 			await RestoreMessage(message.UserId, message.UserName, message.Date, message.Text);
 		}
 		
+		Context.Items.TryAdd("chat", chat);
 		await ReadNotificationStatus(userId);
 	}
 
@@ -71,11 +70,12 @@ public class ChatHub : Hub
 	{
 		var userId = int.Parse(user);
 		var date = DateTimeOffset.Now;
+		var isConnected = Context.Items["chat"] as int? == chat;
 		
 		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", userId, userName, date, text);
-		await _mediator.Publish(new MessageSent(user, chat, date, text, _isConnected));
+		await _mediator.Publish(new MessageSent(user, chat, date, text, isConnected));
 
-		if (!_isConnected)
+		if (!isConnected)
 		{
 			await ReadNotificationStatus(userId);
 		}

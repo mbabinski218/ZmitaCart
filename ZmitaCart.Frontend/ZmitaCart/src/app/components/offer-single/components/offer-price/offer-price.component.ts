@@ -9,7 +9,7 @@ import { SingleOffer } from '@components/offer-single/interfaces/offer-single.in
 import { MatButtonModule } from '@angular/material/button';
 import { RoutesPath } from '@core/enums/routes-path.enum';
 import { RoutingService } from '@shared/services/routing.service';
-import { Subject, filter, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Subject, filter, takeUntil, tap } from 'rxjs';
 import { GooglePayButtonModule } from '@google-pay/button-angular';
 import { OfferSingleService } from '@components/offer-single/api/offer-single.service';
 import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
@@ -30,6 +30,7 @@ export class OfferPriceComponent implements OnInit, OnDestroy {
 
   private onDestroy$ = new Subject<void>();
   currentQuantity = 1;
+  currentQuantity$ = new BehaviorSubject<number>(1);
   paymentRequest: google.payments.api.PaymentDataRequest;
   userLogged = false;
 
@@ -72,11 +73,21 @@ export class OfferPriceComponent implements OnInit, OnDestroy {
       transactionInfo: {
         totalPriceStatus: "FINAL",
         totalPriceLabel: "Cena",
-        totalPrice: String(this.details.price),
+        totalPrice: '0',
         currencyCode: "PLN",
         countryCode: "PL"
       }
     };
+
+    this.currentQuantity$.asObservable().subscribe((res) => {
+      this.paymentRequest = {
+        ...this.paymentRequest,
+        transactionInfo: {
+          ...this.paymentRequest.transactionInfo,
+          totalPrice: String(res * this.details.price),
+        }
+      };
+    });
   }
 
   ngOnDestroy(): void {
@@ -97,6 +108,7 @@ export class OfferPriceComponent implements OnInit, OnDestroy {
 
   add(val: number) {
     this.currentQuantity += val;
+    this.currentQuantity$.next(this.currentQuantity);
   }
 
   navigateTo(fragment?: string): void {
@@ -107,10 +119,10 @@ export class OfferPriceComponent implements OnInit, OnDestroy {
     this.offerSingleService.buy(this.details.id, this.currentQuantity).pipe(
       filter((res) => !!res),
       tap(() => this.toastMessageService.notifyOfSuccess(`Kupiono ${this.details.title}`)),
-      tap(() => this.details = { ...this.details, quantity: this.details.quantity - 1 }),
+      tap(() => this.details = { ...this.details, quantity: this.details.quantity - this.currentQuantity }),
+      tap(() => { this.currentQuantity = 1; this.currentQuantity$.next(1); }),
       tap(() => this.ref.detectChanges()),
       takeUntil(this.onDestroy$),
     ).subscribe();
   }
-
 }

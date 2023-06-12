@@ -1,13 +1,6 @@
 export interface CredentialsForm {
   phoneNumber: string,
-  address: {
-    country: string,
-    city: string,
-    street: string,
-    postalCode: number,
-    houseNumber: number,
-    apartmentNumber: number,
-  }
+  address: Address,
 }
 
 export interface UserCredentials {
@@ -15,14 +8,7 @@ export interface UserCredentials {
   firstName: string,
   lastName: string,
   phoneNumber: string,
-  address: {
-    country: string,
-    city: string,
-    street: string,
-    postalCode: number,
-    houseNumber: number,
-    apartmentNumber: number,
-  }
+  address: Address,
 }
 
 export interface UserCredentialsShow {
@@ -31,23 +17,18 @@ export interface UserCredentialsShow {
   icon: string,
 }
 
-export interface Chats {
+export interface Chats extends Pagination {
   items: SingleChat[],
-  pageNumber: number,
-  totalPages: number,
-  totalCount: number,
-  hasPreviousPage: boolean,
-  hasNextPage: boolean,
 }
 
-export interface AccountOffers {
+export interface AccountOffers extends Pagination {
   items: OfferItem[],
-  pageNumber: number,
-  totalPages: number,
-  totalCount: number,
-  hasPreviousPage: boolean,
-  hasNextPage: boolean,
 }
+
+export interface BoughtOffers extends Pagination {
+  items: BoughtOffer[],
+}
+
 
 export interface OfferItem {
   id: number,
@@ -75,4 +56,79 @@ export interface SingleChat {
 
   hidden?: boolean,
   forcedToHistory?: boolean,
+}
+
+
+export interface BoughtOffer {
+  offer: OfferItem,
+  boughtAt?: Date,
+  boughtQuantity?: number,
+  totalPrice?: number,
+}
+
+interface Pagination {
+  pageNumber: number,
+  totalPages: number,
+  totalCount: number,
+  hasPreviousPage: boolean,
+  hasNextPage: boolean,
+}
+
+interface Address {
+  country: string,
+  city: string,
+  street: string,
+  postalCode: number,
+  houseNumber: number,
+  apartmentNumber: number,
+}
+
+
+
+
+export interface AccountOffers {
+  items: {
+    id: number,
+    title: string,
+    price: number,
+    city: string,
+    condition: string,
+    quantity: number,
+    imageName: string,
+    isFavourite: boolean,
+    isAvailable: boolean,
+    authorName: string,
+    authorEmail: string,
+  }[],
+  pageNumber: number,
+  totalPages: number,
+  totalCount: number,
+  hasPreviousPage: boolean,
+  hasNextPage: boolean,
+}
+
+export interface BoughtOffers {
+  items: {
+    offer: {
+      id: number,
+      title: string,
+      price: number,
+      city: string,
+      condition: string,
+      quantity: number,
+      imageName: string,
+      isFavourite: boolean,
+      isAvailable: boolean,
+      authorName: string,
+      authorEmail: string,
+    },
+    boughtAt?: Date,
+    boughtQuantity?: number,
+    totalPrice?: number,
+  }[],
+  pageNumber: number,
+  totalPages: number,
+  totalCount: number,
+  hasPreviousPage: boolean,
+  hasNextPage: boolean,
 }

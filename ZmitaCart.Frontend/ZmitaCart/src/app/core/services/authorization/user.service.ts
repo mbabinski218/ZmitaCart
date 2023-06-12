@@ -6,11 +6,12 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
 import { Api } from '@core/enums/api.enum';
-import { tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { addSeconds, isAfter } from 'date-fns';
 import { TokenData, UserAuthorization } from '@components/authentication/interfaces/authentication-interface';
 import jwt_decode from 'jwt-decode';
+import { UserCredentials } from '@components/account/interfaces/account.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -80,6 +81,10 @@ export class UserService {
           this.setUserToken(myToken.accessToken);
         }),
       );
+  }
+
+  getUserData(): Observable<UserCredentials> {
+    return this.http.get<UserCredentials>(`${environment.httpBackend}${Api.USER_CREDENTIALS}`);
   }
 
   private user(): TokenData {

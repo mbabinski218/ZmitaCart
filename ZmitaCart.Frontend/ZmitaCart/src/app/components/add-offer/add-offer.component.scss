@@ -210,7 +210,8 @@ pp-add-offer {
     margin-top: 10px;
     height: 100%;
     border-radius: 0.8rem;
-    border: 1px solid #e7e7e7;;
+    border: 1px solid #e7e7e7;
+    ;
     max-width: 30rem;
     overflow: auto;
   }
@@ -235,82 +236,82 @@ pp-add-offer {
   .blank {
     margin-bottom: 50px;
   }
-}
 
-.imagePreviewWrapper {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  overflow-x: auto;
-  padding: .9rem;
-}
+  .imagePreviewWrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-x: auto;
+    padding: .9rem;
+  }
 
-.imagePreview img {
-  margin-right: 20px;
-  max-width: 200px;
-  height: 150px;
-  border: 1px #FF5C00 solid;
-  border-radius: 0.8rem;
-  padding: 1.2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
-  overflow: visible;
-}
+  .imagePreview img {
+    margin-right: 20px;
+    max-width: 200px;
+    height: 150px;
+    border: 1px #FF5C00 solid;
+    border-radius: 0.8rem;
+    padding: 1.2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
+    overflow: visible;
+  }
 
-.imagePreview {
-  position: relative;
-}
+  .imagePreview {
+    position: relative;
+  }
 
-.deletePhotoBtn {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform: translate(-50%, -50%);
-}
+  .deletePhotoBtn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+  }
 
-.deletePhotoBtn {
-  width: 25px;
-  height: 25px;
-  color: white;
-  border-radius: 50%;
-  border: none;
-  background-color: #FF5C00;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
-  text-align: center;
-  padding: 1px;
-}
+  .deletePhotoBtn {
+    width: 25px;
+    height: 25px;
+    color: white;
+    border-radius: 50%;
+    border: none;
+    background-color: #FF5C00;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
+    text-align: center;
+    padding: 1px;
+  }
 
-.deletePhotoBtn:hover {
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
-}
+  .deletePhotoBtn:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
 
-.button-allegro.photos {
-  position: relative;
-  color: #7770bd;
-  background-color: #edecf7;
-  border: none;
-  font-weight: 550;
-  opacity: 0.8;
-}
+  .button-allegro.photos {
+    position: relative;
+    color: #7770bd;
+    background-color: #edecf7;
+    border: none;
+    font-weight: 550;
+    opacity: 0.8;
+  }
 
-.button-allegro.photos:hover {
-  opacity: 1;
-  transition: opacity 0.2s ease;
-}
+  .button-allegro.photos:hover {
+    opacity: 1;
+    transition: opacity 0.2s ease;
+  }
 
-.createOfferWrapper {
-  display: flex;
-  justify-content: center;
-}
+  .createOfferWrapper {
+    display: flex;
+    justify-content: center;
+  }
 
-.button-allegro.submit {
-  background-color: #6256b1;
-  border: none;
-  color: white;
-  width: 70%;
-}
+  .button-allegro.submit {
+    background-color: #6256b1;
+    border: none;
+    color: white;
+    width: 70%;
+  }
 
-.button-allegro.submit:disabled {
-  cursor: default;
-  opacity: 0.4;
+  .button-allegro.submit:disabled {
+    cursor: default;
+    opacity: 0.4;
+  }
 }

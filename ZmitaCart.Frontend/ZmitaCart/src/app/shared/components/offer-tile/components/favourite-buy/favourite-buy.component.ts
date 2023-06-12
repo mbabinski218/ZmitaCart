@@ -4,6 +4,8 @@ import { OfferMainService } from '@components/offers-main/api/offers-main.servic
 import { OfferItem } from '@components/account/interfaces/account.interface';
 import { MatIconModule } from '@angular/material/icon';
 import { filter, tap } from 'rxjs';
+import { Router } from '@angular/router';
+import { RoutesPath } from '@core/enums/routes-path.enum';
 
 @Component({
   selector: 'pp-favourite-buy',
@@ -21,6 +23,7 @@ export class FavouriteBuyComponent {
   constructor(
     private offerMainService: OfferMainService,
     private ref: ChangeDetectorRef,
+    private router: Router,
   ) { }
 
   observe(item: OfferItem): void {
@@ -29,5 +32,9 @@ export class FavouriteBuyComponent {
       tap(() => item.isFavourite = !item.isFavourite),
       tap(() => this.ref.detectChanges()),
     ).subscribe();
+  }
+
+  details(id: number): void {
+    void this.router.navigateByUrl(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${id}`);
   }
 }

@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
 import { RoutesPath } from '@core/enums/routes-path.enum';
-import { isUserLoggedInGuard, isUserNotLoggedInGuard } from '@core/guards/auth.guard';
+import { isUserLoggedInGuard, isUserNotLoggedInGuard, userHasAddress } from '@core/guards/auth.guard';
 
 export const routes: Route[] = [
   {
@@ -36,7 +36,7 @@ export const routes: Route[] = [
       },
       {
         path: RoutesPath.ADD_OFFER,
-        canActivate: [isUserLoggedInGuard],
+        canActivate: [userHasAddress],
         loadComponent: () => import('./components/add-offer/add-offer.component').then(m => m.AddOfferComponent),
       },
     ]

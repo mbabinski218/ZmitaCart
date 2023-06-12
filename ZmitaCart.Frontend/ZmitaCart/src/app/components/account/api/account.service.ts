@@ -5,6 +5,7 @@ import { environment } from '@env/environment';
 import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
 import { Chats, CredentialsForm, AccountOffers, UserCredentials } from '@components/account/interfaces/account.interface';
 import { Observable, catchError, map, of } from 'rxjs';
+import { BoughtOffers } from '../interfaces/account.interface';
 
 @Injectable()
 export class AccountService {
@@ -78,6 +79,20 @@ export class AccountService {
       .set('pageSize', 10);
 
     return this.http.get<AccountOffers>(`${environment.httpBackend}${Api.OFFER_FAVOURITES}`, { params }).pipe(
+      catchError((err: HttpErrorResponse) => {
+        const error = err.error as string[];
+        this.toastMessageService.notifyOfError(error[0]);
+        return of();
+      })
+    );
+  }
+
+  getBought(pageNumber: number): Observable<BoughtOffers> {
+    const params = new HttpParams()
+      .set('pageNumber', pageNumber)
+      .set('pageSize', 10);
+
+    return this.http.get<BoughtOffers>(`${environment.httpBackend}${Api.OFFER_BOUGHT}`, { params }).pipe(
       catchError((err: HttpErrorResponse) => {
         const error = err.error as string[];
         this.toastMessageService.notifyOfError(error[0]);

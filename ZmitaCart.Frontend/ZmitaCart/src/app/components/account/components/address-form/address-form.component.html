@@ -65,6 +65,7 @@
   </pp-input>
 
   <button
+    [disabled]="!form.valid"
     type="submit"
     class="button button-login cursor-pointer"
   >

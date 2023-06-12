@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OfferItem } from '@components/account/interfaces/account.interface';
+import { BoughtOffer } from '@components/account/interfaces/account.interface';
 import { MatIconModule } from '@angular/material/icon';
 import { ppFixPricePipe } from '@shared/pipes/fix-price.pipe';
 import { Router } from '@angular/router';
@@ -10,11 +10,12 @@ import { EditDeleteComponent } from './components/edit-delete/edit-delete.compon
 import { OfferSingleService } from '@components/offer-single/api/offer-single.service';
 import { Observable, Subject, filter, takeUntil, tap } from 'rxjs';
 import { ToastMessageService } from '../toast-message/services/toast-message.service';
+import { BoughtInfoComponent } from './components/bought-info/bought-info.component';
 
 @Component({
   selector: 'pp-offer-tile',
   standalone: true,
-  imports: [CommonModule, MatIconModule, ppFixPricePipe, FavouriteBuyComponent, EditDeleteComponent],
+  imports: [CommonModule, MatIconModule, ppFixPricePipe, FavouriteBuyComponent, EditDeleteComponent, BoughtInfoComponent],
   providers: [OfferSingleService],
   templateUrl: './offer-tile.component.html',
   styleUrls: ['./offer-tile.component.scss'],
@@ -22,7 +23,7 @@ import { ToastMessageService } from '../toast-message/services/toast-message.ser
 })
 export class OfferTileComponent implements OnDestroy {
 
-  @Input() items: OfferItem[];
+  @Input() items: BoughtOffer[];
   @Input() origin: 'favourites' | 'bought' | 'filtered' | 'user-offers';
 
   readonly imageUrl = 'http://localhost:5102/File?name=';
@@ -46,8 +47,8 @@ export class OfferTileComponent implements OnDestroy {
     void this.router.navigateByUrl(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${id}`);
   }
 
-  deleteOffer(item: OfferItem) {
-    this.offerSingleService.deleteOffer(String(item.id)).pipe(
+  deleteOffer(item: BoughtOffer) {
+    this.offerSingleService.deleteOffer(String(item.offer.id)).pipe(
       filter((res) => !!res),
       tap(() => this.items = this.items.filter((res) => res !== item)),
       tap(() => this.toastMessageService.notifyOfSuccess('Usunięto ofertę')),

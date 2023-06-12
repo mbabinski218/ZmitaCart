@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ConditionType} from "@components/add-offer/interfaces/ConditionType";
 import {Condition} from "@core/enums/condition.enum";
@@ -9,7 +9,6 @@ import {Condition} from "@core/enums/condition.enum";
   imports: [CommonModule],
   templateUrl: './condition-wrapper.component.html',
   styleUrls: ['./condition-wrapper.component.scss'],
-  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConditionWrapperComponent {

@@ -1,28 +1,28 @@
 <ng-container *ngIf="items.length">
   <div
-    class="item"
-    [class.not-available]="!item.isAvailable"
     *ngFor="let item of items"
+    class="item"
+    [class.not-available]="!item.offer.isAvailable"
   >
     <img
       class="img cursor-pointer"
-      [src]="item.imageName ? imageUrl + item.imageName : 'https://upload.wikimedia.org/wikipedia/commons/5/55/Brak_obrazka.svg'"
-      (click)="details(item.id)"
+      [src]="item.offer.imageName ? imageUrl + item.offer.imageName : 'https://upload.wikimedia.org/wikipedia/commons/5/55/Brak_obrazka.svg'"
+      (click)="details(item.offer.id)"
     >
 
     <div class="component">
       <div class="data">
         <p
           class="title cursor-pointer"
-          (click)="details(item.id)"
+          (click)="details(item.offer.id)"
         >
-          {{ item.title }}
+          {{ item.offer.title }}
         </p>
         <div class="condition">
           <mat-icon class="icon material-icons-outlined">verified</mat-icon>
-          Stan: {{ item.condition || '-' }}
+          Stan: {{ item.offer.condition || '-' }}
         </div>
-        <div class="price">{{ (item?.price | ppFixPrice) || '-' }}<span class="zl"> zł</span></div>
+        <div class="price">{{ (item.offer?.price | ppFixPrice) || '-' }}<span class="zl"> zł</span></div>
       </div>
 
       <div
@@ -30,26 +30,26 @@
         class="user"
       >
         <mat-icon class="icon material-icons-outlined">person</mat-icon>
-        {{ item.authorName }} ({{ item.authorEmail }})
+        {{ item.offer.authorName }} ({{ item.offer.authorEmail }})
       </div>
     </div>
 
     <pp-edit-delete
       *ngIf="origin === 'user-offers'"
-      [item]="item"
+      [item]="item.offer"
       (deleteOffer)="deleteOffer(item)"
     >
     </pp-edit-delete>
 
-    <!-- <pp-bought-info
+    <pp-bought-info
       *ngIf="origin === 'bought'"
       [item]="item"
     >
-    </pp-bought-info> -->
+    </pp-bought-info>
 
     <pp-favourite-buy
       *ngIf="origin === 'favourites' || origin === 'filtered'"
-      [item]="item"
+      [item]="item.offer"
     >
     </pp-favourite-buy>
   </div>

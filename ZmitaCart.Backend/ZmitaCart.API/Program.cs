@@ -69,6 +69,6 @@ app.UseRouting();
 app.UseAuthorization();
 app.MapControllers();
 
-app.MapHub<ChatHub>("/ChatHub").AllowAnonymous();
+app.MapHub<ChatHub>("/ChatHub");
 
 app.Run();

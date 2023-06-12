@@ -13,11 +13,11 @@ export class RoutingService {
     private router: Router,
   ) { }
 
-  navigateTo(path: string, fragment: string = null, params?: { name: string, value: string | number }): void {
+  navigateTo(path: string, fragment: string = null, params?: { paramName: string, value: string | number }): void {
     let queryParams = {};
     if (params) {
-      const { name, value } = params;
-      queryParams = { [name]: value };
+      const { paramName, value } = params;
+      queryParams = { [paramName]: value };
     }
 
     if (!this.userService.isAuthenticated())

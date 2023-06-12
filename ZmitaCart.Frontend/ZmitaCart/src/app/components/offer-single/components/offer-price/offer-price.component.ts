@@ -100,7 +100,7 @@ export class OfferPriceComponent implements OnInit, OnDestroy {
   }
 
   navigateTo(fragment?: string): void {
-    this.routingService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.ACCOUNT}`, fragment, { name: 'id', value: this.details.id });
+    this.routingService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.ACCOUNT}`, fragment, { paramName: 'id', value: this.details.id });
   }
 
   onLoadPaymentData() {

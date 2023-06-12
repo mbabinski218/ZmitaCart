@@ -10,7 +10,6 @@ import { CategoriesMenuComponent } from '@components/home/components/header/comp
 import { LoginMenuComponent } from '@components/home/components/header/components/login-menu/login-menu.component';
 import { OverlayService } from '@core/services/overlay/overlay.service';
 import { Observable, shareReplay } from 'rxjs';
-import { UserService } from '@core/services/authorization/user.service';
 import { SuperiorCategories } from '@components/home/components/header/interfaces/header.interface';
 import { HeaderService } from '@components/home/components/api/header.service';
 import { RoutingService } from '@shared/services/routing.service';
@@ -32,7 +31,6 @@ export class HeaderComponent implements OnInit {
   }
 
   readonly RoutesPath = RoutesPath;
-  readonly ADD_OFFER_LINK = `/${RoutesPath.ADD_OFFER}`;
 
   isBig = window.innerWidth > 768;
 

@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AreYouSureDialogComponent } from '../../../are-you-sure-dialog/are-you-sure-dialog.component';
 import { NoopScrollStrategy } from '@angular/cdk/overlay';
+import { RoutingService } from '@shared/services/routing.service';
+import { RoutesPath } from '@core/enums/routes-path.enum';
 
 @Component({
   selector: 'pp-edit-delete',
@@ -22,6 +24,7 @@ export class EditDeleteComponent {
 
   constructor(
     private dialog: MatDialog,
+    private routingService: RoutingService,
   ) { }
 
   openDialog(): void {
@@ -37,6 +40,6 @@ export class EditDeleteComponent {
   }
 
   goToEdit(): void {
-    console.log('przekierowanie do edita');
+    this.routingService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.ADD_OFFER}`, null, { paramName: 'id', value: this.item.id });
   }
 }

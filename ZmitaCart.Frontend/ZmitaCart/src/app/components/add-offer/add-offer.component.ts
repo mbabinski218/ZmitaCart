@@ -6,21 +6,21 @@ import {
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatIconModule} from "@angular/material/icon";
-import {MatButtonModule} from "@angular/material/button";
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {MatInputModule} from "@angular/material/input";
-import {CategoryService} from "@components/add-offer/api/category.service";
-import {Category} from "@components/add-offer/interfaces/Category";
-import {Condition} from "@core/enums/condition.enum";
-import {ConditionWrapperComponent} from "@components/add-offer/condition-wrapper/condition-wrapper.component";
-import {ConditionType} from "@components/add-offer/interfaces/ConditionType";
-import {CategorySelectorComponent} from "@components/add-offer/category-selector/category-selector.component";
-import {OfferService} from "@components/add-offer/api/offer.service";
-import {RouterLink} from "@angular/router";
-import {RoutingService} from "@shared/services/routing.service";
-import {RoutesPath} from "@core/enums/routes-path.enum";
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatInputModule } from "@angular/material/input";
+import { CategoryService } from "@components/add-offer/api/category.service";
+import { Category } from "@components/add-offer/interfaces/Category";
+import { Condition } from "@core/enums/condition.enum";
+import { ConditionWrapperComponent } from "@components/add-offer/condition-wrapper/condition-wrapper.component";
+import { ConditionType } from "@components/add-offer/interfaces/ConditionType";
+import { CategorySelectorComponent } from "@components/add-offer/category-selector/category-selector.component";
+import { OfferService } from "@components/add-offer/api/offer.service";
+import { RouterLink } from "@angular/router";
+import { RoutingService } from "@shared/services/routing.service";
+import { RoutesPath } from "@core/enums/routes-path.enum";
 
 
 @Component({
@@ -33,6 +33,7 @@ import {RoutesPath} from "@core/enums/routes-path.enum";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddOfferComponent implements OnInit {
+  
   createOffer: FormGroup;
   characterCount: number;
   price: number;
@@ -48,7 +49,7 @@ export class AddOfferComponent implements OnInit {
   previews: string[] = [];
   isDragOver: boolean;
 
-  @ViewChild('dropZone', {static: true}) dropZone!: ElementRef;
+  @ViewChild('dropZone', { static: true }) dropZone!: ElementRef;
 
   items: ConditionType[] = [{
     title: "Używany",
@@ -188,14 +189,14 @@ export class AddOfferComponent implements OnInit {
     if (!this.createOffer.valid || !this.validateProps())
       return;
 
-    const title: string = this.createOffer.value.title;
+    const title = this.createOffer.value.title;
     const desc: string = this.createOffer.value.description;
     const price: number = this.createOffer.value.price;
     const quantity: number = this.createOffer.value.quantity;
 
     this.offerService.createOffer(title, desc, price, quantity, Condition[this.condition], this.pickedCategory.id, this.selectedImages).subscribe(res => {
-        this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
-      }
+      this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
+    }
     );
   }
 

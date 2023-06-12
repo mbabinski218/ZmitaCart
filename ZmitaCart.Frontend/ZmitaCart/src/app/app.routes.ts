@@ -34,12 +34,12 @@ export const routes: Route[] = [
       path: `${RoutesPath.OFFER}/:id`,
       loadComponent: () => import('./components/offer-single/offer-single.component').then(m => m.OfferSingleComponent),
       },
+      {
+        path: RoutesPath.ADD_OFFER,
+        canActivate: [isUserLoggedInGuard],
+        loadComponent: () => import('./components/add-offer/add-offer.component').then(m => m.AddOfferComponent),
+      },
     ]
-  },
-  {
-    path: RoutesPath.ADD_OFFER,
-    canActivate: [isUserLoggedInGuard],
-    loadComponent: () => import('./components/add-offer/add-offer.component').then(m => m.AddOfferComponent),
   },
   {
     path: RoutesPath.AUTHENTICATION,

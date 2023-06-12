@@ -83,7 +83,8 @@ public class OfferRepository : IOfferRepository
 			return Result.Fail(new UnauthorizedError("User does not have access to this offer"));
 		}
 
-		_dbContext.Offers.Remove(offer);
+		offer.IsAvailable = false;
+		//_dbContext.Offers.Remove(offer);
 		await _dbContext.SaveChangesAsync();
 		return Result.Ok();
 	}

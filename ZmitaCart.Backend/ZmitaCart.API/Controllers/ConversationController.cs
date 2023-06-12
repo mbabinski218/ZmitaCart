@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.ConversationCommands.CreateConversation;
-using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.ConversationDtos;
 using ZmitaCart.Application.Queries.ConversationQueries.GetAllConversations;
 
@@ -15,12 +14,12 @@ public class ConversationController : ApiController
 	{
 	}
 
-	[HttpGet]
-	[RoleAuthorize]
-	public async Task<ActionResult<PaginatedList<ConversationInfoDto>>> GetAllConversations([FromQuery] GetAllConversationsQuery query)
-	{
-		return Ok(await mediator.Send(query));
-	}
+	// [HttpGet]
+	// [RoleAuthorize]
+	// public async Task<ActionResult<IEnumerable<ConversationInfoDto>>> GetAllConversations([FromQuery] GetAllConversationsQuery query)
+	// {
+	// 	return Ok(await mediator.Send(query));
+	// }
 	
 	[HttpPost]
 	[RoleAuthorize]

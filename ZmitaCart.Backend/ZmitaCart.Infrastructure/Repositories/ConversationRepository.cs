@@ -1,12 +1,10 @@
 ﻿using FluentResults;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.ConversationDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Entities;
-using ZmitaCart.Infrastructure.Exceptions;
 using ZmitaCart.Infrastructure.Persistence;
 
 namespace ZmitaCart.Infrastructure.Repositories;
@@ -30,7 +28,7 @@ public class ConversationRepository : IConversationRepository
 		}
 
 		var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId);
-		
+
 		if (offer is null)
 		{
 			return Result.Fail(new UnauthorizedError("Offer does not exist"));
@@ -41,7 +39,7 @@ public class ConversationRepository : IConversationRepository
 			OfferId = offerId,
 			Offer = offer
 		};
-		
+
 		var userConversation = new UserConversation
 		{
 			ConversationId = conversation.Id,
@@ -49,7 +47,7 @@ public class ConversationRepository : IConversationRepository
 			UserId = userId,
 			User = user
 		};
-		
+
 		var ownerConversation = new UserConversation
 		{
 			ConversationId = conversation.Id,
@@ -57,34 +55,50 @@ public class ConversationRepository : IConversationRepository
 			UserId = offer.UserId,
 			User = offer.User
 		};
-		
+
 		await _dbContext.Conversations.AddAsync(conversation);
 		await _dbContext.Chats.AddRangeAsync(userConversation, ownerConversation);
 		await _dbContext.SaveChangesAsync();
-		
+
 		return conversation.Id;
 	}
 
-	public async Task<int> SendMessageAsync(int userId, int conversationId, string text)
+	public async Task<Result> SendMessageAsync(int userId, int conversationId, DateTimeOffset date, string text)
 	{
-		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId)
-		           ?? throw new NotFoundException("User not found");
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+		if (user is null)
+		{
+			return Result.Fail(new NotFoundError("User does not exist"));
+		}
 
-		var conversation = await _dbContext.Conversations.FirstOrDefaultAsync(c => c.Id == conversationId)
-		                   ?? throw new NotFoundException("Conversation not found");
+		var conversation = await _dbContext.Conversations.FirstOrDefaultAsync(c => c.Id == conversationId);
+		if (conversation is null)
+		{
+			return Result.Fail(new NotFoundError("Conversation does not exist"));
+		}
 
-		var message = Message.Create(userId, user, conversationId, conversation, text);
+		var message = new Message
+		{
+			Text = text,
+			UserId = userId,
+			User = user,
+			ConversationId = conversationId,
+			Conversation = conversation,
+			Date = date
+		};
 
 		await _dbContext.Messages.AddAsync(message);
 		await _dbContext.SaveChangesAsync();
 
-		return message.Id;
+		return Result.Ok();
 	}
 
-	public async Task<PaginatedList<ConversationInfoDto>> GetConversationsAsync(int userId, int? pageNumber = null, int? pageSize = null)
+	public async Task<Result<IEnumerable<ConversationInfoDto>>> GetConversationsAsync(int userId)
 	{
-		_ = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId)
-		    ?? throw new NotFoundException("User does not exist");
+		if (!await _dbContext.Users.AnyAsync(u => u.Id == userId))
+		{
+			return Result.Fail(new NotFoundError("User does not exist"));
+		}
 
 		var conversation = await _dbContext.Conversations
 			.Include(c => c.UserConversations)
@@ -92,11 +106,11 @@ public class ConversationRepository : IConversationRepository
 			.Where(c => c.UserConversations.Any(uc => uc.UserId == userId))
 			.Where(c => c.Messages.Any())
 			.Include(c => c.Offer)
-				.ThenInclude(o => o.Pictures)
+			.ThenInclude(o => o.Pictures)
 			.ProjectToType<ConversationInfoDto>()
-			.ToPaginatedListAsync(pageNumber, pageSize);
-		
-		foreach (var c in conversation.Items)
+			.ToListAsync();
+
+		foreach (var c in conversation)
 		{
 			var user = (await _dbContext.Chats
 				.Include(ch => ch.User)
@@ -106,27 +120,9 @@ public class ConversationRepository : IConversationRepository
 		}
 
 		return conversation;
-		
-		// var chats =  await _dbContext.Chats
-		// 	.Where(uc => uc.UserId == userId)
-		// 	.Include(uc => uc.Conversation)
-		// 	.Include(uc => uc.User)
-		// 	.ProjectToType<ConversationInfoDto>()
-		// 	.ToPaginatedListAsync(pageNumber, pageSize);
-		//
-		// foreach (var chat in chats.Items)
-		// {
-		// 	chat.WithUser = await _dbContext.Chats
-		// 		.Where(uc => uc.ConversationId == chat.ConversationId && uc.UserId != userId)
-		// 		.Include(uc => uc.User)
-		// 		.Select(uc => uc.User.FirstName + " " + uc.User.LastName)
-		// 		.FirstAsync();
-		// }
-
-		// return chats;
 	}
 
-	public async Task<IEnumerable<MessageDto>> GetMessagesAsync(int chat)
+	public async Task<Result<IEnumerable<MessageDto>>> GetMessagesAsync(int chat)
 	{
 		return await _dbContext.Conversations
 			.Where(c => c.Id == chat && c.Messages.Any())
@@ -135,11 +131,11 @@ public class ConversationRepository : IConversationRepository
 			.ToListAsync();
 	}
 
-	public async Task<IEnumerable<int>> GetConversationUserIds(int chat)
+	public async Task<Result<IEnumerable<int>>> GetUserConversations(int userId)
 	{
 		return await _dbContext.Chats
-			.Where(uc => uc.ConversationId == chat)
-			.Select(uc => uc.UserId)
+			.Where(uc => uc.UserId == userId)
+			.Select(uc => uc.ConversationId)
 			.ToListAsync();
 	}
 
@@ -150,5 +146,49 @@ public class ConversationRepository : IConversationRepository
 			.Where(c => c.UserId == userId && c.Conversation.OfferId == offerId)
 			.Select(c => c.ConversationId)
 			.FirstOrDefaultAsync();
+	}
+
+	public async Task IncrementNotificationStatus(int userId, int chatId)
+	{
+		var chat = await _dbContext.Chats
+			.FirstOrDefaultAsync(c => c.UserId == userId && c.ConversationId == chatId);
+
+		if (chat is not null)
+		{
+			chat.IsRead = false;
+		}
+		
+		await _dbContext.SaveChangesAsync();
+	}
+	
+	public async Task DecrementNotificationStatus(int userId, int chatId)
+	{
+		var chat = await _dbContext.Chats
+			.FirstOrDefaultAsync(c => c.UserId == userId && c.ConversationId == chatId);
+
+		if (chat is not null)
+		{
+			chat.IsRead = true;
+		}
+		
+		await _dbContext.SaveChangesAsync();
+	}
+
+	public async Task<Result<int>> ReadNotificationStatus(int userId)
+	{
+		if (!await _dbContext.Users.AnyAsync(u => u.Id == userId))
+		{
+			return Result.Fail(new NotFoundError("User does not exist"));
+		}
+
+		var status = 0;
+		await _dbContext.Chats
+			.Where(c => c.UserId == userId)
+			.ForEachAsync(c =>
+			{
+				if (!c.IsRead) status++;
+			});
+
+		return status;
 	}
 }

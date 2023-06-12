@@ -9,5 +9,5 @@ public class ConversationInfoDto
 	public int OfferId { get; set; }
 	public string OfferTitle { get; set; } = null!;
 	public string? OfferImageUrl { get; set; }
-	public string OfferPrice { get; set; } = null!;
+	public decimal OfferPrice { get; set; }
 }

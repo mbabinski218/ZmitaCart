@@ -18,5 +18,4 @@ public class Offer : AggregateRoot<int>
     public virtual List<UserOffer> Favorites { get; set; }  = new();
     public virtual List<Bought> Bought { get; set; } = new();
     public virtual List<Picture> Pictures { get; set; }  = new();
-    public virtual List<CategoryOffer> CategoryOffers { get; set; }  = new(); //TODO remove
 }

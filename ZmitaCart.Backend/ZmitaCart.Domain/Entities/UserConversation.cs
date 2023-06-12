@@ -6,4 +6,5 @@ public class UserConversation
 	public virtual Conversation Conversation { get; set; } = null!;
 	public int UserId { get; set; }
 	public virtual User User { get; set; } = null!;
+	public bool IsRead { get; set; }
 }

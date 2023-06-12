@@ -25,10 +25,7 @@ public class BuyOfferHandler : IRequestHandler<BuyOfferCommand, Result>
 		}
 		
 		var userId = int.Parse(_currentUserService.UserId);
-		
-		//TODO payment service
-		
-		
+
 		return await _offerRepository.BuyAsync(userId, request.OfferId, request.Quantity);
 	}
 }

@@ -19,7 +19,8 @@ import {ConditionType} from "@components/add-offer/interfaces/ConditionType";
 import {CategorySelectorComponent} from "@components/add-offer/category-selector/category-selector.component";
 import {OfferService} from "@components/add-offer/api/offer.service";
 import {RouterLink} from "@angular/router";
-import {RoutesPath} from '@core/enums/routes-path.enum';
+import {RoutingService} from "@shared/services/routing.service";
+import {RoutesPath} from "@core/enums/routes-path.enum";
 
 
 @Component({
@@ -63,7 +64,7 @@ export class AddOfferComponent implements OnInit {
     condition: Condition.Nowy
   }];
 
-  constructor(private categoryService: CategoryService, private cdr: ChangeDetectorRef, private offerService: OfferService) {
+  constructor(private categoryService: CategoryService, private cdr: ChangeDetectorRef, private offerService: OfferService, private routerService: RoutingService) {
   }
 
   ngOnInit(): void {
@@ -192,8 +193,10 @@ export class AddOfferComponent implements OnInit {
     const price: number = this.createOffer.value.price;
     const quantity: number = this.createOffer.value.quantity;
 
-    this.offerService.createOffer(title, desc, price, quantity, Condition[this.condition], this.pickedCategory.id, this.selectedImages).subscribe(res =>
-      console.log(res));
+    this.offerService.createOffer(title, desc, price, quantity, Condition[this.condition], this.pickedCategory.id, this.selectedImages).subscribe(res => {
+        this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
+      }
+    );
   }
 
   validateProps(): boolean {

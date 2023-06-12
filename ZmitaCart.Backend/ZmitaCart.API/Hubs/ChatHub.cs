@@ -84,7 +84,7 @@ public class ChatHub : Hub
 	private async Task ReadNotificationStatus(int userId)
 	{
 		var status = await _mediator.Send(new ReadNotificationStatusQuery(userId));
-		await Clients.Caller.SendAsync("NotificationsStatus", status);
+		await Clients.Caller.SendAsync("NotificationStatus", status);
 	}
 
 	private async Task RestoreMessage(int userId, string userName, DateTimeOffset date, string text)
@@ -94,6 +94,8 @@ public class ChatHub : Hub
 	
 	private async Task RestoreConversation(ConversationInfoDto conversation)
 	{
-		await Clients.Caller.SendAsync("ReceiveMessage", conversation);
+		await Clients.Caller.SendAsync("ReceiveConversation", conversation.Id, conversation.WithUser, 
+			conversation.LastMessage, conversation.LastMessageCreatedAt, conversation.OfferId, conversation.OfferTitle,
+			conversation.OfferPrice, conversation.OfferImageUrl);
 	}
 }

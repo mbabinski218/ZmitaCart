@@ -48,7 +48,7 @@ public class ChatHub : Hub
 
 			if (conversation.LastMessage is not null)
 			{
-				await RestoreMessage(conversation.LastMessage.UserId, conversation.LastMessage.UserName, conversation.LastMessage.Date, 
+				await RestoreMessage(conversation.Id, conversation.LastMessage.UserId, conversation.LastMessage.UserName, conversation.LastMessage.Date, 
 					conversation.LastMessage.Text);
 			}
 		}
@@ -64,7 +64,7 @@ public class ChatHub : Hub
 		
 		foreach (var message in messages.Value)
 		{
-			await RestoreMessage(message.UserId, message.UserName, message.Date, message.Text);
+			await RestoreMessage(message.ChatId, message.UserId, message.UserName, message.Date, message.Text);
 		}
 		
 		Context.Items.TryAdd("chat", chat);
@@ -77,7 +77,7 @@ public class ChatHub : Hub
 		var date = DateTimeOffset.Now;
 		var isConnected = Context.Items["chat"] as int? == chat;
 		
-		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", userId, userName, date, text);
+		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", chat, userId, userName, date, text);
 		await _mediator.Publish(new MessageSent(user, chat, date, text, isConnected));
 
 		if (!isConnected)
@@ -92,9 +92,9 @@ public class ChatHub : Hub
 		await Clients.Caller.SendAsync("NotificationStatus", status);
 	}
 
-	private async Task RestoreMessage(int userId, string userName, DateTimeOffset date, string text)
+	private async Task RestoreMessage(int chatId, int userId, string userName, DateTimeOffset date, string text)
 	{
-		await Clients.Caller.SendAsync("ReceiveMessage", userId, userName, date, text);
+		await Clients.Caller.SendAsync("ReceiveMessage", chatId, userId, userName, date, text);
 	}
 	
 	private async Task RestoreConversation(ConversationDto conversation)

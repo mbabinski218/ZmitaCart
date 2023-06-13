@@ -1,4 +1,4 @@
-import {Condition} from "@core/enums/condition.enum";
+import { Condition } from "@core/enums/condition.enum";
 
 export interface ConditionType {
   title: string,

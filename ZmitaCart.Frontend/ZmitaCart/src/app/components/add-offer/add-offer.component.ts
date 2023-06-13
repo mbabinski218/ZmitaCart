@@ -18,9 +18,11 @@ import { ConditionWrapperComponent } from "@components/add-offer/condition-wrapp
 import { ConditionType } from "@components/add-offer/interfaces/ConditionType";
 import { CategorySelectorComponent } from "@components/add-offer/category-selector/category-selector.component";
 import { OfferService } from "@components/add-offer/api/offer.service";
-import { RouterLink } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
 import { RoutingService } from "@shared/services/routing.service";
 import { RoutesPath } from "@core/enums/routes-path.enum";
+import { filter, map, switchMap, tap } from 'rxjs';
+import { OfferSingleService } from '@components/offer-single/api/offer-single.service';
 
 
 @Component({
@@ -33,7 +35,7 @@ import { RoutesPath } from "@core/enums/routes-path.enum";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddOfferComponent implements OnInit {
-  
+
   createOffer: FormGroup;
   characterCount: number;
   price: number;
@@ -48,6 +50,7 @@ export class AddOfferComponent implements OnInit {
   selectedImages: File[];
   previews: string[] = [];
   isDragOver: boolean;
+  inEdit = false;
 
   @ViewChild('dropZone', { static: true }) dropZone!: ElementRef;
 
@@ -65,7 +68,13 @@ export class AddOfferComponent implements OnInit {
     condition: Condition.Nowy
   }];
 
-  constructor(private categoryService: CategoryService, private cdr: ChangeDetectorRef, private offerService: OfferService, private routerService: RoutingService) {
+  constructor(
+    private categoryService: CategoryService,
+    private cdr: ChangeDetectorRef,
+    private offerService: OfferService,
+    private routerService: RoutingService,
+    private route: ActivatedRoute,
+  ) {
   }
 
   ngOnInit(): void {
@@ -75,6 +84,15 @@ export class AddOfferComponent implements OnInit {
       price: new FormControl(null as number, [Validators.required, Validators.pattern("^\\d+(?:\\,\\d{2})?$")]),
       quantity: new FormControl(1, [Validators.pattern("^(?=.*[1-9])\\d+$")]),
     });
+
+    this.route.queryParams.pipe(
+      map(({ id }) => id as string),
+      filter((id) => !!id),
+      tap(() => this.inEdit = true),
+      switchMap((id) => this.offerService.getForEditOffer(id)),
+      tap((res) => this.createOffer.patchValue(res)),
+      tap((res) => this.condition = res.condition as unknown as Condition),
+    ).subscribe();
 
     this.createOffer.get('title').valueChanges.subscribe((res: string) => {
       this.characterCount = res.length;

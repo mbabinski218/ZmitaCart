@@ -5,3 +5,13 @@ export interface Category {
   children: Category[]
   iconName: string;
 }
+
+export interface OfferToEdit {
+  title: string,
+  description: string,
+  price: number,
+  quantity: number,
+  condition: string,
+  categoryId: number,
+  picturesNames: string[]
+}

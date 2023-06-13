@@ -66,9 +66,9 @@
     <div class="actions">
       <mat-icon
         *ngIf="!isBig"
-        [routerLink]="RoutesPath.ADD_OFFER"
         class="svg"
         svgIcon="add"
+        (click)="goToAddOffer()"
       >
       </mat-icon>
       <mat-icon
@@ -89,7 +89,7 @@
     <a
       *ngIf="isBig"
       class="button button-allegro"
-      [routerLink]="RoutesPath.ADD_OFFER"
+      (click)="goToAddOffer()"
     >
       Wystaw
     </a>

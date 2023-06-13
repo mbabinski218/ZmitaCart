@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "@env/environment";
 import {Api} from "@core/enums/api.enum";
+import { OfferToEdit } from '../interfaces/Category';
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +28,9 @@ export class OfferService {
     }
 
     return this.http.post<number>(`${environment.httpBackend}${Api.OFFER}`, this.formData);
+  }
+
+  getForEditOffer(id: string): Observable<OfferToEdit> {
+    return this.http.get<OfferToEdit>(`${environment.httpBackend}${Api.OFFER_EDIT}`.replace(':id', id));
   }
 }

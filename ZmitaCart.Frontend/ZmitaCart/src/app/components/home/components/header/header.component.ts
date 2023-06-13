@@ -41,6 +41,7 @@ export class HeaderComponent implements OnInit {
     protected overlayService: OverlayService,
     private routingService: RoutingService,
     private headerService: HeaderService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -50,5 +51,9 @@ export class HeaderComponent implements OnInit {
 
   navigateTo(fragment?: string): void {
     this.routingService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.ACCOUNT}`, fragment);
+  }
+
+  goToAddOffer(): void {
+    void this.router.navigate([`${RoutesPath.HOME}/${RoutesPath.ADD_OFFER}`]).then(() => window.location.reload());
   }
 }

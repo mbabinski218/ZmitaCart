@@ -67,7 +67,7 @@
                   class="customForm"></textarea>
       </div>
 
-      <div class="addCategory" style="margin-bottom: 50px">
+      <div *ngIf="!inEdit" class="addCategory" style="margin-bottom: 50px">
         <label>Kategoria</label>
         <em class="required">*</em>
         <button class="loadCategoriesButton" (click)="loadSuperiorCategories()" *ngIf="!subCategories">PRZEGLĄDAJ
@@ -112,8 +112,8 @@
         <input type="text" formControlName="quantity" class="customForm" id="qForm" min="1" pattern="^(?=.*[1-9])\d+$">
       </div>
       <div class="createOfferWrapper">
-        <button type="submit" class="button-allegro submit" [disabled]="!createOffer.valid || !validateProps()">Utwórz
-          ofertę
+        <button type="submit" class="button-allegro submit" [disabled]="!createOffer.valid || !validateProps()">
+          {{ inEdit ? 'Zaktualizuj ofertę' : 'Utwórz ofertę' }}
         </button>
       </div>
       <div class="blank"></div>

@@ -68,7 +68,7 @@ public class OfferController : ApiController
     }
 
     [HttpGet("data/{id:int}")]
-    public async Task<ActionResult<OfferDto>> GetOfferData([FromRoute] int id)
+    public async Task<ActionResult<OfferDataDto>> GetOfferData([FromRoute] int id)
     {
         return await mediator.Send(new GetOfferDataQuery(id)).Then(
             s => Ok(s.Value),

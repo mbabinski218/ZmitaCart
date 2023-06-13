@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
-using ZmitaCart.API.Common;
 using ZmitaCart.Application.Dtos.ConversationDtos;
 using ZmitaCart.Application.Queries.ConversationQueries.GetAllConversations;
 using ZmitaCart.Application.Queries.ConversationQueries.GetAllMessages;

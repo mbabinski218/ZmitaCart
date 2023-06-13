@@ -12,6 +12,7 @@ public class ConversationMapperConfig : IRegister
 			.Map(dest => dest.UserName, src => src.User.FirstName);
 
 		config.ForType<UserConversation, ConversationInfoDto>()
+			.Map(dest => dest.UserId, src => src.UserId)
 			.Map(dest => dest.OfferId, src => src.Conversation.OfferId)
 			.Map(dest => dest.OfferTitle, src => src.Conversation.Offer.Title)
 			.Map(dest => dest.OfferPrice, src => src.Conversation.Offer.Price)

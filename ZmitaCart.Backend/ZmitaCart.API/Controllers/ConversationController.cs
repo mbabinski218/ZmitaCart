@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.ConversationCommands.CreateConversation;
-using ZmitaCart.Application.Dtos.ConversationDtos;
-using ZmitaCart.Application.Queries.ConversationQueries.GetAllConversations;
 
 namespace ZmitaCart.API.Controllers;
 

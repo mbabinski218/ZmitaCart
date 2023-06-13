@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace ZmitaCart.Application.Common.Settings;
+﻿namespace ZmitaCart.Application.Common.Settings;
 
 public static class GlobalSettings
 {

@@ -100,6 +100,6 @@ public class ChatHub : Hub
 	private async Task RestoreConversation(ConversationInfoDto conversation)
 	{
 		await Clients.Caller.SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId, 
-			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl);
+			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl, conversation.WithUser);
 	}
 }

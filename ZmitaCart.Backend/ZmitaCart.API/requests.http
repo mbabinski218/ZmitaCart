@@ -20,44 +20,44 @@ Authorization: Bearer {{token}}
 # ### request6
 #GET https://localhost:44333/offer/bought
 
-### request7
-POST https://localhost:44333/offer
-accept: */*
-Content-Type: multipart/form-data; boundary=WebAppBoundary
-
---WebAppBoundary
-Content-Disposition: form-data; name="Title"
-
-title
---WebAppBoundary
-Content-Disposition: form-data; name="Description"
-
-desc
---WebAppBoundary
-Content-Disposition: form-data; name="Price"
-
-33
---WebAppBoundary
-Content-Disposition: form-data; name="Quantity"
-
-3
---WebAppBoundary
-Content-Disposition: form-data; name="Condition"
-
-New
---WebAppBoundary
-Content-Disposition: form-data; name="CategoryId"
-
-5
---WebAppBoundary
-Content-Disposition: form-data; name="Pictures"; filename="Babiński.Mateusz.1.jpg"
-
-< D:\Studia\BIAI - semestr 6\Babiński.Mateusz.1.jpg
---WebAppBoundary
-Content-Disposition: form-data; name="Pictures"; filename="Babiński.Mateusz.3.jpg"
-
-< D:\Studia\BIAI - semestr 6\Babiński.Mateusz.3.jpg
---WebAppBoundary--
+#### request7
+#POST https://localhost:44333/offer
+#accept: */*
+#Content-Type: multipart/form-data; boundary=WebAppBoundary
+#
+#--WebAppBoundary
+#Content-Disposition: form-data; name="Title"
+#
+#title
+#--WebAppBoundary
+#Content-Disposition: form-data; name="Description"
+#
+#desc
+#--WebAppBoundary
+#Content-Disposition: form-data; name="Price"
+#
+#33
+#--WebAppBoundary
+#Content-Disposition: form-data; name="Quantity"
+#
+#3
+#--WebAppBoundary
+#Content-Disposition: form-data; name="Condition"
+#
+#New
+#--WebAppBoundary
+#Content-Disposition: form-data; name="CategoryId"
+#
+#5
+#--WebAppBoundary
+#Content-Disposition: form-data; name="Pictures"; filename="Babiński.Mateusz.1.jpg"
+#
+#< D:\Studia\BIAI - semestr 6\Babiński.Mateusz.1.jpg
+#--WebAppBoundary
+#Content-Disposition: form-data; name="Pictures"; filename="Babiński.Mateusz.3.jpg"
+#
+#< D:\Studia\BIAI - semestr 6\Babiński.Mateusz.3.jpg
+#--WebAppBoundary--
 
 #### postExample
 #POST https://localhost:44333/offer/buy

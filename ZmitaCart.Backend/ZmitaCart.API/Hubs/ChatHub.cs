@@ -35,7 +35,7 @@ public class ChatHub : Hub
 		await ReadNotificationStatus(userId);
 	}
 
-	public async Task RestoreConversations(string user)
+	public async Task RestoreAllConversations(string user)
 	{
 		var userId = int.Parse(user);
 		var conversations =  await _mediator.Send(new GetAllConversationsQuery(userId));
@@ -46,6 +46,12 @@ public class ChatHub : Hub
 		foreach (var conversation in conversations.Value)
 		{
 			await RestoreConversation(conversation);
+
+			if (conversation.LastMessage is not null)
+			{
+				await RestoreMessage(conversation.UserId, conversation.WithUser, conversation.LastMessageCreatedAt!.Value, 
+					conversation.LastMessage!);
+			}
 		}
 	}
 	
@@ -94,8 +100,7 @@ public class ChatHub : Hub
 	
 	private async Task RestoreConversation(ConversationInfoDto conversation)
 	{
-		await Clients.Caller.SendAsync("ReceiveConversation", conversation.Id, conversation.WithUser, 
-			conversation.LastMessage, conversation.LastMessageCreatedAt, conversation.OfferId, conversation.OfferTitle,
-			conversation.OfferPrice, conversation.OfferImageUrl);
+		await Clients.Caller.SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId, 
+			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl);
 	}
 }

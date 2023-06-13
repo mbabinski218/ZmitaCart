@@ -3,6 +3,7 @@
 public class ConversationInfoDto
 {
 	public int Id { get; set; }
+	public int UserId { get; set; }
 	public string WithUser { get; set; } = null!;
 	public string? LastMessage { get; set; } 
 	public DateTimeOffset? LastMessageCreatedAt { get; set; }

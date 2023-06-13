@@ -7,7 +7,7 @@ public interface IConversationRepository
 {
 	public Task<Result<int>> CreateConversationAsync(int offerId, int userId);
 	public Task<Result> SendMessageAsync(int userId, int conversationId, DateTimeOffset date, string text);
-	public Task<Result<IEnumerable<ConversationInfoDto>>> GetConversationsAsync(int userId);
+	public Task<Result<IEnumerable<ConversationDto>>> GetConversationsAsync(int userId);
 	public Task<Result<IEnumerable<MessageDto>>> GetMessagesAsync(int chat);
 	public Task<Result<IEnumerable<int>>> GetUserConversations(int userId);
 	public Task<int> IsChatExists(int offerId, int userId);

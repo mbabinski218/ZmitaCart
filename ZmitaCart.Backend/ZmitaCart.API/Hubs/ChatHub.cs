@@ -48,8 +48,8 @@ public class ChatHub : Hub
 
 			if (conversation.LastMessage is not null)
 			{
-				await RestoreMessage(conversation.UserId, conversation.WithUser, conversation.LastMessageCreatedAt!.Value, 
-					conversation.LastMessage!);
+				await RestoreMessage(conversation.LastMessage.UserId, conversation.LastMessage.UserName, conversation.LastMessage.Date, 
+					conversation.LastMessage.Text);
 			}
 		}
 	}
@@ -97,7 +97,7 @@ public class ChatHub : Hub
 		await Clients.Caller.SendAsync("ReceiveMessage", userId, userName, date, text);
 	}
 	
-	private async Task RestoreConversation(ConversationInfoDto conversation)
+	private async Task RestoreConversation(ConversationDto conversation)
 	{
 		await Clients.Caller.SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId, 
 			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl, conversation.WithUser);

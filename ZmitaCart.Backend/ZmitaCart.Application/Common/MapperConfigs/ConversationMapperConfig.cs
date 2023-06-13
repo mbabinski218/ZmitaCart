@@ -10,9 +10,8 @@ public class ConversationMapperConfig : IRegister
 	{
 		config.ForType<Message, MessageDto>()
 			.Map(dest => dest.UserName, src => src.User.FirstName);
-
+		
 		config.ForType<UserConversation, ConversationInfoDto>()
-			.Map(dest => dest.UserId, src => src.UserId)
 			.Map(dest => dest.OfferId, src => src.Conversation.OfferId)
 			.Map(dest => dest.OfferTitle, src => src.Conversation.Offer.Title)
 			.Map(dest => dest.OfferPrice, src => src.Conversation.Offer.Price)
@@ -25,17 +24,16 @@ public class ConversationMapperConfig : IRegister
 				src.Conversation.Messages.OrderByDescending(m => m.Date).First().Date)
 			.Map(dest => dest.WithUser, src => GetUserInfo(src));
 
-		config.ForType<Conversation, ConversationInfoDto>()
+		config.ForType<Conversation, ConversationDto>()
 			.Map(dest => dest.OfferId, src => src.OfferId)
 			.Map(dest => dest.OfferTitle, src => src.Offer.Title)
 			.Map(dest => dest.OfferPrice, src => src.Offer.Price)
 			.Map(dest => dest.OfferImageUrl, src => src.Offer.Pictures.Any()
 				? src.Offer.Pictures.OrderBy(p => p.CreationTime).First().Name
 				: null)
-			.Map(dest => dest.LastMessage, src =>
-				src.Messages.OrderByDescending(m => m.Date).First().Text)
-			.Map(dest => dest.LastMessageCreatedAt, src =>
-				src.Messages.OrderByDescending(m => m.Date).First().Date);
+			.Map(dest => dest.LastMessage, src => src.Messages.Any()
+				? src.Messages.OrderByDescending(m => m.Date).First().Adapt<MessageDto>()
+				: null);
 		//.Map(dest => dest.WithUser, src => GetUserInfo(src));
 	}
 	

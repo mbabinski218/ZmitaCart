@@ -93,7 +93,7 @@ public class ConversationRepository : IConversationRepository
 		return Result.Ok();
 	}
 
-	public async Task<Result<IEnumerable<ConversationInfoDto>>> GetConversationsAsync(int userId)
+	public async Task<Result<IEnumerable<ConversationDto>>> GetConversationsAsync(int userId)
 	{
 		if (!await _dbContext.Users.AnyAsync(u => u.Id == userId))
 		{
@@ -107,7 +107,7 @@ public class ConversationRepository : IConversationRepository
 			.Where(c => c.Messages.Any())
 			.Include(c => c.Offer)
 			.ThenInclude(o => o.Pictures)
-			.ProjectToType<ConversationInfoDto>()
+			.ProjectToType<ConversationDto>()
 			.ToListAsync();
 
 		foreach (var c in conversation)

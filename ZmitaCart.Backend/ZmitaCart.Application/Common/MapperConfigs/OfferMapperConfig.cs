@@ -35,5 +35,10 @@ public class OfferMapperConfig : IRegister
 			.Map(dest => dest.Offer.AuthorEmail, src => src.User.Email)
 			.Map(dest => dest.Offer.AuthorName, src => src.User.FirstName)
 			.Map(dest => dest.BoughtQuantity, src => src.Quantity);
+		
+		config.ForType<Offer, OfferDataDto>()
+			.Map(dest => dest.PicturesNames, src => !src.Pictures.Any()
+				? null
+				: src.Pictures.Select(p => p.Name));
 	}
 }

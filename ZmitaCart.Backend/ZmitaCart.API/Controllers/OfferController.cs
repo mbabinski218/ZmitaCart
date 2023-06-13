@@ -11,6 +11,7 @@ using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Queries.OfferQueries.GetBoughtOffers;
 using ZmitaCart.Application.Queries.OfferQueries.GetFavouritesOffers;
 using ZmitaCart.Application.Queries.OfferQueries.GetOffer;
+using ZmitaCart.Application.Queries.OfferQueries.GetOfferData;
 using ZmitaCart.Application.Queries.OfferQueries.GetOffersByCategoriesName;
 using ZmitaCart.Application.Queries.OfferQueries.SearchOffers;
 
@@ -66,6 +67,14 @@ public class OfferController : ApiController
             err => StatusCode(err.StatusCode, err.ToList()));
     }
 
+    [HttpGet("data/{id:int}")]
+    public async Task<ActionResult<OfferDto>> GetOfferData([FromRoute] int id)
+    {
+        return await mediator.Send(new GetOfferDataQuery(id)).Then(
+            s => Ok(s.Value),
+            err => StatusCode(err.StatusCode, err.ToList()));
+    }
+    
     [HttpPost("addToFavorites/{id:int}")]
     [RoleAuthorize]
     public async Task<ActionResult> AddToFavorites([FromRoute] int id)

@@ -10,6 +10,7 @@ public interface IOfferRepository
     Task<Result<int>> UpdateAsync(UpdateOfferDto offerDto);
     Task<Result> DeleteAsync(int userId, int offerId);
     Task<Result<OfferDto>> GetOfferAsync(int id);
+    Task<Result<OfferDataDto>> GetOfferDataAsync(int id);
     Task<Result> AddToFavoritesAsync(int userId, int offerId);
     Task<Result<PaginatedList<OfferInfoDto>>> GetFavoritesOffersAsync(int userId, int? pageNumber = null, int? pageSize = null);
     Task<Result<IEnumerable<int>>> GetFavoritesOffersIdsAsync(int userId);

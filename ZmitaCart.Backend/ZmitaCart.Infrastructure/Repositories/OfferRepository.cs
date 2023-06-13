@@ -100,9 +100,24 @@ public class OfferRepository : IOfferRepository
 			.ProjectToType<OfferDto>()
 			.FirstOrDefaultAsync();
 
-		return offer == null
+		return offer is null
 			? Result.Fail(new NotFoundError("Offer does not exist"))
-			: Result.Ok(offer);
+			: offer;
+	}
+
+	public async Task<Result<OfferDataDto>> GetOfferDataAsync(int id)
+	{
+		var offer = await _dbContext.Offers
+			.Where(o => o.Id == id)
+			.Include(o => o.User)
+			.Include(o => o.Pictures)
+			.AsNoTracking()
+			.ProjectToType<OfferDataDto>()
+			.FirstOrDefaultAsync();
+		
+		return offer is null
+			? Result.Fail(new NotFoundError("Offer does not exist"))
+			: offer;
 	}
 
 	public async Task<Result> AddToFavoritesAsync(int userId, int offerId)

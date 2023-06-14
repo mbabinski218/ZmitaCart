@@ -4,18 +4,20 @@
 
 <div class="form">
   <div class="area">
-    <textarea
-      [disabled]="!isChat"
-      #myTextarea
-      class="textarea"
-      (keydown.enter)="sendMessage(); $event.preventDefault();"
-    ></textarea>
-    <mat-icon
-      *ngIf="isChat"
-      class="icon icon material-icons-outlined cursor-pointer"
-      (click)="sendMessage()"
-    >
-      send
-    </mat-icon>
+    <ng-container *ngIf="{ isChat: currentChat$ | async } as data">
+      <textarea
+        [disabled]="!data.isChat"
+        #myTextarea
+        class="textarea"
+        (keydown.enter)="sendMessage(); $event.preventDefault();"
+      ></textarea>
+      <mat-icon
+        *ngIf="data.isChat"
+        class="icon icon material-icons-outlined cursor-pointer"
+        (click)="sendMessage()"
+      >
+        send
+      </mat-icon>
+    </ng-container>
   </div>
 </div>

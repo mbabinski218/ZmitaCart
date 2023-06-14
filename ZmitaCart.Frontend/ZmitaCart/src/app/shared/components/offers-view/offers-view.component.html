@@ -1,28 +1,36 @@
-<div class="header">
-  <div class="text">{{ title }}</div>
-  <div
-    *ngIf="areAnyOffers"
-    class="pagination"
-  >
-    <ng-container [ngTemplateOutlet]="pagination"></ng-container>
-  </div>
-</div>
-<div class="content">
-  <ng-container *ngIf="offers$ | async as offers; else loading">
-    <ng-container *ngIf="offers.items.length; else noData">
-      <pp-offer-tile
-        [origin]="origin"
-        [items]="offers.items"
-      >
-      </pp-offer-tile>
-    </ng-container>
-  </ng-container>
+<pp-offers-filters
+  *ngIf="origin === 'filtered'"
+  (formEmitter)="filterData($event)"
+>
+</pp-offers-filters>
 
-  <div
-    *ngIf="areAnyOffers"
-    class="footer"
-  >
-    <ng-container [ngTemplateOutlet]="pagination"></ng-container>
+<div class="fix">
+  <div class="header">
+    <div class="text">{{ title }}</div>
+    <div
+      *ngIf="areAnyOffers"
+      class="pagination"
+    >
+      <ng-container [ngTemplateOutlet]="pagination"></ng-container>
+    </div>
+  </div>
+  <div class="content">
+    <ng-container *ngIf="offers$ | async as offers; else loading">
+      <ng-container *ngIf="offers.items.length; else noData">
+        <pp-offer-tile
+          [origin]="origin"
+          [items]="offers.items"
+        >
+        </pp-offer-tile>
+      </ng-container>
+    </ng-container>
+
+    <div
+      *ngIf="areAnyOffers"
+      class="footer"
+    >
+      <ng-container [ngTemplateOutlet]="pagination"></ng-container>
+    </div>
   </div>
 </div>
 

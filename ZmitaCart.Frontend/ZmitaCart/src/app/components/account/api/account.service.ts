@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Api } from '@core/enums/api.enum';
 import { environment } from '@env/environment';
 import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
-import { Chats, CredentialsForm, AccountOffers, UserCredentials } from '@components/account/interfaces/account.interface';
+import { CredentialsForm, AccountOffers, UserCredentials } from '@components/account/interfaces/account.interface';
 import { Observable, catchError, map, of } from 'rxjs';
 import { BoughtOffers } from '../interfaces/account.interface';
 
@@ -42,16 +42,6 @@ export class AccountService {
       .set('pageSize', 10);
 
     return this.http.get<AccountOffers>(`${environment.httpBackend}${Api.USER_OFFERS}`, { params }).pipe(
-      catchError((err: HttpErrorResponse) => {
-        const error = err.error as string[];
-        this.toastMessageService.notifyOfError(error[0]);
-        return of();
-      })
-    );
-  }
-
-  getAllChats(): Observable<Chats> {
-    return this.http.get<Chats>(`${environment.httpBackend}${Api.CONVERSATION}`).pipe(
       catchError((err: HttpErrorResponse) => {
         const error = err.error as string[];
         this.toastMessageService.notifyOfError(error[0]);

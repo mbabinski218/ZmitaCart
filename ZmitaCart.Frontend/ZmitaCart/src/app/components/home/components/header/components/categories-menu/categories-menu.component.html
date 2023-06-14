@@ -4,7 +4,7 @@
       class="item"
       *ngFor="let category of categories"
       (mouseenter)="openSubCategories(category)"
-      (click)="openCategory(category.name)"
+      (click)="openCategory(category.id)"
     >
       <mat-icon>{{ category.iconName }}</mat-icon>
       <div class="fix">
@@ -26,7 +26,7 @@
         >
           <span
             class="data"
-            (click)="openCategory(child.name)"
+            (click)="openCategory(child.id)"
           >
             {{ child.name }}
           </span>
@@ -36,7 +36,7 @@
         <ng-template #noKids>
           <div
             class="data"
-            (click)="openCategory(child.name)"
+            (click)="openCategory(child.id)"
           >
             {{ child.name }}
           </div>

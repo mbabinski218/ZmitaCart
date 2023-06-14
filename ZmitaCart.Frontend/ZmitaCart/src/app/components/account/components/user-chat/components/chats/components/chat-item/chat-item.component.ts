@@ -1,6 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SingleChat } from '@components/account/interfaces/account.interface';
+import { ChatsStream, MessageStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
+import { MessengerService } from '../../../messenger/services/messenger.service';
+import { distinctUntilChanged, filter, take, tap, BehaviorSubject } from 'rxjs';
+import { UserChatService } from '@components/account/components/user-chat/services/user-chat.service';
 
 @Component({
   selector: 'pp-chat-item',
@@ -11,7 +14,17 @@ import { SingleChat } from '@components/account/interfaces/account.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChatItemComponent {
-  @Input() currentChat: SingleChat;
+
+  @Input() previousChat: ChatsStream;
+  @Input() set previousMessages(message: MessageStream[]) {
+    // console.log(2,message)
+    // if (message.length) {
+    //   this.message$.next(message.find((res) => res.chatId === this.previousChat.id));
+    // }
+  }
 
   readonly imageUrl = 'http://localhost:5102/File?name=';
+
+  message$ = new BehaviorSubject<MessageStream>(null);
+  receivedMessages$ = new BehaviorSubject<MessageStream[]>([]);
 }

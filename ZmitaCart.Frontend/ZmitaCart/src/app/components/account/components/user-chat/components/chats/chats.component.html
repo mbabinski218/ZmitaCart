@@ -1,21 +1,12 @@
 <div class="component">
   <div class="heading"><span class="title">Czat</span></div>
-  <div *ngIf="currentChat">
+  <ng-container *ngFor="let previousChat of previousChats$ | async">
     <pp-chat-item
-      class="currentChat"
-      [currentChat]="currentChat"
-    >
-    </pp-chat-item>
-  </div>
-
-  <ng-container *ngIf="previousChats$ | async as previousChats">
-    <ng-container *ngFor="let currentChat of previousChats.items">
-      <div
-        *ngIf="!currentChat.hidden"
-        (click)="changeCurrentChat(currentChat, previousChats)"
-      >
-        <pp-chat-item [currentChat]="currentChat"></pp-chat-item>
-      </div>
-    </ng-container>
+      class="border"
+      [class.currentChat]="previousChat.isCurrentChat"
+      (click)="changeCurrentChat(previousChat)"
+      [previousChat]="previousChat"
+      [previousMessages]="previousMessages$ | async"
+    ></pp-chat-item>
   </ng-container>
 </div>

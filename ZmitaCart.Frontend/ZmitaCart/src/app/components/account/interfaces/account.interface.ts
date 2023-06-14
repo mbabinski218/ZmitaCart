@@ -17,10 +17,6 @@ export interface UserCredentialsShow {
   icon: string,
 }
 
-export interface Chats extends Pagination {
-  items: SingleChat[],
-}
-
 export interface AccountOffers extends Pagination {
   items: OfferItem[],
 }
@@ -44,21 +40,6 @@ export interface OfferItem {
   authorEmail: string,
 }
 
-export interface SingleChat {
-  withUser: string,
-  offerId: number,
-  offerTitle: string,
-  offerImageUrl: string,
-  offerPrice: string,
-  id?: number,
-  lastMessage?: string,
-  lastMessageCreatedAt?: Date,
-
-  hidden?: boolean,
-  forcedToHistory?: boolean,
-}
-
-
 export interface BoughtOffer {
   offer: OfferItem,
   boughtAt?: Date,
@@ -81,54 +62,4 @@ interface Address {
   postalCode: number,
   houseNumber: number,
   apartmentNumber: number,
-}
-
-
-
-
-export interface AccountOffers {
-  items: {
-    id: number,
-    title: string,
-    price: number,
-    city: string,
-    condition: string,
-    quantity: number,
-    imageName: string,
-    isFavourite: boolean,
-    isAvailable: boolean,
-    authorName: string,
-    authorEmail: string,
-  }[],
-  pageNumber: number,
-  totalPages: number,
-  totalCount: number,
-  hasPreviousPage: boolean,
-  hasNextPage: boolean,
-}
-
-export interface BoughtOffers {
-  items: {
-    offer: {
-      id: number,
-      title: string,
-      price: number,
-      city: string,
-      condition: string,
-      quantity: number,
-      imageName: string,
-      isFavourite: boolean,
-      isAvailable: boolean,
-      authorName: string,
-      authorEmail: string,
-    },
-    boughtAt?: Date,
-    boughtQuantity?: number,
-    totalPrice?: number,
-  }[],
-  pageNumber: number,
-  totalPages: number,
-  totalCount: number,
-  hasPreviousPage: boolean,
-  hasNextPage: boolean,
 }

@@ -7,12 +7,16 @@ import { PaginationService } from '@shared/services/pagination.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OfferTileComponent } from '@shared/components/offer-tile/offer-tile.component';
+import { OffersFilteredService } from '@components/offers-filtered/api/offers-filtered.service';
+import { ActivatedRoute } from '@angular/router';
+import { OffersFiltersComponent } from './offers-filters/offers-filters.component';
+import { INIT_OFFERS_FORM_CONST, MyForm } from './offers-filters/interfaces/offers-view.interface';
 
 @Component({
   selector: 'pp-offers-view',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatProgressSpinnerModule, OfferTileComponent],
-  providers: [AccountService, PaginationService],
+  imports: [CommonModule, MatIconModule, MatProgressSpinnerModule, OfferTileComponent, OffersFiltersComponent],
+  providers: [AccountService, PaginationService, OffersFilteredService],
   templateUrl: './offers-view.component.html',
   styleUrls: ['./offers-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +27,8 @@ export class OffersViewComponent implements OnInit {
   @Input() title: string;
   @Input() noDataText: string;
   @Input() origin: 'favourites' | 'bought' | 'filtered' | 'user-offers';
+
+  OFFERS_FORM = INIT_OFFERS_FORM_CONST;
 
   offers$: Observable<BoughtOffers>;
 
@@ -36,6 +42,8 @@ export class OffersViewComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
+    private offersFilteredService: OffersFilteredService,
+    private route: ActivatedRoute,
     protected paginationService: PaginationService,
   ) { }
 
@@ -59,7 +67,7 @@ export class OffersViewComponent implements OnInit {
             return this.accountService.getFavourites(res);
           }
           case "filtered": {
-            return;
+            return this.getFilteredOffers(res);
           }
           case "user-offers": {
             return this.accountService.getUserOffers(res);
@@ -78,6 +86,18 @@ export class OffersViewComponent implements OnInit {
       }),
       tap((res) => this.paginationService.setTotalPages(res.totalPages)),
       tap((res) => this.setAll(res)),
+    );
+  }
+
+  filterData(form: MyForm) {
+    this.OFFERS_FORM.patchValue(form);
+    this.offers$ = this.setData();
+  }
+
+  private getFilteredOffers(pageNumber: number) {
+    return this.route.queryParams.pipe(
+      map(({ c, i }) => ({ c, i })),
+      switchMap(({ c, i }) => this.offersFilteredService.getOffers(c, i, pageNumber, this.OFFERS_FORM)),
     );
   }
 

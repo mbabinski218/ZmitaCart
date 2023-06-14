@@ -20,10 +20,6 @@ public class ConversationMapperConfig : IRegister
 			.Map(dest => dest.OfferImageUrl, src => src.Conversation.Offer.Pictures.Any()
 				? src.Conversation.Offer.Pictures.OrderBy(p => p.CreationTime).First().Name
 				: null)
-			.Map(dest => dest.LastMessage, src => 
-				src.Conversation.Messages.OrderByDescending(m => m.Date).First().Text)
-			.Map(dest => dest.LastMessageCreatedAt, src => 
-				src.Conversation.Messages.OrderByDescending(m => m.Date).First().Date)
 			.Map(dest => dest.WithUser, src => GetUserInfo(src));
 
 		config.ForType<Conversation, ConversationDto>()

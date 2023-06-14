@@ -15,6 +15,6 @@ public class GetUserConversationsHandler : IRequestHandler<GetUserConversationsQ
 
 	public async Task<Result<IEnumerable<int>>> Handle(GetUserConversationsQuery request, CancellationToken cancellationToken)
 	{
-		return await _conversationRepository.GetUserConversations(request.UserId);
+		return await _conversationRepository.GetUserConversationsAsync(request.UserId);
 	}
 }

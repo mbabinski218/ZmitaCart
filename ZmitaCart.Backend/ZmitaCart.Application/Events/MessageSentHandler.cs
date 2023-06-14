@@ -26,7 +26,7 @@ public class MessageSentHandler : INotificationHandler<MessageSent>
 
 		if (!notification.IsConnected)
 		{
-			await _conversationRepository.IncrementNotificationStatus(userId, notification.ChatId);
+			await _conversationRepository.IncrementNotificationStatusAsync(userId, notification.ChatId);
 		}
 	}
 }

@@ -9,9 +9,10 @@ public interface IConversationRepository
 	public Task<Result> SendMessageAsync(int userId, int conversationId, DateTimeOffset date, string text);
 	public Task<Result<IEnumerable<ConversationDto>>> GetConversationsAsync(int userId);
 	public Task<Result<IEnumerable<MessageDto>>> GetMessagesAsync(int chat);
-	public Task<Result<IEnumerable<int>>> GetUserConversations(int userId);
-	public Task<int> IsChatExists(int offerId, int userId);
-	public Task IncrementNotificationStatus(int userId, int chatId);
-	public Task DecrementNotificationStatus(int userId, int chatId);
-	public Task<Result<int>> ReadNotificationStatus(int userId);
+	public Task<Result<IEnumerable<int>>> GetUserConversationsAsync(int userId);
+	public Task<int> IsChatExistsAsync(int offerId, int userId);
+	public Task IncrementNotificationStatusAsync(int userId, int chatId);
+	public Task DecrementNotificationStatusAsync(int userId, int chatId);
+	public Task<Result<int>> ReadNotificationStatusAsync(int userId);
+	public Task<Result<ConversationInfoDto>> GetConversationAsync(int conversationId, int userId);
 }

@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Domain.Common.Types;
 using ZmitaCart.Domain.Entities;
 

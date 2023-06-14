@@ -25,7 +25,7 @@ public class CreateConversationHandler : IRequestHandler<CreateConversationComma
 
 		var userId = int.Parse(_currentUserService.UserId);
 		
-		var chat = await _conversationRepository.IsChatExists(request.OfferId, userId);
+		var chat = await _conversationRepository.IsChatExistsAsync(request.OfferId, userId);
 		
 		return chat != 0 ? chat : await _conversationRepository.CreateConversationAsync(request.OfferId, userId);
 	}

@@ -6,7 +6,6 @@ using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Domain.Common.Types;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Persistence;
 

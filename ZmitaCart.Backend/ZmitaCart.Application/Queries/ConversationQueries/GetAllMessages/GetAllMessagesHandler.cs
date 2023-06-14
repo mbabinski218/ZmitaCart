@@ -22,7 +22,7 @@ public class GetAllMessagesHandler : IRequestHandler<GetAllMessagesQuery, Result
 			return Result.Fail<IEnumerable<MessageDto>>(messages.Errors.ToString());
 		}
 
-		await _conversationRepository.DecrementNotificationStatus(request.UserId, request.Chat);
+		await _conversationRepository.DecrementNotificationStatusAsync(request.UserId, request.Chat);
 
 		return messages;
 	}

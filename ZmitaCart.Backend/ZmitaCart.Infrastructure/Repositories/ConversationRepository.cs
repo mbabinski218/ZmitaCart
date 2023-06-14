@@ -100,7 +100,7 @@ public class ConversationRepository : IConversationRepository
 			return Result.Fail(new NotFoundError("User does not exist"));
 		}
 
-		var conversation = await _dbContext.Conversations
+		var conversations = await _dbContext.Conversations
 			.Include(c => c.UserConversations)
 			.Include(c => c.Messages)
 			.Where(c => c.UserConversations.Any(uc => uc.UserId == userId))
@@ -110,16 +110,16 @@ public class ConversationRepository : IConversationRepository
 			.ProjectToType<ConversationDto>()
 			.ToListAsync();
 
-		foreach (var c in conversation)
+		foreach (var conversation in conversations)
 		{
 			var user = (await _dbContext.Chats
 				.Include(ch => ch.User)
-				.FirstAsync(ch => ch.ConversationId == c.Id && ch.UserId != userId)).User;
+				.FirstAsync(ch => ch.ConversationId == conversation.Id && ch.UserId != userId)).User;
 
-			c.WithUser = $"{user.FirstName} {user.LastName}";
+			conversation.WithUser = $"{user.FirstName} {user.LastName}";
 		}
 
-		return conversation;
+		return conversations;
 	}
 
 	public async Task<Result<IEnumerable<MessageDto>>> GetMessagesAsync(int chat)
@@ -131,7 +131,7 @@ public class ConversationRepository : IConversationRepository
 			.ToListAsync();
 	}
 
-	public async Task<Result<IEnumerable<int>>> GetUserConversations(int userId)
+	public async Task<Result<IEnumerable<int>>> GetUserConversationsAsync(int userId)
 	{
 		return await _dbContext.Chats
 			.Where(uc => uc.UserId == userId)
@@ -139,7 +139,7 @@ public class ConversationRepository : IConversationRepository
 			.ToListAsync();
 	}
 
-	public async Task<int> IsChatExists(int offerId, int userId)
+	public async Task<int> IsChatExistsAsync(int offerId, int userId)
 	{
 		return await _dbContext.Chats
 			.Include(c => c.Conversation)
@@ -148,7 +148,7 @@ public class ConversationRepository : IConversationRepository
 			.FirstOrDefaultAsync();
 	}
 
-	public async Task IncrementNotificationStatus(int userId, int chatId)
+	public async Task IncrementNotificationStatusAsync(int userId, int chatId)
 	{
 		var chat = await _dbContext.Chats
 			.FirstOrDefaultAsync(c => c.UserId == userId && c.ConversationId == chatId);
@@ -161,7 +161,7 @@ public class ConversationRepository : IConversationRepository
 		await _dbContext.SaveChangesAsync();
 	}
 	
-	public async Task DecrementNotificationStatus(int userId, int chatId)
+	public async Task DecrementNotificationStatusAsync(int userId, int chatId)
 	{
 		var chat = await _dbContext.Chats
 			.FirstOrDefaultAsync(c => c.UserId == userId && c.ConversationId == chatId);
@@ -174,7 +174,7 @@ public class ConversationRepository : IConversationRepository
 		await _dbContext.SaveChangesAsync();
 	}
 
-	public async Task<Result<int>> ReadNotificationStatus(int userId)
+	public async Task<Result<int>> ReadNotificationStatusAsync(int userId)
 	{
 		if (!await _dbContext.Users.AnyAsync(u => u.Id == userId))
 		{
@@ -190,5 +190,35 @@ public class ConversationRepository : IConversationRepository
 			});
 
 		return status;
+	}
+
+	public async Task<Result<ConversationInfoDto>> GetConversationAsync(int conversationId, int userId)
+	{
+		if (!await _dbContext.Users.AnyAsync(u => u.Id == userId))
+		{
+			return Result.Fail(new NotFoundError("User does not exist"));
+		}
+
+		var conversation = await _dbContext.Conversations
+			.Include(c => c.UserConversations)
+			.Include(c => c.Messages)
+			.Where(c => c.UserConversations.Any(uc => uc.UserId == userId))
+			.Include(c => c.Offer)
+			.ThenInclude(o => o.Pictures)
+			.ProjectToType<ConversationInfoDto>()
+			.FirstOrDefaultAsync();
+
+		if (conversation is null)
+		{
+			return Result.Fail(new NotFoundError("Conversation does not exist"));
+		} 
+
+		var user = (await _dbContext.Chats
+			.Include(ch => ch.User)
+			.FirstAsync(ch => ch.ConversationId == conversation.Id && ch.UserId != userId)).User;
+
+		conversation.WithUser = $"{user.FirstName} {user.LastName}";
+		
+		return conversation;
 	}
 }

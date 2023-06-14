@@ -14,7 +14,7 @@ public class ReadNotificationStatusHandler : IRequestHandler<ReadNotificationSta
 
 	public async Task<int> Handle(ReadNotificationStatusQuery request, CancellationToken cancellationToken)
 	{
-		var status = await _conversationRepository.ReadNotificationStatus(request.UserId);
+		var status = await _conversationRepository.ReadNotificationStatusAsync(request.UserId);
 		
 		return status.IsFailed ? 0 : status.Value;
 	}

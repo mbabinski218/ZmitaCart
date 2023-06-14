@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using ZmitaCart.Application.Dtos.ConversationDtos;
 using ZmitaCart.Application.Queries.ConversationQueries.GetAllConversations;
 using ZmitaCart.Application.Queries.ConversationQueries.GetAllMessages;
+using ZmitaCart.Application.Queries.ConversationQueries.GetConversation;
 using ZmitaCart.Application.Queries.ConversationQueries.GetUserConversations;
 using ZmitaCart.Application.Queries.ConversationQueries.ReadNotificationsStatus;
 using ZmitaCart.Domain.Events;
@@ -48,8 +49,7 @@ public class ChatHub : Hub
 
 			if (conversation.LastMessage is not null)
 			{
-				await RestoreMessage(conversation.Id, conversation.LastMessage.UserId, conversation.LastMessage.UserName, conversation.LastMessage.Date, 
-					conversation.LastMessage.Text);
+				await RestoreMessage(conversation.LastMessage);
 			}
 		}
 	}
@@ -64,7 +64,7 @@ public class ChatHub : Hub
 		
 		foreach (var message in messages.Value)
 		{
-			await RestoreMessage(message.ChatId, message.UserId, message.UserName, message.Date, message.Text);
+			await RestoreMessage(message);
 		}
 		
 		Context.Items.TryAdd("chat", chat);
@@ -76,10 +76,18 @@ public class ChatHub : Hub
 		var userId = int.Parse(user);
 		var date = DateTimeOffset.Now;
 		var isConnected = Context.Items["chat"] as int? == chat;
+		var conversation = await _mediator.Send(new GetConversationQuery(chat, userId));
 		
-		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", chat, userId, userName, date, text);
+		if (conversation.IsFailed)
+		{
+			throw new ArgumentException(conversation.Errors.ToString());
+		}
+		
 		await _mediator.Publish(new MessageSent(user, chat, date, text, isConnected));
-
+		
+		await NewMessage(chat, userId, userName, date, text);
+		await UpdateConversation(chat, conversation.Value, date, text);
+		
 		if (!isConnected)
 		{
 			await ReadNotificationStatus(userId);
@@ -89,17 +97,31 @@ public class ChatHub : Hub
 	private async Task ReadNotificationStatus(int userId)
 	{
 		var status = await _mediator.Send(new ReadNotificationStatusQuery(userId));
-		await Clients.Caller.SendAsync("NotificationStatus", status);
+		await Clients.Caller.SendAsync("ReceiveNotificationStatus", status);
 	}
 
-	private async Task RestoreMessage(int chatId, int userId, string userName, DateTimeOffset date, string text)
+	private async Task RestoreMessage(MessageDto message)
 	{
-		await Clients.Caller.SendAsync("ReceiveMessage", chatId, userId, userName, date, text);
+		await Clients.Caller.SendAsync("ReceiveMessage", message.ChatId, message.UserId, message.UserName, 
+			message.Date, message.Text);
 	}
-	
+
 	private async Task RestoreConversation(ConversationDto conversation)
 	{
 		await Clients.Caller.SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId, 
-			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl, conversation.WithUser);
+			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl, conversation.WithUser,
+			conversation.LastMessage?.Date, conversation.LastMessage?.Text);
+	}
+	
+	private async Task NewMessage(int chat, int user, string userName, DateTimeOffset date, string text)
+	{
+		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", chat, user, userName, date, text);
+	}
+	
+	private async Task UpdateConversation(int chat, ConversationInfoDto conversation, DateTimeOffset date, string text)
+	{
+		await Clients.Group(chat.ToString()).SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId, 
+			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl, conversation.WithUser,
+			date, text);
 	}
 }

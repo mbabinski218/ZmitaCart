@@ -19,11 +19,11 @@ namespace ZmitaCart.Infrastructure;
 
 public static class DependencyInjection
 {
-	public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+	public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, string applicationDbName)
 	{
-		_ = AddDatabase(services, configuration);
-		_ = AddAuthentication(services, configuration);
-		_ = AddRepositories(services);
+		AddDatabase(services, configuration, applicationDbName);
+		AddAuthentication(services, configuration);
+		AddRepositories(services);
 		services.AddAuthorization();
 
 		return services;
@@ -41,10 +41,10 @@ public static class DependencyInjection
 		return services;
 	}
 
-	private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
+	private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration, string applicationDbName)
 	{
 		services.AddDbContext<ApplicationDbContext>(options =>
-			options.UseSqlServer(configuration.GetConnectionString("ZmitaCartDb")));
+			options.UseSqlServer(configuration.GetConnectionString(applicationDbName)));
 
 		services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 

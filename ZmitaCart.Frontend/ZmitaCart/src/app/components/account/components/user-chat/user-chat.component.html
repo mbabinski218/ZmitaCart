@@ -16,23 +16,12 @@
           </p>
         </div>
       </div>
-      <pp-messenger
-        [offerId]="offerId"
-        [currentChat]="data.currentChat"
-        (newMessageEmitter)="newMessageEmitter($event)"
-      >
-      </pp-messenger>
+      <!-- <pp-messenger [offerId]="offerId"></pp-messenger> -->
     </div>
 
     <div class="info">
       <pp-offer [currentChat]="data.currentChat"></pp-offer>
-
-      <pp-chats
-        [newLastMessage]="newLastMessage$ | async"
-        [currentChat]="data.currentChat"
-        (newCurrentChat)="newCurrentChat($event)"
-      >
-      </pp-chats>
+      <pp-chats [currentChat]="data.currentChat"></pp-chats>
     </div>
   </div>
 </ng-container>

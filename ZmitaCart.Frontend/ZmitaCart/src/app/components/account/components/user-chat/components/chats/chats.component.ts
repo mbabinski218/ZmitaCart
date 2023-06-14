@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { UserChatService } from './../../services/user-chat.service';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Chats, SingleChat } from '@components/account/interfaces/account.interface';
-import { Observable, map, of } from 'rxjs';
-import { AccountService } from '@components/account/api/account.service';
+import { filter, tap, BehaviorSubject, Observable, takeUntil, map, Subject, merge, distinctUntilChanged } from 'rxjs';
+import { ChatsStream, MessageOfferInChat, MessageStream } from '../../interfaces/chat.interfaces';
+import { MessengerService } from '../messenger/services/messenger.service';
 import { ChatItemComponent } from './components/chat-item/chat-item.component';
-import { MessageStream } from '../../interfaces/chat.interfaces';
 
 @Component({
   selector: 'pp-chats',
@@ -14,67 +14,84 @@ import { MessageStream } from '../../interfaces/chat.interfaces';
   styleUrls: ['./chats.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ChatsComponent implements OnInit {
+export class ChatsComponent implements OnInit, OnDestroy {
 
-  @Input() currentChat: SingleChat;
-  @Input() set newLastMessage(message: MessageStream) {
-    if (message)
-      this.currentChat = {
-        ...this.currentChat,
-        lastMessage: message.content,
-        lastMessageCreatedAt: message.date,
-      };
+  @Input() set currentChat(chat: ChatsStream) {
+    if (chat) {
+      if (chat.id === -10 && !this.added) {
+        this.added = true;
+        this.previousChats$.next([
+          ...this.previousChats$.value,
+          chat,
+        ]);
+      }
+
+      const previousChats = this.previousChats$.value;
+      const foundChat = previousChats.find((result) => result.offerId === chat.offerId);
+
+      previousChats.forEach((result) => {
+        if (result)
+          result.isCurrentChat = false;
+      });
+
+      if (foundChat)
+        foundChat.isCurrentChat = true;
+    }
   }
 
-  @Output() newCurrentChat = new EventEmitter<SingleChat>();
+  onDestroy$ = new Subject<void>();
+  previousChats$ = new BehaviorSubject<ChatsStream[]>([]);
+  previousMessages$ = new BehaviorSubject<MessageStream[]>([]);
+  added = false;
+  
 
-  previousChats$: Observable<Chats>;
-  chat: SingleChat;
+  previousChatsWithMessages$ = new BehaviorSubject<MessageOfferInChat[]>([]);
 
-  readonly imageUrl = 'http://localhost:5102/File?name=';
 
   constructor(
-    private accountService: AccountService,
+    private userChatService: UserChatService,
   ) { }
 
   ngOnInit(): void {
-    this.previousChats$ = this.accountService.getAllChats().pipe(
-      map((res) => {
-        if (!this.currentChat)
-          return res;
+    this.userChatService.getPreviousChatsStream().pipe(
+      filter((res) => !!res),
+      tap((res) => {
+        this.previousChats$.next([
+          ...this.previousChats$.value,
+          res,
+        ]);
+      }),
+      takeUntil(this.onDestroy$),
+    ).subscribe();//działa git
 
-        return this.filterChats(this.currentChat, res, true);
-      })
-    );
+
+    //jakos łączyć oferte z wiadomościa? chyba sie nie da?
+
+
+    this.userChatService.getMessageStream().pipe(
+      filter((res) => !!res),
+      // tap((res) => console.log(res)),
+      tap((res) => console.log(this.previousChats$.value)),
+      map((res) => ({
+        ...res,
+        date: new Date(res.date),
+      })),
+      tap((res) => {
+        this.previousMessages$.next([
+          ...this.previousMessages$.value,
+          res,
+        ]);
+      }),
+      takeUntil(this.onDestroy$),
+    ).subscribe();
   }
 
-  changeCurrentChat(currentChat: SingleChat, allChats: Chats): void {
-    this.previousChats$ = of(this.filterChats(currentChat, allChats, false));
-
-    this.newCurrentChat.emit(currentChat);
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
-  private filterChats(currentChat: SingleChat, allChats: Chats, append: boolean): Chats {
-    if (append)
-      allChats = {
-        ...allChats,
-        items: [currentChat, ...allChats.items]
-      };
-
-    return {
-      ...allChats,
-      items: allChats.items.map((res) => {
-        if (res.offerId === currentChat.offerId)
-          return {
-            ...res,
-            hidden: true,
-          };
-
-        return {
-          ...res,
-          hidden: false,
-        };
-      })
-    };
+  changeCurrentChat(chat: ChatsStream) {
+    this.userChatService.setCurrentChat(chat);
   }
 }

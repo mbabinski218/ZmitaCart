@@ -1,5 +1,7 @@
 pp-offers-view {
   width: 100%;
+  display: flex;
+  gap: 15px;
 
   .center {
     width: 100%;
@@ -50,5 +52,51 @@ pp-offers-view {
 
   input[type=number] {
     -moz-appearance: textfield;
+  }
+
+  .header {
+    min-height: 40px;
+    border-radius: 0.8rem 0.8rem 0 0;
+    border-bottom: 1px solid #e7e7e7;
+    padding: 1.6rem 2.6rem;
+    background: #fff;
+
+    display: flex;
+    justify-content: space-between;
+
+    .text {
+      font-size: 23px;
+      line-height: 1;
+      font-weight: 600;
+      text-align: unset;
+      color: unset;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
+    border-radius: 0 0 0.8rem 0.8rem;
+    margin: auto;
+    padding: 25.6px;
+    background: #fff;
+
+    .text {
+      padding-top: 2.4rem;
+      padding-bottom: 2.4rem;
+      color: #484848;
+      font-size: 1.08rem;
+      text-align: center;
+      display: block;
+      max-width: 80vw;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .fix {
+    flex: 1;
   }
 }

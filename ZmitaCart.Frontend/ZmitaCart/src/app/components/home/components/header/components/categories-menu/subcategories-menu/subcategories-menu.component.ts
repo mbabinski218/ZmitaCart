@@ -19,9 +19,9 @@ export class SubcategoriesMenuComponent {
     private router: Router,
   ) { }
 
-  openCategory(categoryName: string): void {
+  openCategory(categoryId: number): void {
     void this.router.navigate([`${RoutesPath.HOME}/${RoutesPath.OFFERS_FILTERED}`], {
-      queryParams: { c: categoryName },
+      queryParams: { c: categoryId },
     });
   }
 }

@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { UserService } from '@core/services/authorization/user.service';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
-import { Observable, Subject } from 'rxjs';
-import { MessageStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { MessageStream, ChatsStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
+import { UserChatService } from '../../../services/user-chat.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class MessengerService {
 
   private hubConnection: signalR.HubConnection;
@@ -13,40 +16,51 @@ export class MessengerService {
   private authorName: string;
   private receiverSet = false;
 
-  private messageStream$ = new Subject<MessageStream>;
+  private canConnect$ = new BehaviorSubject<boolean>(false);
 
-  constructor(private userService: UserService) { }
+  constructor(
+    private userService: UserService,
+    private userChatService: UserChatService,
+    ) { }
 
-  buildConnection(chatId: number): void {
-    if (!this.hubConnection) {
-      this.authorId = this.userService.userAuthorization().id;
-      this.authorName = this.userService.userAuthorization().firstName;
-      this.hubConnection = new HubConnectionBuilder().configureLogging(LogLevel.None).withUrl('http://localhost:5102/ChatHub').build();
-    }
+  buildConnection(): void {
+    this.hubConnection = new HubConnectionBuilder().configureLogging(LogLevel.None).withUrl('http://localhost:5102/ChatHub').build();
 
-    this.hubConnection.stop()
-      .finally(() => {
-        this.messageStream$.next(null);
-        this.startConnection(chatId);
-      });
+    this.authorId = this.userService.userAuthorization().id;
+    this.authorName = this.userService.userAuthorization().firstName;
+
+    this.startConnection();
   }
 
-  sendMessage(message: string) {
-    this.hubConnection.invoke("SendMessage", this.chatId, this.authorId, this.authorName, message)
+  //TODO CHAT ID
+
+  //Wysyłanie wiadomości
+  sendMessage(message: string, chatId: number) {
+    this.hubConnection.invoke("SendMessage", chatId, this.authorId, this.authorName, message)
       .catch((err) => console.log(err));
   }
 
-  getMessageStream(): Observable<MessageStream> {
-    return this.messageStream$.asObservable();
+  //Historia chatów
+  restoreAllConversations() {
+    this.hubConnection.invoke("RestoreAllConversations", this.authorId)
+      .catch((err) => console.log(err));
   }
 
-  private startConnection(chatId: number) {
-    this.chatId = chatId;
+  //Przywrócenie wszystkich wiadomości z danego chatu
+  restoreMessages(chatId: number) {
+    this.hubConnection.invoke("RestoreMessages", chatId, this.authorId)
+      .catch((err) => console.log(err));
+  }
 
+  getCanConnect(): Observable<boolean> {
+    return this.canConnect$.asObservable();
+  }
+
+  private startConnection() {
     this.hubConnection.start()
       .then(() => {
-        this.hubConnection.invoke("Join", this.chatId, this.authorId)
-          .catch((err) => console.log(err));
+        this.hubConnection.invoke("Join", this.authorId).catch((err) => console.log(err));
+        this.canConnect$.next(true);
       })
       .catch((err) => console.log(err));
 
@@ -56,8 +70,23 @@ export class MessengerService {
 
   private setReceiver(): void {
     this.receiverSet = true;
-    this.hubConnection.on("ReceiveMessage", (authorId: number, authorName: string, date: Date, content: string) => {
-      this.messageStream$.next({ authorId, authorName, date, content, fromCurrentUser: authorId === Number(this.authorId) });
-  });
-}
+
+    //Otrzymanie wiadomości
+    this.hubConnection.on("ReceiveMessage", (chatId: number, authorId: number, authorName: string, date: Date, content: string) => {
+      this.userChatService.setMessageStream({ chatId, authorId, authorName, date, content, fromCurrentUser: authorId === Number(this.authorId) });
+    });
+
+
+    //Przywrócenie wszystkich konwersacji pojedynczo
+    this.hubConnection.on("ReceiveConversation", (id: number, offerId: number, offerTitle: string, offerPrice: number, offerImageUrl: string, withUser: string) => {
+      const price = String(offerPrice);
+      this.userChatService.setPreviousChatsStream({ id, offerId, offerTitle, offerPrice: price, offerImageUrl, withUser });
+    });
+
+
+    //Ilość wiadomości niewyświetlonych
+    this.hubConnection.on("ReceiveNotificationStatus", (status: number) => {
+      // console.log(status);
+    });
+  }
 }

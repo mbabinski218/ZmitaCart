@@ -3,52 +3,50 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MessengerService } from './services/messenger.service';
 import { AccountService } from '@components/account/api/account.service';
-import { SingleChat } from '@components/account/interfaces/account.interface';
-import { BehaviorSubject, filter, Subject, takeUntil, map } from 'rxjs';
-import { MessageStream } from '../../interfaces/chat.interfaces';
+import { BehaviorSubject, filter, Subject, takeUntil, map, tap, Observable } from 'rxjs';
+import { ChatsStream, MessageStream } from '../../interfaces/chat.interfaces';
 import { MessagesComponent } from './components/messages/messages.component';
+import { UserChatService } from '../../services/user-chat.service';
 
 @Component({
   selector: 'pp-messenger',
   standalone: true,
   imports: [CommonModule, MatIconModule, MessagesComponent],
-  providers: [MessengerService],
   templateUrl: './messenger.component.html',
   styleUrls: ['./messenger.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MessengerComponent implements OnInit, OnDestroy {
 
-  @Input() set currentChat(chat: SingleChat) {
-    if (chat) {
-      this.allMessages$.next([]);
-      this.messengerService.buildConnection(chat.id);
-      this.isChat = !!chat;
-    }
-  }
-
   @Input() set offerId(id: string) {
     if (id)
       this.accountService.createNewChat(id).subscribe((res) => {
-        this.messengerService.buildConnection(res);
+        this.messengerService.restoreMessages(res);
       });
   }
-
-  @Output() newMessageEmitter = new EventEmitter<MessageStream>();
 
   @ViewChild('myTextarea', { static: false }) myTextarea: ElementRef<HTMLTextAreaElement>;
 
   allMessages$ = new BehaviorSubject<MessageStream[]>([]);
   onDestroy$ = new Subject<void>();
-  isChat: boolean;
+  currentChat$ = new BehaviorSubject<ChatsStream>(null);
 
   constructor(
     private messengerService: MessengerService,
     private accountService: AccountService,
+    private userChatService: UserChatService,
   ) { }
 
   ngOnInit(): void {
-    this.messengerService.getMessageStream().pipe(
+    this.userChatService.getCurrentChat().pipe(
+      filter((res) => !!res),
+      tap((res) => this.currentChat$.next(res)),
+      tap(() => this.allMessages$.next([])),
+      tap((res) => this.messengerService.restoreMessages(res.id)),
+    ).subscribe();
+
+    this.userChatService.getMessageStream().pipe(
+      filter(() => !!this.currentChat$.value),
       filter((res) => !!res),
       map((res) => ({
         ...res,
@@ -56,11 +54,11 @@ export class MessengerComponent implements OnInit, OnDestroy {
       })),
       takeUntil(this.onDestroy$),
     ).subscribe((res) => {
-      this.newMessageEmitter.emit(res);
-      this.allMessages$.next([
-        ...this.allMessages$.value,
-        res,
-      ]);
+      if (res.chatId === this.currentChat$.value.id)
+        this.allMessages$.next([
+          ...this.allMessages$.value,
+          res,
+        ]);
     });
   }
 
@@ -72,7 +70,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
   sendMessage() {
     const textareaValue = this.myTextarea.nativeElement.value;
     if (textareaValue) {
-      this.messengerService.sendMessage(textareaValue);
+      this.messengerService.sendMessage(textareaValue, this.currentChat$.value.id);
       this.myTextarea.nativeElement.value = '';
     }
   }

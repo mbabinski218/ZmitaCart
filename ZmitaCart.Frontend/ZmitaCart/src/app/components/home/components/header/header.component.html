@@ -27,26 +27,32 @@
       >
     </div>
 
-    <form class="form">
+    <form
+      class="form"
+      [formGroup]="form"
+    >
       <div class="search-form">
         <input
           placeholder="czego szukasz?"
           class="input"
+          formControlName="input"
+          (keydown.enter)="find(); $event.preventDefault();"
         >
         <mat-icon
           *ngIf="!isBig"
           class="svg fix"
           svgIcon="find"
+          (click)="find()"
         >
         </mat-icon>
       </div>
 
       <div class="categories-form">
-        <select class="select cursor-text">
-          <option
-            value=""
-            selected
-          >
+        <select
+          class="select cursor-text"
+          formControlName="category"
+        >
+          <option value="-1">
             --brak--
           </option>
           <ng-container *ngFor="let category of superiorCategories$ | async">
@@ -58,6 +64,7 @@
         <mat-icon
           class="svg fix"
           svgIcon="find"
+          (click)="find()"
         >
         </mat-icon>
       </div>

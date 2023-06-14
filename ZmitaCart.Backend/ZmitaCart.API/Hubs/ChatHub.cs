@@ -7,7 +7,6 @@ using ZmitaCart.Application.Queries.ConversationQueries.GetConversation;
 using ZmitaCart.Application.Queries.ConversationQueries.GetUserConversations;
 using ZmitaCart.Application.Queries.ConversationQueries.ReadNotificationsStatus;
 using ZmitaCart.Domain.Events;
-using ZmitaCart.Infrastructure.Exceptions;
 
 namespace ZmitaCart.API.Hubs;
 

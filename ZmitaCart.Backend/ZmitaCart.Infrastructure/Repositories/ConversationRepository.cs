@@ -208,8 +208,17 @@ public class ConversationRepository : IConversationRepository
 			.ProjectToType<ConversationInfoDto>()
 			.FirstOrDefaultAsync();
 
-		return conversation is null 
-			? Result.Fail(new NotFoundError("Conversation does not exist")) 
-			: conversation;
+		if (conversation is null)
+		{
+			return Result.Fail(new NotFoundError("Conversation does not exist"));
+		} 
+
+		var user = (await _dbContext.Chats
+			.Include(ch => ch.User)
+			.FirstAsync(ch => ch.ConversationId == conversation.Id && ch.UserId != userId)).User;
+
+		conversation.WithUser = $"{user.FirstName} {user.LastName}";
+		
+		return conversation;
 	}
 }

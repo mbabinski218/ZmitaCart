@@ -22,6 +22,15 @@ public class ConversationMapperConfig : IRegister
 				: null)
 			.Map(dest => dest.WithUser, src => GetUserInfo(src));
 
+		config.ForType<Conversation, ConversationInfoDto>()
+			.Map(dest => dest.OfferId, src => src.OfferId)
+			.Map(dest => dest.OfferTitle, src => src.Offer.Title)
+			.Map(dest => dest.OfferPrice, src => src.Offer.Price)
+			.Map(dest => dest.OfferImageUrl, src => src.Offer.Pictures.Any()
+				? src.Offer.Pictures.OrderBy(p => p.CreationTime).First().Name
+				: null);
+			//.Map(dest => dest.WithUser, src => GetUserInfo(src));
+
 		config.ForType<Conversation, ConversationDto>()
 			.Map(dest => dest.OfferId, src => src.OfferId)
 			.Map(dest => dest.OfferTitle, src => src.Offer.Title)

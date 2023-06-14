@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Domain.Common;
+using ZmitaCart.Domain.Common.Types;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Common.Settings;
 

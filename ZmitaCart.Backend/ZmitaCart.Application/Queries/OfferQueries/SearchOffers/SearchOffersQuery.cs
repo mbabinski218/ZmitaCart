@@ -9,11 +9,10 @@ public record SearchOffersQuery : IRequest<Result<PaginatedList<OfferInfoDto>>>
 {
 	public string? Title { get; init; }
 	public int? CategoryId { get; init; }
-	public string? Condition { get; init; }
+	public IEnumerable<string>? Conditions { get; init; }
 	public decimal? MinPrice { get; init; }
 	public decimal? MaxPrice { get; init; }
-	public bool? PriceAscending { get; init; }
-	public bool? CreatedAscending { get; init; }
+	public string? SortBy { get; init; }
 	public int? PageNumber { get; init; }
 	public int? PageSize { get; init; }
 }

@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using ZmitaCart.Application.Services;
 using ZmitaCart.API.Common;
-using ZmitaCart.Domain.Common;
+using ZmitaCart.Domain.Common.Types;
 
 namespace ZmitaCart.API.Services;
 

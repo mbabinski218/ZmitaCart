@@ -1,4 +1,4 @@
-﻿namespace ZmitaCart.Domain.Common;
+﻿namespace ZmitaCart.Domain.Common.Types;
 
 public static class ClaimNames
 {

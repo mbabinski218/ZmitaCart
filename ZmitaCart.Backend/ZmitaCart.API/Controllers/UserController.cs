@@ -15,7 +15,7 @@ using ZmitaCart.Application.Queries.OfferQueries.GetUserOffers;
 using ZmitaCart.Application.Queries.UserQueries.GetData;
 using ZmitaCart.Application.Queries.UserQueries.GetFeedback;
 using ZmitaCart.Application.Queries.UserQueries.LogoutUser;
-using ZmitaCart.Domain.Common;
+using ZmitaCart.Domain.Common.Types;
 
 namespace ZmitaCart.API.Controllers;
 

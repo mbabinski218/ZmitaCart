@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Domain.Common;
+using ZmitaCart.Domain.Common.Types;
 
 namespace ZmitaCart.Infrastructure.Persistence;
 

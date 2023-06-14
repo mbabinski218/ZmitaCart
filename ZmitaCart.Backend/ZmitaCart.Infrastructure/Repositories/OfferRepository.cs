@@ -6,6 +6,7 @@ using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Domain.Common.Types;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Persistence;
 
@@ -245,18 +246,17 @@ public class OfferRepository : IOfferRepository
 
 		var offers = await _dbContext.Offers
 			.Where(o => EF.Functions.Like(o.Title, $"%{search.Title}%")
-			            && (categoriesId.Contains(o.CategoryId) || o.CategoryId == (search.CategoryId ?? o.CategoryId))
-			            && o.Price >= (search.MinPrice ?? o.Price)
-			            && o.Price <= (search.MaxPrice ?? o.Price)
-			            && o.Condition == (search.Condition ?? o.Condition)
-			            && o.IsAvailable == true
-			            && o.UserId != search.UserId)
+				&& (categoriesId.Contains(o.CategoryId) || o.CategoryId == (search.CategoryId ?? o.CategoryId))
+				&& o.Price >= (search.MinPrice ?? o.Price)
+				&& o.Price <= (search.MaxPrice ?? o.Price)
+				&& (search.Conditions == null || search.Conditions.Contains(o.Condition))
+				&& o.IsAvailable == true
+				&& o.UserId != search.UserId)
 			.Include(o => o.User)
 				.ThenInclude(u => u.Address)
 			.Include(o => o.Pictures)
 			.Include(o => o.Favorites)
-			.OrderByIf(o => o.Price, search.PriceAscending)
-			.OrderByIf(o => o.CreatedAt, search.CreatedAscending)
+			.SortBy(search.SortBy)
 			.AsNoTracking()
 			.ProjectToType<OfferInfoDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);

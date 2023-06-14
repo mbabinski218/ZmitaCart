@@ -1,5 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using ZmitaCart.Domain.Common.Types;
+using ZmitaCart.Domain.Entities;
 
 namespace ZmitaCart.Application.Common;
 
@@ -15,9 +17,18 @@ public static class Extensions
 		where TDestination : class
 		=> PaginatedList<TDestination>.Create(enumerable, pageNumber, pageSize);
 	
-	public static IQueryable<TSource> OrderByIf<TSource, TKey>(this IQueryable<TSource> queryable, 
-		Expression<Func<TSource, TKey>> keySelector, bool? condition)
-		=> condition is true ? queryable.OrderBy(keySelector) : queryable;
+	public static IQueryable<TSource> SortBy<TSource>(this IQueryable<TSource> queryable, string? sortBy) 
+		where TSource : Offer 
+	{
+		return sortBy switch
+		{
+			Sort.createdAscending => queryable.OrderBy(x => x.CreatedAt),
+			Sort.createdDescending => queryable.OrderByDescending(x => x.CreatedAt),
+			Sort.priceAscending => queryable.OrderBy(x => x.Price),
+			Sort.priceDescending => queryable.OrderByDescending(x => x.Price),
+			_ => queryable
+		};
+	}
 
 	public static async Task<List<NamedList<TKey, TElement>>> ToUniqueListAsync<TSource, TKey, TElement>(
 		this IQueryable<TSource> queryable,

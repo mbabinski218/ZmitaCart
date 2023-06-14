@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using ZmitaCart.Domain.Common;
+using ZmitaCart.Domain.Common.Types;
 
 namespace ZmitaCart.Application.Commands.OfferCommands.UpdateOffer;
 

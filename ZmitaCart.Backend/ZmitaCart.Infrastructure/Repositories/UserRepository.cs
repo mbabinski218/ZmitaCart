@@ -8,6 +8,7 @@ using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Domain.Common;
+using ZmitaCart.Domain.Common.Types;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Domain.ValueObjects;
 using ZmitaCart.Infrastructure.Common;

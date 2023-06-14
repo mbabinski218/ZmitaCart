@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using ZmitaCart.Domain.Common;
+using ZmitaCart.Domain.Common.Types;
 
 namespace ZmitaCart.API.Common;
 

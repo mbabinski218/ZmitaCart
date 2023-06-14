@@ -10,7 +10,7 @@ using ZmitaCart.Application.Dtos.CategoryDtos;
 using ZmitaCart.Application.Queries.CategoryQueries.GetMostPopularCategories;
 using ZmitaCart.Application.Queries.CategoryQueries.GetParentCategory;
 using ZmitaCart.Application.Queries.CategoryQueries.GetSuperiorsWithChildren;
-using ZmitaCart.Domain.Common;
+using ZmitaCart.Domain.Common.Types;
 
 namespace ZmitaCart.API.Controllers;
 

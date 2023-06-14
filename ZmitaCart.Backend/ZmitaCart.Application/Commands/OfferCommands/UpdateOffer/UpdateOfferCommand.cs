@@ -13,6 +13,5 @@ public record UpdateOfferCommand : IRequest<Result<int>>
 	public int? Quantity { get; set; }
 	public bool? IsAvailable { get; set; }
 	public string? Condition { get; set; }
-	public ICollection<int>? PictureIdsToRemove { get; set; }
-	public ICollection<IFormFile>? PicturesToAdd { get; set; }
+	public ICollection<IFormFile>? EditedPictures { get; set; }
 }

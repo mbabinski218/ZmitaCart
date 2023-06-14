@@ -104,4 +104,76 @@ public class PictureRepository : IPictureRepository
         await _dbContext.SaveChangesAsync();
         return Result.Ok();
     }
+
+    public async Task<Result> DeleteAsync(int userId, int offerId, IEnumerable<string> filesNames)
+    {
+        var offer = await _dbContext.Offers
+            .Include(o => o.Pictures)
+            .FirstOrDefaultAsync(o => o.Id == offerId);
+        
+        if (offer is null)
+        {
+            return Result.Fail(new NotFoundError("Offer not found."));
+        }
+
+        if (offer.UserId != userId)
+        {
+            return Result.Fail(new UnauthorizedError("You are not authorized to remove an offer."));
+        }
+
+        if (!offer.Pictures.Any())
+        {
+            return Result.Ok();
+        }
+
+        var pictures = offer.Pictures.Where(picture => filesNames.Contains(picture.Name)).ToList();
+
+        if (!pictures.Any())
+        {
+            return Result.Ok();
+        }
+
+        foreach (var filePath in pictures.Select(picture => Path.Combine(Path.GetFullPath("wwwroot"), picture.Name)).Where(File.Exists))
+        {
+            File.Delete(filePath);
+        }
+
+        _dbContext.Pictures.RemoveRange(pictures);
+        await _dbContext.SaveChangesAsync();
+        return Result.Ok();
+    }
+
+    public async Task<Result> DeleteAllAsync(int offerId)
+    {
+        var offer = await _dbContext.Offers
+            .Include(o => o.Pictures)
+            .FirstOrDefaultAsync(o => o.Id == offerId);
+        
+        if (offer is null)
+        {
+            return Result.Fail(new NotFoundError("Offer not found."));
+        }
+        
+        if (!offer.Pictures.Any())
+        {
+            return Result.Ok();
+        }
+        
+        foreach (var filePath in offer.Pictures.Select(picture => Path.Combine(Path.GetFullPath("wwwroot"), picture.Name)).Where(File.Exists))
+        {
+            File.Delete(filePath);
+        }
+        
+        _dbContext.Pictures.RemoveRange(offer.Pictures);
+        await _dbContext.SaveChangesAsync();
+        return Result.Ok();
+    }
+
+    public async Task<Result<IEnumerable<string>>> GetPictureNameByOfferIdAsync(int userId)
+    {
+        return await _dbContext.Pictures
+            .Where(p => p.Offer.UserId == userId)
+            .Select(p => p.Name)
+            .ToListAsync();
+    }
 }

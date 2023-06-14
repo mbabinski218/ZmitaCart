@@ -33,23 +33,34 @@ public class UpdateOfferHandler : IRequestHandler<UpdateOfferCommand, Result<int
 		
 		var offer = _mapper.Map<UpdateOfferDto>(request);
 		offer.UserId = int.Parse(_currentUserService.UserId);
-		
-		if(request.PicturesToAdd is not null)
+
+		if (request.EditedPictures is null)
 		{
-			var addPic = await _pictureRepository.AddAsync(offer.UserId, offer.Id, request.PicturesToAdd);
-			if (addPic.IsFailed)
-			{
-				return Result.Fail(addPic.Errors);
-			}
+			await _pictureRepository.DeleteAllAsync(offer.Id);
+			return await _offerRepository.UpdateAsync(offer);
 		}
 		
-		if(request.PictureIdsToRemove is not null)
+		var pictures = await _pictureRepository.GetPictureNameByOfferIdAsync(offer.UserId);
+
+		if (pictures.IsFailed)
 		{
-			var removePic = await _pictureRepository.DeleteAsync(offer.UserId, offer.Id, request.PictureIdsToRemove);
-			if (removePic.IsFailed)
-			{
-				return Result.Fail(removePic.Errors);
-			}
+			return Result.Fail(pictures.Errors);
+		}
+		
+		var newPictures = request.EditedPictures.Where(p => !pictures.Value.Contains(p.FileName));
+		var result = await _pictureRepository.AddAsync(offer.UserId, offer.Id, newPictures);
+		
+		if (result.IsFailed)
+		{
+			return Result.Fail(result.Errors);
+		}
+		
+		var deletePictures = pictures.Value.Where(p => request.EditedPictures.All(e => e.FileName != p));
+		result = await _pictureRepository.DeleteAsync(offer.UserId, offer.Id, deletePictures);
+
+		if (result.IsFailed)
+		{
+			return Result.Fail(result.Errors);
 		}
 		
 		return await _offerRepository.UpdateAsync(offer);

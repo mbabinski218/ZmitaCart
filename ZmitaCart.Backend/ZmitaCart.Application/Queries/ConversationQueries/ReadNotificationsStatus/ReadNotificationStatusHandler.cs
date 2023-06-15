@@ -16,6 +16,6 @@ public class ReadNotificationStatusHandler : IRequestHandler<ReadNotificationSta
 	{
 		var status = await _conversationRepository.ReadNotificationStatusAsync(request.UserId);
 		
-		return status.IsFailed ? 0 : status.Value;
+		return status.IsFailed ? -1 : status.Value;
 	}
 }

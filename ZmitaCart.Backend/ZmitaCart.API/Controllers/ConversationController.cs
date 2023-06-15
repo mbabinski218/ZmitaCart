@@ -11,13 +11,6 @@ public class ConversationController : ApiController
 	public ConversationController(IMediator mediator) : base(mediator)
 	{
 	}
-
-	// [HttpGet]
-	// [RoleAuthorize]
-	// public async Task<ActionResult<IEnumerable<ConversationInfoDto>>> GetAllConversations([FromQuery] GetAllConversationsQuery query)
-	// {
-	// 	return Ok(await mediator.Send(query));
-	// }
 	
 	[HttpPost]
 	[RoleAuthorize]

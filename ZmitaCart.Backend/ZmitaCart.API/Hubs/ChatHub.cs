@@ -90,8 +90,14 @@ public class ChatHub : Hub
 		
 		if (!isConnected)
 		{
-			await ReadNotificationStatus(userId);
+			await ReadNotificationStatus(chat, userId);
 		}
+	}
+	
+	private async Task ReadNotificationStatus(int chatId, int userId)
+	{
+		var status = await _mediator.Send(new ReadNotificationStatusQuery(userId));
+		await Clients.Group(chatId.ToString()).SendAsync("ReceiveNotificationStatus", status);
 	}
 	
 	private async Task ReadNotificationStatus(int userId)

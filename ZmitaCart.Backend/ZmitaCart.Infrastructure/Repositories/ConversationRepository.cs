@@ -202,7 +202,7 @@ public class ConversationRepository : IConversationRepository
 		var conversation = await _dbContext.Conversations
 			.Include(c => c.UserConversations)
 			.Include(c => c.Messages)
-			.Where(c => c.UserConversations.Any(uc => uc.UserId == userId))
+			.Where(c => c.Id == conversationId)
 			.Include(c => c.Offer)
 			.ThenInclude(o => o.Pictures)
 			.ProjectToType<ConversationInfoDto>()

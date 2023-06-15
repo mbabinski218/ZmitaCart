@@ -8,8 +8,11 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 export class UserChatService {
 
   private currentChat$ = new BehaviorSubject<ChatsStream>(null);
+  private offerId$ = new BehaviorSubject<string>(null);
   private messageStream$ = new Subject<MessageStream>;
   private previousChatsStream$ = new Subject<ChatsStream>;
+  private notifications$ = new Subject<number>;
+  
   
   setCurrentChat(chat: ChatsStream): void {
     if (chat !== this.currentChat$.value)
@@ -36,5 +39,23 @@ export class UserChatService {
 
   getPreviousChatsStream(): Observable<ChatsStream> {
     return this.previousChatsStream$.asObservable();
+  }
+
+
+  setOfferId(id: string): void {
+    this.offerId$.next(id);
+  }
+
+  getOfferId(): Observable<string> {
+    return this.offerId$.asObservable();
+  }
+
+
+  setNotifications(chatsCount: number): void {
+    this.notifications$.next(chatsCount);
+  }
+
+  getNotifications(): Observable<number> {
+    return this.notifications$.asObservable();
   }
 }

@@ -9,7 +9,7 @@ import { Router, RouterModule } from '@angular/router';
 import { LoginService } from '@components/authentication/api/login.service';
 import { Subject, filter, takeUntil, tap } from 'rxjs';
 import { GoogleLoginComponent } from '@components/authentication/components/login/components/google-login/google-login.component';
-import { MessengerService } from '@components/account/components/user-chat/components/messenger/services/messenger.service';
+import { MessengerService } from '@components/account/components/user-chat/services/messenger.service';
 
 @Component({
   selector: 'pp-login',

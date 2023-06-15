@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { MessengerService } from './services/messenger.service';
-import { AccountService } from '@components/account/api/account.service';
-import { BehaviorSubject, filter, Subject, takeUntil, map, tap, Observable } from 'rxjs';
+import { MessengerService } from '../../services/messenger.service';
+import { BehaviorSubject, filter, Subject, takeUntil, map, tap } from 'rxjs';
 import { ChatsStream, MessageStream } from '../../interfaces/chat.interfaces';
 import { MessagesComponent } from './components/messages/messages.component';
 import { UserChatService } from '../../services/user-chat.service';
@@ -18,13 +17,6 @@ import { UserChatService } from '../../services/user-chat.service';
 })
 export class MessengerComponent implements OnInit, OnDestroy {
 
-  @Input() set offerId(id: string) {
-    if (id)
-      this.accountService.createNewChat(id).subscribe((res) => {
-        this.messengerService.restoreMessages(res);
-      });
-  }
-
   @ViewChild('myTextarea', { static: false }) myTextarea: ElementRef<HTMLTextAreaElement>;
 
   allMessages$ = new BehaviorSubject<MessageStream[]>([]);
@@ -33,7 +25,6 @@ export class MessengerComponent implements OnInit, OnDestroy {
 
   constructor(
     private messengerService: MessengerService,
-    private accountService: AccountService,
     private userChatService: UserChatService,
   ) { }
 
@@ -43,6 +34,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
       tap((res) => this.currentChat$.next(res)),
       tap(() => this.allMessages$.next([])),
       tap((res) => this.messengerService.restoreMessages(res.id)),
+      takeUntil(this.onDestroy$),
     ).subscribe();
 
     this.userChatService.getMessageStream().pipe(

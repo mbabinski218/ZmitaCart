@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { MessengerService } from '@components/account/components/user-chat/components/messenger/services/messenger.service';
+import { MessengerService } from '@components/account/components/user-chat/services/messenger.service';
 import { UserService } from '@core/services/authorization/user.service';
 
 @Component({

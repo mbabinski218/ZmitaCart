@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserService } from '@core/services/authorization/user.service';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { MessageStream, ChatsStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
-import { UserChatService } from '../../../services/user-chat.service';
+import { UserChatService } from './user-chat.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +10,6 @@ import { UserChatService } from '../../../services/user-chat.service';
 export class MessengerService {
 
   private hubConnection: signalR.HubConnection;
-  private chatId: number;
   private authorId: string;
   private authorName: string;
   private receiverSet = false;
@@ -21,7 +19,7 @@ export class MessengerService {
   constructor(
     private userService: UserService,
     private userChatService: UserChatService,
-    ) { }
+  ) { }
 
   buildConnection(): void {
     this.hubConnection = new HubConnectionBuilder().configureLogging(LogLevel.None).withUrl('http://localhost:5102/ChatHub').build();
@@ -29,10 +27,10 @@ export class MessengerService {
     this.authorId = this.userService.userAuthorization().id;
     this.authorName = this.userService.userAuthorization().firstName;
 
+    // console.log(this.authorName)
+
     this.startConnection();
   }
-
-  //TODO CHAT ID
 
   //Wysyłanie wiadomości
   sendMessage(message: string, chatId: number) {
@@ -78,14 +76,15 @@ export class MessengerService {
 
 
     //Przywrócenie wszystkich konwersacji pojedynczo
-    this.hubConnection.on("ReceiveConversation", (id: number, offerId: number, offerTitle: string, offerPrice: number, offerImageUrl: string, withUser: string) => {
-      const price = String(offerPrice);
-      this.userChatService.setPreviousChatsStream({ id, offerId, offerTitle, offerPrice: price, offerImageUrl, withUser });
+    this.hubConnection.on("ReceiveConversation", (id: number, offerId: number, offerTitle: string, offerPrice: number,
+      offerImageUrl: string, withUser: string, date: Date, content: string) => {
+      this.userChatService.setPreviousChatsStream({ id, offerId, offerTitle, offerPrice: String(offerPrice), offerImageUrl, withUser, date, content });
     });
-
-
+    
+    
     //Ilość wiadomości niewyświetlonych
     this.hubConnection.on("ReceiveNotificationStatus", (status: number) => {
+      this.userChatService.setNotifications(status);
       // console.log(status);
     });
   }

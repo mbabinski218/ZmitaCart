@@ -47,4 +47,5 @@ const customIcons: [string, string][] = [
   ["my-camera", "camera-add.svg"],
   ["logout", "logout.svg"],
   ["user-basic", "user-basic.svg"],
+  ["ZmitaCart", "ZmitaCart.svg"],
 ];

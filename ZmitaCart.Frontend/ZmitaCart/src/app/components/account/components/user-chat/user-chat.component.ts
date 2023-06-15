@@ -2,7 +2,6 @@ import { MessengerService } from '@components/account/components/user-chat/servi
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AccountService } from '@components/account/api/account.service';
-import { OfferSingleService } from '@components/offer-single/api/offer-single.service';
 import { BehaviorSubject, Observable, Subject, filter, map, switchMap, takeUntil, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ppFixPricePipe } from '@shared/pipes/fix-price.pipe';
@@ -12,12 +11,13 @@ import { MessengerComponent } from './components/messenger/messenger.component';
 import { OfferComponent } from './components/offer/offer.component';
 import { ChatsStream, MessageStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
 import { UserChatService } from './services/user-chat.service';
+import { SharedService } from '@shared/services/shared.service';
 
 @Component({
   selector: 'pp-user-chat',
   standalone: true,
   imports: [CommonModule, ChatsComponent, MessengerComponent, OfferComponent],
-  providers: [AccountService, OfferSingleService, ppFixPricePipe],
+  providers: [AccountService, ppFixPricePipe],
   templateUrl: './user-chat.component.html',
   styleUrls: ['./user-chat.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -31,7 +31,7 @@ export class UserChatComponent implements OnInit, OnDestroy {
   private onDestroy$ = new Subject<void>();
 
   constructor(
-    private offerSingleService: OfferSingleService,
+    private sharedService: SharedService,
     private route: ActivatedRoute,
     private ppFixPricePipe: ppFixPricePipe,
     private router: Router,
@@ -54,7 +54,7 @@ export class UserChatComponent implements OnInit, OnDestroy {
       switchMap((offerId) => this.accountService.createNewChat(offerId)),
       tap((chatId) => this.chatId = chatId),
       tap((chatId) => this.messengerService.restoreMessages(chatId)),
-      switchMap(() => this.offerSingleService.getOffer(this.offerId)),
+      switchMap(() => this.sharedService.getOffer(this.offerId)),
       map((res) => {
         return {
           id: this.chatId,
@@ -65,10 +65,9 @@ export class UserChatComponent implements OnInit, OnDestroy {
           withUser: res.user.firstName + ' ' + res.user.lastName,
           date: new Date(),
           content: 'Nowa wiadomość',
-          // isNewChat: true,
+          isRead: true,
         };
       }),
-      // tap((res) => console.log(res)),
       tap((res) => this.userChatService.setCurrentChat(res)),
       takeUntil(this.onDestroy$),
     ).subscribe();

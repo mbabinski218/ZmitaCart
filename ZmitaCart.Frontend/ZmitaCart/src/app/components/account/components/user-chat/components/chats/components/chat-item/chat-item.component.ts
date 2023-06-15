@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChatsStream, MessageStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
+import { ChatsStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
+import { IMAGE_URL } from '@shared/constants/shared.constants';
 
 @Component({
   selector: 'pp-chat-item',
@@ -14,6 +15,5 @@ export class ChatItemComponent {
 
   @Input() previousChat: ChatsStream;
 
-  readonly imageUrl = 'http://localhost:5102/File?name=';
-
+  readonly imageUrl = IMAGE_URL;
 }

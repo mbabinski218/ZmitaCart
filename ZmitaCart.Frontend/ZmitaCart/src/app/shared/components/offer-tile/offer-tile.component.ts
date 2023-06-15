@@ -11,6 +11,7 @@ import { OfferSingleService } from '@components/offer-single/api/offer-single.se
 import { Observable, Subject, filter, takeUntil, tap } from 'rxjs';
 import { ToastMessageService } from '../toast-message/services/toast-message.service';
 import { BoughtInfoComponent } from './components/bought-info/bought-info.component';
+import { IMAGE_URL } from '@shared/constants/shared.constants';
 
 @Component({
   selector: 'pp-offer-tile',
@@ -26,7 +27,7 @@ export class OfferTileComponent implements OnDestroy {
   @Input() items: BoughtOffer[];
   @Input() origin: 'favourites' | 'bought' | 'filtered' | 'user-offers';
 
-  readonly imageUrl = 'http://localhost:5102/File?name=';
+  readonly imageUrl = IMAGE_URL;
   private onDestroy$ = new Subject<void>();
 
   siema: Observable<boolean>;

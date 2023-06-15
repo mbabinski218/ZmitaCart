@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { ChangeDetectionStrategy, Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CredentialResponse } from 'google-one-tap';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { LoginService } from '@components/authentication/api/login.service';
+import { AuthenticationService } from '@components/authentication/api/authentication.service';
 import { GoogleLoginProvider, SocialAuthService, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'pp-google-login',
   standalone: true,
   imports: [CommonModule, MatCardModule],
-  providers: [LoginService, SocialAuthService, {
+  providers: [AuthenticationService, SocialAuthService, {
     provide: 'SocialAuthServiceConfig',
     useValue: {
       autoLogin: false,
@@ -30,12 +31,14 @@ import { GoogleLoginProvider, SocialAuthService, SocialAuthServiceConfig } from 
   styleUrls: ['./google-login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GoogleLoginComponent implements OnInit {
+export class GoogleLoginComponent implements OnInit, OnDestroy {
+
+  private onDestroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
     private _ngZone: NgZone,
-    private loginService: LoginService,
+    private authenticationService: AuthenticationService,
     private authService: SocialAuthService,//musi zostać, inaczej nie działa xdd
   ) { }
 
@@ -58,13 +61,19 @@ export class GoogleLoginComponent implements OnInit {
     };
   }
 
-  handleCredentialResponse(response: CredentialResponse) {
-    this.loginService.googleLogin(response.credential).subscribe(() => {
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
+  }
+
+  private handleCredentialResponse(response: CredentialResponse) {
+    this.authenticationService.googleLogin(response.credential).pipe(
+      takeUntil(this.onDestroy$),
+    ).subscribe(() => {
       this._ngZone.run(() => {
         void this.router.navigate(['/']);
       });
     }
     );
   }
-
 }

@@ -1,23 +1,16 @@
 import { DOCUMENT } from '@angular/common';
-import {
-  AfterViewInit,
-  Directive,
-  ElementRef,
-  EventEmitter,
-  Inject,
-  OnDestroy,
-  Output,
-} from '@angular/core';
-import { filter, fromEvent, Subscription } from 'rxjs';
+import { AfterViewInit, Directive, ElementRef, EventEmitter, Inject, OnDestroy, Output } from '@angular/core';
+import { Subject, filter, fromEvent, takeUntil } from 'rxjs';
 
 @Directive({
   selector: '[ppClickOutside]',
   standalone: true,
 })
 export class ClickOutsideDirective implements AfterViewInit, OnDestroy {
+
   @Output() ppClickOutside = new EventEmitter<void>();
 
-  documentClickSubscription: Subscription | undefined;
+  private onDestroy$ = new Subject<void>();
 
   constructor(
     private element: ElementRef,
@@ -25,19 +18,20 @@ export class ClickOutsideDirective implements AfterViewInit, OnDestroy {
   ) { }
 
   ngAfterViewInit(): void {
-    this.documentClickSubscription = fromEvent(this.document, 'click')
+    fromEvent(this.document, 'click')
       .pipe(
         filter((event) => {
           return !this.isInside(event.target as HTMLElement);
-        })
-      )
-      .subscribe(() => {
+        }),
+        takeUntil(this.onDestroy$),
+      ).subscribe(() => {
         this.ppClickOutside.emit();
       });
   }
 
   ngOnDestroy(): void {
-    this.documentClickSubscription?.unsubscribe();
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
   isInside(elementToCheck: HTMLElement): boolean {

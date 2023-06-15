@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component, ElementRef,
+  OnDestroy,
   OnInit,
   ViewChild,
   ViewEncapsulation
@@ -21,7 +22,7 @@ import { OfferService } from "@components/add-offer/api/offer.service";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { RoutingService } from "@shared/services/routing.service";
 import { RoutesPath } from "@core/enums/routes-path.enum";
-import { filter, map, switchMap, tap } from 'rxjs';
+import { Subject, filter, map, switchMap, takeUntil, tap } from 'rxjs';
 import { OfferSingleService } from '@components/offer-single/api/offer-single.service';
 
 
@@ -34,7 +35,9 @@ import { OfferSingleService } from '@components/offer-single/api/offer-single.se
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AddOfferComponent implements OnInit {
+export class AddOfferComponent implements OnInit, OnDestroy {
+
+  private onDestroy$ = new Subject<void>();
 
   createOffer: FormGroup;
   characterCount: number;
@@ -92,15 +95,20 @@ export class AddOfferComponent implements OnInit {
       switchMap((id) => this.offerService.getForEditOffer(id)),
       tap((res) => this.createOffer.patchValue(res)),
       tap((res) => this.condition = res.condition as unknown as Condition),
+      takeUntil(this.onDestroy$),
     ).subscribe();
 
-    this.createOffer.get('title').valueChanges.subscribe((res: string) => {
+    this.createOffer.get('title').valueChanges.pipe(
+      takeUntil(this.onDestroy$),
+    ).subscribe((res: string) => {
       this.characterCount = res.length;
     });
 
     const qControl = this.createOffer.get('quantity');
 
-    qControl.valueChanges.subscribe((res: string) => {
+    qControl.valueChanges.pipe(
+      takeUntil(this.onDestroy$),
+    ).subscribe((res: string) => {
       if (res.length === 0) {
         qControl.setValue(1);
       }
@@ -111,8 +119,15 @@ export class AddOfferComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
+  }
+
   loadSuperiorCategories() {
-    this.categoryService.getSuperiorsWithChildren(1)
+    this.categoryService.getSuperiorsWithChildren(1).pipe(
+      takeUntil(this.onDestroy$),
+    )
       .subscribe(res => {
         this.subCategories = res;
         this.children = this.subCategories;
@@ -131,7 +146,9 @@ export class AddOfferComponent implements OnInit {
       return;
     }
 
-    return this.categoryService.getParentCategory(parentId).subscribe(
+    return this.categoryService.getParentCategory(parentId).pipe(
+      takeUntil(this.onDestroy$),
+    ).subscribe(
       res => {
         this.parentCategory = res;
       }
@@ -143,7 +160,9 @@ export class AddOfferComponent implements OnInit {
     if (event.parentId !== null && event.children)
       this.getParentCategory(event.parentId);
 
-    this.categoryService.getFewBySuperiorId(event.id, 2).subscribe(res => {
+    this.categoryService.getFewBySuperiorId(event.id, 2).pipe(
+      takeUntil(this.onDestroy$),
+    ).subscribe(res => {
       if (res[0].children !== null) {
         this.subCategories = res;
         this.headCategory = this.subCategories[0];
@@ -160,7 +179,9 @@ export class AddOfferComponent implements OnInit {
     if (event !== undefined && event !== null) {
       this.getParentCategory(event.parentId);
 
-      this.categoryService.getFewBySuperiorId(event.id, 2).subscribe(res => {
+      this.categoryService.getFewBySuperiorId(event.id, 2).pipe(
+        takeUntil(this.onDestroy$),
+      ).subscribe(res => {
         this.subCategories = res;
         this.headCategory = this.subCategories[0];
         this.children = this.subCategories[0].children;
@@ -169,7 +190,9 @@ export class AddOfferComponent implements OnInit {
 
     } else {
       this.isInSubCategories = false;
-      this.categoryService.getSuperiorsWithChildren(1)
+      this.categoryService.getSuperiorsWithChildren(1).pipe(
+        takeUntil(this.onDestroy$),
+      )
         .subscribe(res => {
           this.subCategories = res;
           this.children = this.subCategories;
@@ -212,7 +235,9 @@ export class AddOfferComponent implements OnInit {
     const price: number = this.createOffer.value.price;
     const quantity: number = this.createOffer.value.quantity;
 
-    this.offerService.createOffer(title, desc, price, quantity, Condition[this.condition], this.pickedCategory.id, this.selectedImages).subscribe(res => {
+    this.offerService.createOffer(title, desc, price, quantity, Condition[this.condition], this.pickedCategory.id, this.selectedImages).pipe(
+      takeUntil(this.onDestroy$),
+    ).subscribe(res => {
       this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
     }
     );

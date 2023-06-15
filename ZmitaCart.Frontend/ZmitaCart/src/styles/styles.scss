@@ -3,7 +3,7 @@
 
 @include mat.core();
 
-$frontend-primary: mat.define-palette(palette.$pp-myPalette, 400);
+$frontend-primary: mat.define-palette(palette.$pp-myPalette, 500);
 $frontend-accent: mat.define-palette(palette.$pp-myPalette, A400);
 $frontend-warn: mat.define-palette(mat.$red-palette);
 $my-typography: mat.define-typography-config();

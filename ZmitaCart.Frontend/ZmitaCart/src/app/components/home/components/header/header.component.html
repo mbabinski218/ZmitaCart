@@ -79,18 +79,37 @@
         (click)="goToAddOffer()"
       >
       </mat-icon>
-      <mat-icon
-        class="svg"
-        svgIcon="heart"
-        (click)="navigateTo('observed')"
-      >
-      </mat-icon>
-      <mat-icon
-        class="svg"
-        svgIcon="chat"
-        (click)="navigateTo('chats')"
-      >
-      </mat-icon>
+
+      <div class="fixer">
+        <mat-icon
+          class="svg"
+          svgIcon="heart"
+          (click)="navigateTo('observed')"
+        >
+        </mat-icon>
+        <mat-icon
+          class="badge"
+          [matBadge]="likedCount$ | async"
+          matBadgeSize="medium"
+        >
+        </mat-icon>
+      </div>
+
+      <div class="fixer">
+        <mat-icon
+          class="svg"
+          svgIcon="chat"
+          (click)="navigateTo('chats')"
+        >
+        </mat-icon>
+        <mat-icon
+          class="badge"
+          [matBadge]="unreadChatsCount$ | async"
+          matBadgeSize="medium"
+        >
+        </mat-icon>
+      </div>
+
       <pp-login-menu></pp-login-menu>
     </div>
 

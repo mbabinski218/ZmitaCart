@@ -4,7 +4,7 @@
       <div
         class="offer"
         *ngFor="let offer of offers; let i=index"
-        >
+      >
         <pp-carousel
           [imageWidth]="262"
           [imagesToScroll]="3"
@@ -16,14 +16,20 @@
             </div>
           </div>
           <ng-container *ngFor="let item of offer.data">
-            <div class="item cursor-pointer" (click)="details(item.id)">
+            <div
+              class="item cursor-pointer"
+              (click)="details(item.id)"
+            >
               <img
                 [src]="item.imageName ? imageUrl + item.imageName : 'https://upload.wikimedia.org/wikipedia/commons/5/55/Brak_obrazka.svg'"
                 class="img"
               >
               <div class="content">
                 <div class="name">{{ item.title || '-' }}</div>
-                <div class="heart" (click)="observe(item); $event.stopPropagation()">
+                <div
+                  class="heart"
+                  (click)="observe(item); $event.stopPropagation()"
+                >
                   <mat-icon
                     class="svg"
                     [svgIcon]="item.isFavourite ? 'heart-filled' : 'heart'"
@@ -55,8 +61,7 @@
 </ng-template>
 
 <ng-template #noData>
-  Brak danych :()
+  <div class="center">
+    Nie znaleziono żadnych ogłoszeń, przepraszamy
+  </div>
 </ng-template>
-
-
-<!-- TODO footer -->

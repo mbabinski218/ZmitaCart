@@ -26,16 +26,6 @@ export class AccountService {
     );
   }
 
-  getUserData(): Observable<UserCredentials> {
-    return this.http.get<UserCredentials>(`${environment.httpBackend}${Api.USER_CREDENTIALS}`).pipe(
-      catchError((err: HttpErrorResponse) => {
-        const error = err.error as string[];
-        this.toastMessageService.notifyOfError(error[0]);
-        return of();
-      })
-    );
-  }
-
   getUserOffers(pageNumber: number): Observable<AccountOffers> {
     const params = new HttpParams()
       .set('pageNumber', pageNumber)

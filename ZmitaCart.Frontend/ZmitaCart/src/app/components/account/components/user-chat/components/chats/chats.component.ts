@@ -6,6 +6,7 @@ import { ChatsStream } from '../../interfaces/chat.interfaces';
 import { ChatItemComponent } from './components/chat-item/chat-item.component';
 import { ppFixPricePipe } from '@shared/pipes/fix-price.pipe';
 import { compareDesc } from 'date-fns';
+import { UserService } from '@core/services/authorization/user.service';
 
 @Component({
   selector: 'pp-chats',
@@ -21,14 +22,18 @@ export class ChatsComponent implements OnInit, OnDestroy {
   onDestroy$ = new Subject<void>();
   previousChats$ = new BehaviorSubject<ChatsStream[]>([]);
   currentChat$ = new BehaviorSubject<ChatsStream>(null);
+  user: string;
 
   constructor(
+    private userService: UserService,
     private userChatService: UserChatService,
     private ppFixPricePipe: ppFixPricePipe,
     private ref: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
+    this.user = `${this.userService.userAuthorization().firstName} ${this.userService.userAuthorization().lastName}`;
+
     this.userChatService.getCurrentChat().pipe(
       filter((res) => !!res),
       tap((res) => this.currentChat$.next(res)),
@@ -40,6 +45,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
           ]);
       }),
       tap(() => this.setCurrentChatStyle()),
+      takeUntil(this.onDestroy$),
     ).subscribe();
 
     this.userChatService.getPreviousChatsStream().pipe(
@@ -48,7 +54,14 @@ export class ChatsComponent implements OnInit, OnDestroy {
         ...res,
         offerPrice: this.ppFixPricePipe.transform(Number(res.offerPrice)),
       })),
+      tap((res) => console.log(res)),
       tap((res) => {
+        if (res.withUser === this.user)
+          res = {
+            ...res,
+            isRead: true,
+          };
+
         const itemIndex = this.previousChats$.value.findIndex((result) => result.offerId === res.offerId);
         if (itemIndex !== -1) {
           if (this.previousChats$.value[itemIndex].isNewChat)
@@ -58,7 +71,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
 
           if (this.currentChat$.value)
             this.setCurrentChatStyle();
-            
+
           return;
         }
 
@@ -81,7 +94,14 @@ export class ChatsComponent implements OnInit, OnDestroy {
   }
 
   changeCurrentChat(chat: ChatsStream) {
-    this.userChatService.setCurrentChat(chat);
+    // console.log(chat)
+    const fixedChat = {
+      ...chat,
+      isRead: true,
+    };
+    // console.log(fixedChat)
+
+    this.userChatService.setCurrentChat(fixedChat);
   }
 
   private setCurrentChatStyle() {

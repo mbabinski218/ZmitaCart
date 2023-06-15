@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { tap } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { isEqual } from 'lodash';
 import { Prices } from '../../interfaces/offers-view.interface';
 
@@ -13,10 +13,12 @@ import { Prices } from '../../interfaces/offers-view.interface';
   styleUrls: ['./price-input.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PriceInputComponent implements OnInit {
+export class PriceInputComponent implements OnInit, OnDestroy {
 
   @Output() pricesEmitter = new EventEmitter<Prices>();
   @Output() hasErrors = new EventEmitter<boolean>();
+
+  private onDestroy$ = new Subject<void>();
 
   prices: Prices = {
     minPrice: null,
@@ -39,7 +41,13 @@ export class PriceInputComponent implements OnInit {
         }
       }),
       tap(() => this.emitValue(this.form)),
+      takeUntil(this.onDestroy$),
     ).subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
   private emitValue(form: FormGroup): void {

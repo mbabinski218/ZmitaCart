@@ -24,7 +24,7 @@ import { INIT_OFFERS_FORM_CONST, MyForm } from './offers-filters/interfaces/offe
 })
 export class OffersViewComponent implements OnInit {
 
-  @Input() title: string;
+  @Input() header: string;
   @Input() noDataText: string;
   @Input() origin: 'favourites' | 'bought' | 'filtered' | 'user-offers';
 

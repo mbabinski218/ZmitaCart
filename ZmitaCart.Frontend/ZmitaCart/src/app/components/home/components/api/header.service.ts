@@ -20,9 +20,7 @@ export class HeaderService {
     return this.http.get<SuperiorCategories[]>(`${environment.httpBackend}${Api.GET_SUPERIOR_CATEGORIES}`).pipe(
       catchError((err: HttpErrorResponse) => {
         const error = err.error as string[];
-
         this.toastMessageService.notifyOfError(error[0]);
-
         return of([]);
       })
     );
@@ -42,10 +40,18 @@ export class HeaderService {
       tap((res) => this.myCategoriesStorage = [...this.myCategoriesStorage, { superiorId, categories: res }]),
       catchError((err: HttpErrorResponse) => {
         const error = err.error as string[];
-
         this.toastMessageService.notifyOfError(error[0]);
+        return of(null);
+      })
+    );
+  }
 
-        return of();
+  logout(): Observable<unknown> {
+    return this.http.post(`${environment.httpBackend}${Api.LOGOUT}`, {}).pipe(
+      catchError((err: HttpErrorResponse) => {
+        const error = err.error as string[];
+        this.toastMessageService.notifyOfError(error[0]);
+        return of(null);
       })
     );
   }

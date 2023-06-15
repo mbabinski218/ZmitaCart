@@ -1,10 +1,10 @@
-import { ActivatedRoute, Router } from '@angular/router';
+import { SharedService } from '@shared/services/shared.service';
+import { Router } from '@angular/router';
 import { UserService } from '@core/services/authorization/user.service';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ppFixPricePipe } from '@shared/pipes/fix-price.pipe';
-import { OfferMainService } from '@components/offers-main/api/offers-main.service';
 import { SingleOffer } from '@components/offer-single/interfaces/offer-single.interface';
 import { MatButtonModule } from '@angular/material/button';
 import { RoutesPath } from '@core/enums/routes-path.enum';
@@ -18,7 +18,7 @@ import { ToastMessageService } from '@shared/components/toast-message/services/t
   selector: 'pp-offer-price',
   standalone: true,
   imports: [CommonModule, MatIconModule, ppFixPricePipe, MatButtonModule, MatIconModule, GooglePayButtonModule],
-  providers: [OfferMainService, OfferSingleService],
+  providers: [OfferSingleService],
   templateUrl: './offer-price.component.html',
   styleUrls: ['./offer-price.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,7 +35,7 @@ export class OfferPriceComponent implements OnInit, OnDestroy {
   userLogged = false;
 
   constructor(
-    private offerMainService: OfferMainService,
+    private sharedService: SharedService,
     private userService: UserService,
     private router: Router,
     private routingService: RoutingService,
@@ -79,7 +79,9 @@ export class OfferPriceComponent implements OnInit, OnDestroy {
       }
     };
 
-    this.currentQuantity$.asObservable().subscribe((res) => {
+    this.currentQuantity$.asObservable().pipe(
+      takeUntil(this.onDestroy$),
+    ).subscribe((res) => {
       this.paymentRequest = {
         ...this.paymentRequest,
         transactionInfo: {
@@ -99,10 +101,11 @@ export class OfferPriceComponent implements OnInit, OnDestroy {
     if (!this.userService.isAuthenticated())
       return void this.router.navigateByUrl(`${RoutesPath.AUTHENTICATION}/${RoutesPath.LOGIN}`);
 
-    this.offerMainService.addToFavourites(this.details.id).pipe(
+    this.sharedService.addToFavourites(this.details.id, this.details.isFavourite).pipe(
       filter((res) => !!res),
       tap(() => this.details.isFavourite = !this.details.isFavourite),
       tap(() => this.ref.detectChanges()),
+      takeUntil(this.onDestroy$),
     ).subscribe();
   }
 

@@ -5,7 +5,7 @@ import { emailPattern, passwordPattern } from '@shared/patterns/valid.pattern';
 import { mustMatch } from '@shared/utils/must-match';
 import { InputComponent } from '@shared/components/input/input.component';
 import { MatIconModule } from '@angular/material/icon';
-import { RegisterService } from '@components/authentication/api/register.service';
+import { AuthenticationService } from '@components/authentication/api/authentication.service';
 import { Subject, filter, takeUntil, tap } from 'rxjs';
 import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
 import { Router } from '@angular/router';
@@ -15,7 +15,7 @@ import { RoutesPath } from '@core/enums/routes-path.enum';
   selector: 'pp-register',
   standalone: true,
   imports: [CommonModule, FormsModule, InputComponent, ReactiveFormsModule, MatIconModule],
-  providers: [RegisterService],
+  providers: [AuthenticationService],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -43,7 +43,7 @@ export class RegisterComponent implements OnDestroy {
   };
 
   constructor(
-    private registerService: RegisterService,
+    private authenticationService: AuthenticationService,
     private toastMessageService: ToastMessageService,
     private router: Router,
   ) { }
@@ -59,7 +59,7 @@ export class RegisterComponent implements OnDestroy {
 
   register(): void {
     if (this.form.valid)
-      this.registerService.register(this.form.value).pipe(
+      this.authenticationService.register(this.form.value).pipe(
         filter((res) => !!res),
         tap(() => this.toastMessageService.notifyOfSuccess('Konto zostało utworzone')),
         tap(() => this.router.navigate([`${RoutesPath.AUTHENTICATION}/${RoutesPath.LOGIN}`])),

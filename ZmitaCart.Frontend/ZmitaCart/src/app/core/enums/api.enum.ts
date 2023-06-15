@@ -20,6 +20,7 @@ export enum Api {
   OFFER_EDIT = '/offer/data/:id',
   OFFER_BOUGHT = '/offer/bought',
   OFFER_FAVOURITES = '/offer/favorites',
+  OFFER_FAVOURITES_COUNT = '/offer/favorites/count',
   OFFER_SINGLE = '/offer/:id',
   OFFER_BUY = '/offer/buy',
   OFFER_MAIN = '/offer/byCategoriesName',

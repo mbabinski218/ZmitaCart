@@ -16,6 +16,7 @@ export interface ChatsStream {
   withUser: string,
   date: Date,
   content: string
+  isRead: boolean,
 
   isCurrentChat?: boolean,
   isNewChat?: boolean,

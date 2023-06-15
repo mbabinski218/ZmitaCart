@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserService } from '@core/services/authorization/user.service';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { UserChatService } from './user-chat.service';
 
 @Injectable({
@@ -26,8 +26,6 @@ export class MessengerService {
 
     this.authorId = this.userService.userAuthorization().id;
     this.authorName = this.userService.userAuthorization().firstName;
-
-    // console.log(this.authorName)
 
     this.startConnection();
   }
@@ -77,15 +75,14 @@ export class MessengerService {
 
     //Przywrócenie wszystkich konwersacji pojedynczo
     this.hubConnection.on("ReceiveConversation", (id: number, offerId: number, offerTitle: string, offerPrice: number,
-      offerImageUrl: string, withUser: string, date: Date, content: string) => {
-      this.userChatService.setPreviousChatsStream({ id, offerId, offerTitle, offerPrice: String(offerPrice), offerImageUrl, withUser, date, content });
+      offerImageUrl: string, withUser: string, date: Date, content: string, isRead: boolean) => {
+      this.userChatService.setPreviousChatsStream({ id, offerId, offerTitle, offerPrice: String(offerPrice), offerImageUrl, withUser, date, content, isRead });
     });
     
     
     //Ilość wiadomości niewyświetlonych
     this.hubConnection.on("ReceiveNotificationStatus", (status: number) => {
       this.userChatService.setNotifications(status);
-      // console.log(status);
     });
   }
 }

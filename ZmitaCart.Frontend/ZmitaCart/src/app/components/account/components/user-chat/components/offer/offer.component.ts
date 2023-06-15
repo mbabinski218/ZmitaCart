@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RoutesPath } from '@core/enums/routes-path.enum';
 import { ChatsStream } from '../../interfaces/chat.interfaces';
+import { IMAGE_URL } from '@shared/constants/shared.constants';
 
 @Component({
   selector: 'pp-offer',
@@ -16,7 +17,7 @@ export class OfferComponent {
 
   @Input() currentChat: ChatsStream;
 
-  readonly imageUrl = 'http://localhost:5102/File?name=';
+  readonly imageUrl = IMAGE_URL;
 
   constructor(
     private router: Router,

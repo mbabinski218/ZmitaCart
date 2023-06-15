@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OfferItem } from '@components/account/interfaces/account.interface';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { AreYouSureDialogComponent } from '../../../are-you-sure-dialog/are-you-
 import { NoopScrollStrategy } from '@angular/cdk/overlay';
 import { RoutingService } from '@shared/services/routing.service';
 import { RoutesPath } from '@core/enums/routes-path.enum';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'pp-edit-delete',
@@ -17,15 +18,22 @@ import { RoutesPath } from '@core/enums/routes-path.enum';
   styleUrls: ['./edit-delete.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditDeleteComponent {
-  @Input() item: OfferItem;
+export class EditDeleteComponent implements OnDestroy {
 
+  @Input() item: OfferItem;
   @Output() deleteOffer = new EventEmitter<boolean>();
+
+  private onDestroy$ = new Subject<void>();
 
   constructor(
     private dialog: MatDialog,
     private routingService: RoutingService,
   ) { }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
+  }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AreYouSureDialogComponent, {
@@ -33,7 +41,9 @@ export class EditDeleteComponent {
       scrollStrategy: new NoopScrollStrategy(),
     });
 
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.afterClosed().pipe(
+      takeUntil(this.onDestroy$),
+    ).subscribe((res) => {
       if (res === 'yes')
         this.deleteOffer.emit(true);
     });

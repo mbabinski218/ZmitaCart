@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputComponent } from '@shared/components/input/input.component';
@@ -7,6 +7,7 @@ import { AccountService } from '@components/account/api/account.service';
 import { Subject, filter, takeUntil, tap } from 'rxjs';
 import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SharedService } from '@shared/services/shared.service';
 
 @Component({
   selector: 'pp-address-form',
@@ -17,7 +18,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./address-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AddressFormComponent implements OnDestroy {
+export class AddressFormComponent implements OnInit, OnDestroy {
 
   private onDestroy$ = new Subject<void>();
 
@@ -33,10 +34,19 @@ export class AddressFormComponent implements OnDestroy {
 
   constructor(
     private accountService: AccountService,
+    private sharedService: SharedService,
     private toastMessageService: ToastMessageService,
     private router: Router,
     private route: ActivatedRoute,
   ) { }
+
+  ngOnInit(): void {
+    this.sharedService.getUserData().pipe(
+      takeUntil(this.onDestroy$),
+    ).subscribe(({ phoneNumber, address }) => {
+      this.form.patchValue({ phoneNumber, ...address });
+    });
+  }
 
   ngOnDestroy(): void {
     this.onDestroy$.next();

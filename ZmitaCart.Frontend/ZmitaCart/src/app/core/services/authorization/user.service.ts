@@ -83,10 +83,6 @@ export class UserService {
       );
   }
 
-  getUserData(): Observable<UserCredentials> {
-    return this.http.get<UserCredentials>(`${environment.httpBackend}${Api.USER_CREDENTIALS}`);
-  }
-
   private user(): TokenData {
     return this.localStorageService.getItem<TokenData>(KeyStorage.USER);
   }

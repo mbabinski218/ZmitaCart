@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, tap } from 'rxjs';
+import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
 import { isEqual } from 'lodash';
 import { SortBy } from '../../interfaces/offers-view.interface';
 
@@ -14,9 +14,11 @@ import { SortBy } from '../../interfaces/offers-view.interface';
   styleUrls: ['./sort-selector.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SortSelectorComponent implements OnInit {
+export class SortSelectorComponent implements OnInit, OnDestroy {
 
   @Output() sortByEmitter = new EventEmitter<SortBy>();
+
+  private onDestroy$ = new Subject<void>();
 
   sortBy: SortBy = 'CreatedAscending';
 
@@ -28,7 +30,13 @@ export class SortSelectorComponent implements OnInit {
     this.form.valueChanges.pipe(
       debounceTime(300),
       tap(() => this.emitValue(this.form)),
+      takeUntil(this.onDestroy$),
     ).subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
   private emitValue(form: FormGroup): void {

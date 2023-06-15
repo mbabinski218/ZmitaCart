@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable, map, switchMap, tap } from 'rxjs';
+import { Observable, map, switchMap, tap, filter } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { OfferSingleService } from './api/offer-single.service';
 import { SingleOffer } from './interfaces/offer-single.interface';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GalleryModule } from 'ng-gallery';
@@ -13,13 +12,14 @@ import { OfferSellerComponent } from './components/offer-seller/offer-seller.com
 import { OfferPriceComponent } from './components/offer-price/offer-price.component';
 import { OfferDeliveryComponent } from './components/offer-delivery/offer-delivery.component';
 import { stringMask } from '@shared/utils/string-mask';
+import { SharedService } from '@shared/services/shared.service';
+import { IMAGE_URL } from '@shared/constants/shared.constants';
 
 @Component({
   selector: 'pp-offer-single',
   standalone: true,
   imports: [CommonModule, MatProgressSpinnerModule, OfferPriceComponent, OfferDeliveryComponent,
     GalleryModule, LightboxModule, OfferDescriptionComponent, OfferSellerComponent],
-  providers: [OfferSingleService],
   templateUrl: './offer-single.component.html',
   styleUrls: ['./offer-single.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,17 +30,17 @@ export class OfferSingleComponent implements OnInit {
   details$: Observable<SingleOffer>;
   images: ImageItem[] = [];
 
-  readonly imageUrl = 'http://localhost:5102/File?name=';
+  readonly imageUrl = IMAGE_URL;
 
   constructor(
-    private offerSingleService: OfferSingleService,
+    private sharedService: SharedService,
     private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
     this.details$ = this.route.params.pipe(
       map(({ id }) => id as string),
-      switchMap((id) => this.offerSingleService.getOffer(id)),
+      switchMap((id) => this.sharedService.getOffer(id)),
       tap((res) => {
         res.picturesNames?.forEach((name) => {
           const wholeName = this.imageUrl + name;

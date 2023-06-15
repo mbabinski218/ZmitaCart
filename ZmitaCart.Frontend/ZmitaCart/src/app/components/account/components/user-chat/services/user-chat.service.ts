@@ -1,4 +1,4 @@
-import { ChatsStream, MessageStream } from './../interfaces/chat.interfaces';
+import { ChatsStream, MessageStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 

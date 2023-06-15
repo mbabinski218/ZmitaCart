@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Api } from '@core/enums/api.enum';
 import { environment } from '@env/environment';
 import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, catchError, of } from 'rxjs';
 import { Offers } from '@components/offers-main/interfaces/offers-main.interface';
 
 @Injectable()
@@ -25,9 +25,7 @@ export class OfferMainService {
     return this.http.get<Offers[]>(`${environment.httpBackend}${Api.OFFER_MAIN}`, { params }).pipe(
       catchError((err: HttpErrorResponse) => {
         const error = err.error as string[];
-
         this.toastMessageService.notifyOfError(error[0]);
-
         return of([]);
       })
     );
@@ -40,23 +38,8 @@ export class OfferMainService {
     return this.http.get<string[]>(`${environment.httpBackend}${Api.CATEGORIES_POPULAR}`, { params }).pipe(
       catchError((err: HttpErrorResponse) => {
         const error = err.error as string[];
-
         this.toastMessageService.notifyOfError(error[0]);
-
         return of([]);
-      })
-    );
-  }
-
-  addToFavourites(id: number): Observable<boolean> {
-    return this.http.post(`${environment.httpBackend}${Api.OFFER_ADD_TO_FAVOURITES}`.replace(':id', id.toString()), {}).pipe(
-      map(() => true),
-      catchError((err: HttpErrorResponse) => {
-        const error = err.error as string[];
-
-        this.toastMessageService.notifyOfError(error[0]);
-
-        return of(false);
       })
     );
   }

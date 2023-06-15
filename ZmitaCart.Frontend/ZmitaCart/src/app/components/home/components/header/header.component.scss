@@ -198,6 +198,19 @@
     position: relative;
   }
 
+
+  .fixer {
+    position: relative;
+
+    .badge {
+      width: 0;
+      height: 0;
+      position: absolute;
+      top: 2px;
+      left: 24px;
+    }
+  }
+
   .button {
     grid-area: button;
 

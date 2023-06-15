@@ -1,25 +1,3 @@
-<!-- <ng-container *ngIf="{ message: message$ | async } as data">
-  <img
-    class="img"
-    [src]="previousChat?.offerImageUrl ? imageUrl + previousChat?.offerImageUrl : 'https://upload.wikimedia.org/wikipedia/commons/5/55/Brak_obrazka.svg'"
-  >
-  <div class="data">
-    <div class="info text">
-      <div class="limit limit-top">{{ previousChat?.withUser }}</div>
-      <span>{{ (data.message?.date | date: 'dd.MM.yyyy, HH:mm') ?? '' }}</span>
-    </div>
-    <p>{{ data.message?.content ? data.message?.content : 'Nowa wiadomość' }}</p>
-    <div class="text flex flex-space">
-      <div class="flex">
-        <b>Odnośnie:&nbsp;</b>
-        <div class="limit limit-bottom">{{ previousChat?.offerTitle }}</div>
-      </div>
-      <div>{{ previousChat?.offerPrice }} zł</div>
-    </div>
-  </div>
-</ng-container> -->
-
-
 <ng-container *ngIf="previousChat">
   <img
     class="img"
@@ -27,10 +5,10 @@
   >
   <div class="data">
     <div class="info text">
-      <div class="limit limit-top">{{ previousChat?.withUser }}</div>
-      <span>{{ (previousChat?.date | date: 'dd.MM.yyyy, HH:mm') ?? '' }}</span>
+      <div [class.bold]="!previousChat?.isRead" class="limit limit-top">{{ previousChat?.withUser }}</div>
+      <span [class.bold]="!previousChat?.isRead">{{ (previousChat?.date | date: 'dd.MM.yyyy, HH:mm') ?? '' }}</span>
     </div>
-    <p>{{ previousChat?.content ? previousChat?.content : 'Nowa wiadomość' }}</p>
+    <p [class.bold]="!previousChat?.isRead">{{ previousChat?.content ? previousChat?.content : 'Nowa wiadomość' }}</p>
     <div class="text flex flex-space">
       <div class="flex">
         <b>Odnośnie:&nbsp;</b>

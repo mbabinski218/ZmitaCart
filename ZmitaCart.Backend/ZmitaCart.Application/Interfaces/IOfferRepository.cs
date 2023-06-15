@@ -19,4 +19,5 @@ public interface IOfferRepository
     Task<Result<PaginatedList<OfferInfoDto>>> SearchOffersAsync(SearchOfferDto search, int? pageNumber = null, int? pageSize = null);
     Task<Result<List<NamedList<string, OfferInfoDto>>>> GetOffersByCategoriesNameAsync(IEnumerable<string> categoriesNames, int userId, int size);
     Task<Result<PaginatedList<OfferInfoDto>>> GetUserOffersAsync(int userId, int? pageNumber = null, int? pageSize = null);
+    Task<Result<int>> GetFavoritesOffersCountAsync(int userId);
 }

@@ -10,6 +10,7 @@ using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Queries.OfferQueries.GetBoughtOffers;
 using ZmitaCart.Application.Queries.OfferQueries.GetFavouritesOffers;
+using ZmitaCart.Application.Queries.OfferQueries.GetFavouritesOffersCount;
 using ZmitaCart.Application.Queries.OfferQueries.GetOffer;
 using ZmitaCart.Application.Queries.OfferQueries.GetOfferData;
 using ZmitaCart.Application.Queries.OfferQueries.GetOffersByCategoriesName;
@@ -92,6 +93,15 @@ public class OfferController : ApiController
             s => Ok(s.Value),
             err => StatusCode(err.StatusCode, err.ToList()));
     }
+    
+        [HttpGet("favorites/count")]
+        [RoleAuthorize]
+        public async Task<ActionResult<int>> GetFavoritesOffersCount()
+        {
+            return await mediator.Send(new GetFavouritesOfferCountQuery()).Then(
+                s => Ok(s.Value),
+                err => StatusCode(err.StatusCode, err.ToList()));
+        }
     
     [HttpPost("buy")]
     [RoleAuthorize]

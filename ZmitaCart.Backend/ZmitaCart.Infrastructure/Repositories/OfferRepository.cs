@@ -307,4 +307,16 @@ public class OfferRepository : IOfferRepository
 			.ProjectToType<OfferInfoDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);
 	}
+
+	public async Task<Result<int>> GetFavoritesOffersCountAsync(int userId)
+	{
+		if (!await _dbContext.Users.AnyAsync(u => u.Id == userId))
+		{
+			return Result.Fail(new NotFoundError("User not found"));
+		}
+
+		return await _dbContext.Favorites
+			.Where(f => f.UserId == userId)
+			.CountAsync();
+	}
 }

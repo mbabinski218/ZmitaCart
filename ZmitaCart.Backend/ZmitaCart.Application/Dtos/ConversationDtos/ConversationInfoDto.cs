@@ -8,4 +8,5 @@ public class ConversationInfoDto
 	public string OfferTitle { get; set; } = null!;
 	public string? OfferImageUrl { get; set; }
 	public decimal OfferPrice { get; set; }
+	public bool IsRead { get; set; }
 }

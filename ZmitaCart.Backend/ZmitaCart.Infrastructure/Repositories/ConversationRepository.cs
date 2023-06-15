@@ -117,6 +117,11 @@ public class ConversationRepository : IConversationRepository
 				.FirstAsync(ch => ch.ConversationId == conversation.Id && ch.UserId != userId)).User;
 
 			conversation.WithUser = $"{user.FirstName} {user.LastName}";
+			
+			conversation.IsRead = await _dbContext.Chats
+				.Where(ch => ch.ConversationId == conversation.Id && ch.UserId == userId)
+				.Select(ch => ch.IsRead)
+				.FirstOrDefaultAsync();
 		}
 
 		return conversations;
@@ -218,6 +223,11 @@ public class ConversationRepository : IConversationRepository
 			.FirstAsync(ch => ch.ConversationId == conversation.Id && ch.UserId != userId)).User;
 
 		conversation.WithUser = $"{user.FirstName} {user.LastName}";
+		
+		conversation.IsRead = await _dbContext.Chats
+			.Where(ch => ch.ConversationId == conversation.Id && ch.UserId == userId)
+			.Select(ch => ch.IsRead)
+			.FirstOrDefaultAsync();
 		
 		return conversation;
 	}

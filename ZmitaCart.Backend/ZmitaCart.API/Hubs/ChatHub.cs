@@ -68,6 +68,7 @@ public class ChatHub : Hub
 		}
 		
 		Context.Items.TryAdd("chat", chat);
+
 		await ReadNotificationStatus(userId);
 	}
 
@@ -86,11 +87,15 @@ public class ChatHub : Hub
 		await _mediator.Publish(new MessageSent(user, chat, date, text, isConnected));
 		
 		await NewMessage(chat, userId, userName, date, text);
-		await UpdateConversation(chat, conversation.Value, date, text);
-		
-		if (!isConnected)
+
+		if (isConnected)
+		{
+			await UpdateConversation(chat, conversation.Value, date, text, false);
+		}
+		else
 		{
 			await ReadNotificationStatus(chat, userId);
+			await UpdateConversation(chat, conversation.Value, date, text, true);
 		}
 	}
 	
@@ -116,7 +121,7 @@ public class ChatHub : Hub
 	{
 		await Clients.Caller.SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId, 
 			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl, conversation.WithUser,
-			conversation.LastMessage?.Date, conversation.LastMessage?.Text);
+			conversation.LastMessage?.Date, conversation.LastMessage?.Text, conversation.IsRead);
 	}
 	
 	private async Task NewMessage(int chat, int user, string userName, DateTimeOffset date, string text)
@@ -124,10 +129,10 @@ public class ChatHub : Hub
 		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", chat, user, userName, date, text);
 	}
 	
-	private async Task UpdateConversation(int chat, ConversationInfoDto conversation, DateTimeOffset date, string text)
+	private async Task UpdateConversation(int chat, ConversationInfoDto conversation, DateTimeOffset date, string text, bool isRead)
 	{
 		await Clients.Group(chat.ToString()).SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId, 
 			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl, conversation.WithUser,
-			date, text);
+			date, text, isRead);
 	}
 }

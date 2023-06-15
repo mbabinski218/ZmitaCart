@@ -9,4 +9,5 @@ public class ConversationDto
 	public string? OfferImageUrl { get; set; }
 	public decimal OfferPrice { get; set; }
 	public MessageDto? LastMessage { get; set; }
+	public bool IsRead { get; set; }
 }

@@ -8,7 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { CategoriesMenuComponent } from '@components/home/components/header/components/categories-menu/categories-menu.component';
 import { LoginMenuComponent } from '@components/home/components/header/components/login-menu/login-menu.component';
 import { OverlayService } from '@core/services/overlay/overlay.service';
-import { Observable, Subject, map, shareReplay, takeUntil, tap } from 'rxjs';
+import { Observable, Subject, map, shareReplay, takeUntil, tap, filter } from 'rxjs';
 import { SuperiorCategories } from '@components/home/components/header/interfaces/header.interface';
 import { HeaderService } from '@components/home/components/api/header.service';
 import { RoutingService } from '@shared/services/routing.service';
@@ -46,6 +46,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isBig = window.innerWidth > 768;
   likedCount$: Observable<number>;
   unreadChatsCount$: Observable<number>;
+  canShowClearInput = false;
 
   isShowCategories$: Observable<boolean>;
   superiorCategories$: Observable<SuperiorCategories[]>;
@@ -74,6 +75,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.likedCount$ = this.sharedService.getFavouritesCount();
 
+    this.form.get('input').valueChanges.pipe(
+      tap((res) => this.canShowClearInput = !!res),
+    ).subscribe();
+
     this.route.queryParams.pipe(
       map(({ c, i }) => ({ c, i })),
       tap((res) => {
@@ -97,6 +102,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   goToAddOffer(): void {
     void this.router.navigate([`${RoutesPath.HOME}/${RoutesPath.ADD_OFFER}`]).then(() => window.location.reload());
+  }
+
+  clearInput(): void {
+    this.form.get('input').setValue(null);
   }
 
   find(): void {

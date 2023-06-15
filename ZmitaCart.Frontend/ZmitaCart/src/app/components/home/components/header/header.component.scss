@@ -188,6 +188,23 @@
     }
   }
 
+  .relative {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    .icon {
+      position: absolute;
+      right: 45px;
+
+      font-size: 14px;
+      font-weight: 600;
+      height: 14px;
+      width: 14px;
+    }
+  }
+
   .actions {
     grid-area: actions;
 

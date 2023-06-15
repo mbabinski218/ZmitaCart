@@ -9,7 +9,6 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthenticationService } from '@components/authentication/api/authentication.service';
 import { Subject, filter, takeUntil, tap } from 'rxjs';
 import { GoogleLoginComponent } from '@components/authentication/components/login/components/google-login/google-login.component';
-import { MessengerService } from '@components/account/components/user-chat/services/messenger.service';
 
 @Component({
   selector: 'pp-login',
@@ -39,7 +38,6 @@ export class LoginComponent implements OnDestroy {
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router,
-    private messengerService: MessengerService,
   ) { }
 
   ngOnDestroy(): void {
@@ -55,7 +53,6 @@ export class LoginComponent implements OnDestroy {
     if (this.form.valid)
       this.authenticationService.login(this.form.value).pipe(
         filter((res) => !!res),
-        tap(() => this.messengerService.buildConnection()),
         tap(() => this.router.navigate(['/'])),
         takeUntil(this.onDestroy$),
       ).subscribe();

@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { MessengerService } from '@components/account/components/user-chat/services/messenger.service';
-import { UserService } from '@core/services/authorization/user.service';
 
 @Component({
   selector: 'pp-app-root',
@@ -12,13 +10,11 @@ import { UserService } from '@core/services/authorization/user.service';
   imports: [CommonModule, RouterModule],
   templateUrl: './app.component.html',
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
   constructor(
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer,
-    private messengerService: MessengerService,
-    private userService: UserService,
   ) {
     customIcons.forEach(([iconName, icon]) => {
       iconRegistry.addSvgIcon(
@@ -26,11 +22,6 @@ export class AppComponent implements OnInit {
         sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:4200/assets/images/${icon}`),
       );
     });
-  }
-
-  ngOnInit(): void {
-    if (this.userService.isAuthenticated())
-      this.messengerService.buildConnection();
   }
 }
 

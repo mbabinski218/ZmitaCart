@@ -33,12 +33,21 @@
       [formGroup]="form"
     >
       <div class="search-form">
-        <input
-          placeholder="czego szukasz?"
-          class="input"
-          formControlName="input"
-          (keydown.enter)="find(); $event.preventDefault();"
-        >
+        <div class="relative">
+          <input
+            placeholder="czego szukasz?"
+            class="input"
+            formControlName="input"
+            (keydown.enter)="find(); $event.preventDefault();"
+          >
+          <mat-icon
+            *ngIf="canShowClearInput"
+            class="icon cursor-pointer"
+            (click)="clearInput()"
+          >
+            close
+          </mat-icon>
+        </div>
         <mat-icon
           *ngIf="!isBig"
           class="svg fix"
@@ -80,7 +89,10 @@
       >
       </mat-icon>
 
-      <div class="fixer">
+      <div
+        *ngIf="{ likedCount: likedCount$ | async} as data"
+        class="fixer"
+      >
         <mat-icon
           class="svg"
           svgIcon="heart"
@@ -89,13 +101,16 @@
         </mat-icon>
         <mat-icon
           class="badge"
-          [matBadge]="likedCount$ | async"
+          [matBadge]="data.likedCount || null"
           matBadgeSize="medium"
         >
         </mat-icon>
       </div>
 
-      <div class="fixer">
+      <div
+        *ngIf="{ unreadChatsCount: unreadChatsCount$ | async} as data"
+        class="fixer"
+      >
         <mat-icon
           class="svg"
           svgIcon="chat"
@@ -104,7 +119,7 @@
         </mat-icon>
         <mat-icon
           class="badge"
-          [matBadge]="unreadChatsCount$ | async"
+          [matBadge]="data.unreadChatsCount || null"
           matBadgeSize="medium"
         >
         </mat-icon>

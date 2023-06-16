@@ -13,13 +13,15 @@ import {Condition} from "@core/enums/condition.enum";
 })
 export class ConditionWrapperComponent {
   @Input() items: ConditionType[];
-  @Input() condition: Condition;
+  @Input() condition: number;
   @Output() componentClicked = new EventEmitter<Condition>();
-  selectedIndex: number;
+  @Input() selectedIndex: number;
 
-  selectItem(index: number) {
+  selectItem(index: Condition) {
     this.selectedIndex = index;
     this.condition = this.items[index].condition;
+    // this.conditionIndex = index;
+    // console.log(this.conditionIndex);
     this.componentClicked.emit(this.condition);
   }
 

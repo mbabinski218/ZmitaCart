@@ -22,13 +22,15 @@ import { OfferService } from "@components/add-offer/api/offer.service";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { RoutingService } from "@shared/services/routing.service";
 import { RoutesPath } from "@core/enums/routes-path.enum";
-import { Subject, filter, map, switchMap, takeUntil, tap } from 'rxjs';
+import { Subject, filter, map, switchMap, takeUntil, tap, BehaviorSubject } from 'rxjs';
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { HeaderStateService } from '@core/services/header-state/header-state.service';
+
 
 @Component({
   selector: 'pp-add-offer',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, ConditionWrapperComponent, CategorySelectorComponent, RouterLink],
+  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, ConditionWrapperComponent, CategorySelectorComponent, RouterLink, MatSlideToggleModule],
   templateUrl: './add-offer.component.html',
   styleUrls: ['./add-offer.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -40,19 +42,21 @@ export class AddOfferComponent implements OnInit, OnDestroy {
 
   createOffer: FormGroup;
   characterCount: number;
-  price: number;
+  // price: number;
   quantity: number;
-  condition: Condition;
+  condition = new BehaviorSubject<Condition>(null);
   subCategories: Category[] = null;
   children: Category[];
   pickedCategory: Category = null;
   headCategory: Category;
   parentCategory?: Category;
   isInSubCategories: boolean;
-  selectedImages: File[];
-  previews: string[] = [];
+  selectedImages: File[] = [];
+  previews = new BehaviorSubject<string[]>(null);
   isDragOver: boolean;
   inEdit = false;
+  offerId: number;
+  isAvailable: boolean;
 
   @ViewChild('dropZone', { static: true }) dropZone!: ElementRef;
 
@@ -79,41 +83,55 @@ export class AddOfferComponent implements OnInit, OnDestroy {
     private headerStateService: HeaderStateService,
   ) { }
 
+  readonly imageUrl = 'http://localhost:5102/File?name=';
+
   ngOnInit(): void {
     this.createOffer = new FormGroup({
       title: new FormControl(null as string, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
       description: new FormControl(null as string, [Validators.required]),
-      price: new FormControl(null as number, [Validators.required, Validators.pattern("^\\d+(?:\\,\\d{2})?$")]),
+      price: new FormControl(null as number, [Validators.required, Validators.pattern("^\\d+(?:\\,\\d{1,2})?$")]),
       quantity: new FormControl(1, [Validators.pattern("^(?=.*[1-9])\\d+$")]),
+      availability: new FormControl()
     });
 
     this.route.queryParams.pipe(
       map(({ id }) => id as string),
       filter((id) => !!id),
       tap(() => this.inEdit = true),
-      switchMap((id) => this.offerService.getForEditOffer(id)),
+      tap((id) => this.offerId = Number(id)),
+      switchMap((id) => this.offerService.goToEditOffer(id)),
       tap((res) => this.createOffer.patchValue(res)),
-      tap((res) => this.condition = res.condition as unknown as Condition),
-      takeUntil(this.onDestroy$),
+      tap((res) => this.pickedCategory = { id: res.categoryId, name: '' }),
+      tap((res) => this.createOffer.get('price').setValue(res.price.toString().replace('.', ','))),
+      tap((res) => this.createOffer.get('availability').setValue(res.isAvailable)),
+      tap((res) => this.condition.next(Object.values(Condition).indexOf(res.condition))),
+      tap(res => this.previews.next(res.picturesNames?.map((name: string) => name = this.imageUrl + name))),
+      switchMap(res => this.offerService.restoreOfferImages(res?.picturesNames as string[])),
+      tap(res => this.selectedImages = res as File[]),
     ).subscribe();
 
-    this.createOffer.get('title').valueChanges.pipe(
-      takeUntil(this.onDestroy$),
-    ).subscribe((res: string) => {
+    this.createOffer.get('title').valueChanges.subscribe((res: string) => {
       this.characterCount = res.length;
     });
 
-    const qControl = this.createOffer.get('quantity');
+    this.createOffer.get('availability').valueChanges.subscribe((res: boolean) => {
+      this.isAvailable = res;
+    });
 
-    qControl.valueChanges.pipe(
+    // this.createOffer.get('price').valueChanges.subscribe((res: string) => {
+    //   this.createOffer.get('price').setValue(res.replace('.', ','));
+    // });
+
+    const quantityControl = this.createOffer.get('quantity');
+    quantityControl.valueChanges.pipe(
       takeUntil(this.onDestroy$),
     ).subscribe((res: string) => {
       if (res.length === 0) {
-        qControl.setValue(1);
+        quantityControl.setValue(1);
       }
-      if (!qControl.valid) {
+      if (!quantityControl.valid) {
         const val = res.replace(/\D/g, '');
-        qControl.setValue(val);
+        quantityControl.setValue(val);
       }
     });
 
@@ -123,7 +141,7 @@ export class AddOfferComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.headerStateService.resetHeaderState();
-    
+
     this.onDestroy$.next();
     this.onDestroy$.complete();
   }
@@ -139,8 +157,8 @@ export class AddOfferComponent implements OnInit, OnDestroy {
       });
   }
 
-  public SetCondition(event: Condition) {
-    this.condition = event;
+  public setCondition(event: Condition) {
+    this.condition.next(event);
   }
 
   public getParentCategory(parentId: number) {
@@ -172,7 +190,6 @@ export class AddOfferComponent implements OnInit, OnDestroy {
         this.headCategory = this.subCategories[0];
         this.children = this.subCategories[0].children;
       } else {
-
         this.pickedCategory = res[0];
       }
       this.cdr.detectChanges();
@@ -206,14 +223,14 @@ export class AddOfferComponent implements OnInit, OnDestroy {
   }
 
   handleImages() {
-    this.previews = [];
+    this.previews.next([]);
 
     for (let i = 0; i < this.selectedImages.length; i++) {
       const reader = new FileReader();
 
       reader.onload = (e: any) => {
         const url = e.target.result;
-        this.previews.push(url);
+        this.previews.getValue().push(url);
         this.cdr.detectChanges();
       };
       reader.readAsDataURL(this.selectedImages[i]);
@@ -221,30 +238,46 @@ export class AddOfferComponent implements OnInit, OnDestroy {
   }
 
   onFileSelected(event: any) {
-    this.selectedImages = event.target.files;
+    if (this.selectedImages.length >= 15) {
+      //TODO toast z odpowiednią inofmracją
+      console.log("more than 15");
+      return;
+    }
+
+    this.selectedImages = [...this.selectedImages, ...event.target.files];
+    console.log(this.selectedImages);
     this.handleImages();
   }
 
   deleteImage(index: number) {
     this.selectedImages = Array.from(this.selectedImages).filter((file, i) => i !== index);
-    this.previews.splice(index, 1);
+    this.previews.getValue().splice(index, 1);
+    console.log(this.selectedImages);
   }
 
-  addOffer() {
+  addOffer(formValue: any) {
     if (!this.createOffer.valid || !this.validateProps())
       return;
 
-    const title = this.createOffer.value.title;
-    const desc: string = this.createOffer.value.description;
-    const price: number = this.createOffer.value.price;
-    const quantity: number = this.createOffer.value.quantity;
+    this.offerService.createOffer(formValue.title, formValue.description, formValue.price, formValue.quantity, Condition[this.condition.value], this.pickedCategory.id, this.selectedImages).pipe(
+      takeUntil(this.onDestroy$))
+      .subscribe(res => {
+        this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
+      }
+      );
+  }
 
-    this.offerService.createOffer(title, desc, price, quantity, Condition[this.condition], this.pickedCategory.id, this.selectedImages).pipe(
-      takeUntil(this.onDestroy$),
-    ).subscribe(res => {
-      this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
-    }
-    );
+  updateOffer(formValue: any) {
+    if (!this.createOffer.valid || !this.validateProps())
+      return;
+
+    this.offerService.updateOffer(this.offerId, formValue.title, formValue.description, formValue.price, formValue.quantity, Condition[this.condition.value], this.isAvailable, this.selectedImages)
+      .pipe(
+        takeUntil(this.onDestroy$))
+      .subscribe(res => {
+        this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
+      }
+      );
   }
 
   validateProps(): boolean {

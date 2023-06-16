@@ -1,10 +1,11 @@
+<div class="blank"></div>
 <a class="button goHomeBtn" [routerLink]="['/']">
   <mat-icon>
     arrow_back
   </mat-icon>
 </a>
 <div class="container">
-  <form [formGroup]="createOffer" (ngSubmit)="addOffer()">
+  <form [formGroup]="createOffer" (ngSubmit)="inEdit ? updateOffer(createOffer.value) : addOffer(createOffer.value)">
     <div class="addPhotosInfo">
       <div class="addPhotosInfo--side ">
         <img src="assets/images/camera-add.svg" alt="camera"/>
@@ -38,9 +39,10 @@
       </div>
     </div>
 
-    <div class="imagePreviewWrapper" *ngIf="selectedImages">
-      <div class="imagePreview" *ngFor="let preview of previews; index as i">
-        <img [src]="preview" alt="preview"/>
+    <!--    *ngIf="selectedImages"-->
+    <div class="imagePreviewWrapper">
+      <div class="imagePreview" *ngFor="let preview of previews | async; index as i">
+        <img [src]="preview " alt="preview"/>
         <button class="deletePhotoBtn" (click)="deleteImage(i)">
           <mat-icon class="material-symbols-outlined">
             remove
@@ -87,7 +89,7 @@
 
         </div>
 
-        <span class="pickedCategory" *ngIf="pickedCategory">
+        <span class="pickedPropInfo" *ngIf="pickedCategory">
           Wybrana kategoria: {{pickedCategory.name }}
         </span>
 
@@ -97,8 +99,18 @@
         <label>Stan przedmiotu</label>
         <em class="required">*</em>
         <ul class="conditionSelect">
-          <pp-condition-wrapper [items]="items" (componentClicked)="SetCondition($event)"></pp-condition-wrapper>
+          <pp-condition-wrapper [items]="items" [selectedIndex]="condition | async"
+                                (componentClicked)="setCondition($event)"></pp-condition-wrapper>
         </ul>
+      </div>
+
+      <div class="available" *ngIf="inEdit">
+        <label>Dostępność</label>
+        <mat-slide-toggle formControlName="availability" style="display: block; margin-top: 10px">
+        </mat-slide-toggle>
+        <span class="pickedPropInfo">
+          Twoja oferta {{isAvailable ? 'będzie ' : 'nie będzie '}}widoczna dla użytkowników
+        </span>
       </div>
 
       <div class="price">

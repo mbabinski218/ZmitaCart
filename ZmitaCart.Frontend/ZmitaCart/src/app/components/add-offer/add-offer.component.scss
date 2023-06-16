@@ -24,7 +24,7 @@ pp-add-offer {
 
   .container {
     background-color: #fff;
-    width: 40%;
+    width: 50%;
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -197,21 +197,20 @@ pp-add-offer {
     cursor: pointer;
   }
 
-  .pickedCategory {
+  .pickedPropInfo {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     max-width: 30rem;
     font-weight: 500;
     color: #7770bd;
-    margin-top: 5px;
+    margin-top: 10px;
   }
 
   .categoryPicker {
     margin-top: 10px;
     height: 100%;
     border-radius: 0.8rem;
-    border: 1px solid #e7e7e7;
-    ;
+    border: 1px solid #e7e7e7;;
     max-width: 30rem;
     overflow: auto;
   }
@@ -234,7 +233,7 @@ pp-add-offer {
   }
 
   .blank {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
   }
 
   .imagePreviewWrapper {
@@ -313,5 +312,9 @@ pp-add-offer {
   .button-allegro.submit:disabled {
     cursor: default;
     opacity: 0.4;
+  }
+
+  .available {
+    margin-top: 50px;
   }
 }

@@ -2,8 +2,8 @@ export interface Category {
   id: number,
   name: string,
   parentId?: number;
-  children: Category[]
-  iconName: string;
+  children?: Category[]
+  iconName?: string;
 }
 
 export interface OfferToEdit {
@@ -13,5 +13,6 @@ export interface OfferToEdit {
   quantity: number,
   condition: string,
   categoryId: number,
+  isAvailable: boolean,
   picturesNames: string[]
 }

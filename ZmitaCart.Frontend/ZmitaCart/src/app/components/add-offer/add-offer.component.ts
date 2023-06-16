@@ -24,12 +24,13 @@ import { RoutingService } from "@shared/services/routing.service";
 import { RoutesPath } from "@core/enums/routes-path.enum";
 import {Subject, filter, map, switchMap, takeUntil, tap, BehaviorSubject} from 'rxjs';
 import { OfferSingleService } from '@components/offer-single/api/offer-single.service';
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 
 @Component({
   selector: 'pp-add-offer',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, ConditionWrapperComponent, CategorySelectorComponent, RouterLink],
+  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, ConditionWrapperComponent, CategorySelectorComponent, RouterLink, MatSlideToggleModule],
   templateUrl: './add-offer.component.html',
   styleUrls: ['./add-offer.component.scss'],
   encapsulation: ViewEncapsulation.None,

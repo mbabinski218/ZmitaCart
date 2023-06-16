@@ -1,6 +1,17 @@
 # ZmitaCart
 ## Klon Allegro lokalnie
 
+# TODO
+## Toasty do:
+logowanie/rejestracja (błędne dane, udane logowanie/rejestracja)
+dodawanie oferty
+kupowanie
+tworzenie, edycja oferty
+aktualizaja danych
+jeżeli nie jest się zalogowanym (+może od razu redirect do strony logowania)
+jeżeli brak adresu (redirect śmiga)
 
-# Figma link:
-https://www.figma.com/file/OmMkhWyBVETRsdFKxzVUv2/Strona-g%C5%82%C3%B3wna?node-id=0%3A1&t=h9RLkWfMCZR94xWI-1
+## Fixy
+Wylogowywanie (automatyczne przeładowanie strony)
+Może zainteresuje cię "kategoria" z backendu
+ikonka ładowania po redirect do tworzenia/edycji oferty

@@ -7,23 +7,23 @@ import {
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from "@angular/material/icon";
-import { MatButtonModule } from "@angular/material/button";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatInputModule } from "@angular/material/input";
-import { CategoryService } from "@components/add-offer/api/category.service";
-import { Category } from "@components/add-offer/interfaces/Category";
-import { Condition } from "@core/enums/condition.enum";
-import { ConditionWrapperComponent } from "@components/add-offer/condition-wrapper/condition-wrapper.component";
-import { ConditionType } from "@components/add-offer/interfaces/ConditionType";
-import { CategorySelectorComponent } from "@components/add-offer/category-selector/category-selector.component";
-import { OfferService } from "@components/add-offer/api/offer.service";
-import { ActivatedRoute, RouterLink } from "@angular/router";
-import { RoutingService } from "@shared/services/routing.service";
-import { RoutesPath } from "@core/enums/routes-path.enum";
+import {CommonModule} from '@angular/common';
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
+import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {MatInputModule} from "@angular/material/input";
+import {CategoryService} from "@components/add-offer/api/category.service";
+import {Category} from "@components/add-offer/interfaces/Category";
+import {Condition} from "@core/enums/condition.enum";
+import {ConditionWrapperComponent} from "@components/add-offer/condition-wrapper/condition-wrapper.component";
+import {ConditionType} from "@components/add-offer/interfaces/ConditionType";
+import {CategorySelectorComponent} from "@components/add-offer/category-selector/category-selector.component";
+import {OfferService} from "@components/add-offer/api/offer.service";
+import {ActivatedRoute, RouterLink} from "@angular/router";
+import {RoutingService} from "@shared/services/routing.service";
+import {RoutesPath} from "@core/enums/routes-path.enum";
 import {Subject, filter, map, switchMap, takeUntil, tap, BehaviorSubject} from 'rxjs';
-import { OfferSingleService } from '@components/offer-single/api/offer-single.service';
+import {OfferSingleService} from '@components/offer-single/api/offer-single.service';
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 
@@ -254,20 +254,25 @@ export class AddOfferComponent implements OnInit, OnDestroy {
     if (!this.createOffer.valid || !this.validateProps())
       return;
 
-    this.offerService.createOffer(formValue.title, formValue.description, formValue.price, formValue.quantity, Condition[this.condition.value], this.pickedCategory.id, this.selectedImages).subscribe(res => {
-        this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
-      }
-    );
+    this.offerService.createOffer(formValue.title, formValue.description, formValue.price, formValue.quantity, Condition[this.condition.value], this.pickedCategory.id, this.selectedImages).pipe(
+      takeUntil(this.onDestroy$))
+      .subscribe(res => {
+          this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
+        }
+      );
   }
 
   updateOffer(formValue: any) {
     if (!this.createOffer.valid || !this.validateProps())
       return;
 
-    this.offerService.updateOffer(this.offerId, formValue.title, formValue.description, formValue.price, formValue.quantity, Condition[this.condition.value], this.isAvailable, this.selectedImages).subscribe(res => {
-        this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
-      }
-    );
+    this.offerService.updateOffer(this.offerId, formValue.title, formValue.description, formValue.price, formValue.quantity, Condition[this.condition.value], this.isAvailable, this.selectedImages)
+      .pipe(
+        takeUntil(this.onDestroy$))
+      .subscribe(res => {
+          this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
+        }
+      );
   }
 
   validateProps(): boolean {

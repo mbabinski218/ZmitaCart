@@ -13,6 +13,7 @@ public class OfferDto
     public bool IsAvailable { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public string Condition { get; set; } = null!;
+    public int CategoryId { get; set; }
     public UserDto User { get; set; } = null!;
     public Address Address { get; set; } = null!;
     public ICollection<string>? PicturesNames { get; set; }

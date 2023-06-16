@@ -26,8 +26,7 @@ export enum Api {
   OFFER_MAIN = '/offer/byCategoriesName',
   OFFER_ADD_TO_FAVOURITES = '/offer/addToFavorites/:id',
 
-  FILE = '/File',
+  FILE = '/File?name=',
 
   CONVERSATION = '/conversation',
 }
- 

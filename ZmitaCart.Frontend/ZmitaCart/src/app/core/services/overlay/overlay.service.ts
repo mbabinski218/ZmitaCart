@@ -7,7 +7,7 @@ export class OverlayService {
 
   private isShowOverlay$ = new BehaviorSubject<boolean>(false);
 
-  setState(isShow: boolean):void {
+  setState(isShow: boolean): void {
     this.isShowOverlay$.next(isShow);
   }
 

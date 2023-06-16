@@ -1,5 +1,6 @@
 @use '@angular/material' as mat;
 @use 'variables/palette';
+@import 'variables/breakpoints';
 
 @include mat.core();
 
@@ -17,30 +18,35 @@ $frontend-theme: mat.define-light-theme((color: (primary: $frontend-primary,
 
 @include mat.all-component-themes($frontend-theme);
 
-:root {
-  --gap-small: 15px;
-  --gap-medium: 20px;
-  --gap-big: 25px;
+// 24, 16, 40, 20
 
-  --color-allegro: #ff5a00;
+:root {
+  --gap-xxs: 4px;
+  --gap-xs: 8px;
+  --gap-s: 16px;
+  --gap-m: 20px;
+  --gap-l: 30px;
+
+  --font-xs: 12px;
+  --font-normal: 14px;
+  --font-m: 16px;
+  --font-l: 24px;
+  --font-xl: 36px;
+
+  --lineHeight-s: 16px;
+  --lineHeight-m: 20px;
+  --lineHeight-l: 24px;
+  --lineHeight-xl: 40px;
+
+  --color-allegro-purple: #6256b1;
+  --color-allegro-orange: #ff5a00;
   --color-allegro-green: #00a790;
-  --color-primary: #6256b1;
   --color-error: #ff6961;
   --color-success: #77dd77;
   --color-whitish: #e3e7ec;
+
   --background-color: #f4f8fc;
   --background-login-color: #eceff1;
-  --background-color-to-save-eyes: #71767a;
-}
-
-.iconsHover:hover {
-  g {
-    fill: var(--color-allegro-green);
-  }
-
-  span {
-    color: var(--color-allegro-green);
-  }
 }
 
 * {
@@ -64,8 +70,8 @@ body {
 
   font-family: "Open Sans", Roboto, "Helvetica Neue", sans-serif;
   color: #222;
-  font-size: 14px;
-  font-weight: normal;
+  font-size: var(--font-normal);
+  font-weight: 400;
 }
 
 .cursor-pointer {
@@ -80,6 +86,19 @@ body {
   width: 100%;
 }
 
+.widthSetter {
+  --max-width: 1360px;
+  --padding: 24px;
+
+  padding: 0 var(--padding, 0);
+  max-width: calc(2*var(--padding, 0px) + var(--max-width));
+  margin: 0 auto;
+
+  @media (min-width: $screen-1200) {
+    --padding: 40px;
+  }
+}
+
 //usuwanie prompt'a google'owego z prawego rogu ez
 #credential_picker_container {
   display: none;
@@ -88,10 +107,10 @@ body {
 .observe-svg {
   display: flex;
   justify-content: center;
-  gap: 3px;
+  gap: var(--gap-xxs);
 
-  font-size: 14px;
-  line-height: 24px;
+  font-size: var(--font-normal);
+  line-height: var(--lineHeight-l);
   font-weight: 600;
   letter-spacing: 0.4px;
 
@@ -101,29 +120,15 @@ body {
 .button-allegro {
   height: 40px;
   font-weight: 600;
-  line-height: 24px;
+  line-height: var(--lineHeight-l);
   text-align: center;
   letter-spacing: .4px;
   text-transform: uppercase;
   cursor: pointer;
   text-decoration: none;
   padding: 8px 16px;
-  border-radius: 1000px;
+  border-radius: 30px;
 }
-
-// *::-webkit-scrollbar {
-//   width: 8px;
-//   height: 8px;
-// }
-
-// *::-webkit-scrollbar-track {
-//   background: transparent;
-// }
-
-// *::-webkit-scrollbar-thumb {
-//   background-color: #393d45;
-//   border-radius: 20px;
-// }
 
 .mat-mdc-snack-bar-container {
   &.error-snackbar {
@@ -139,7 +144,7 @@ body {
   }
 
   &.prank-snackbar {
-    --mdc-snackbar-container-color: var(--color-allegro);
+    --mdc-snackbar-container-color: var(--color-allegro-orange);
     --mat-mdc-snack-bar-button-color: #fff;
     --mdc-snackbar-supporting-text-color: #fff;
   }

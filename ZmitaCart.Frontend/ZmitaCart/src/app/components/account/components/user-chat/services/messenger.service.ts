@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserService } from '@core/services/authorization/user.service';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { UserChatService } from './user-chat.service';
+import { UserChatService } from '@components/account/components/user-chat/services/user-chat.service';
 
 @Injectable({
   providedIn: 'root'

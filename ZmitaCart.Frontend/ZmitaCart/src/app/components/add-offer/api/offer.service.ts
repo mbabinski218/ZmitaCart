@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {Observable} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {environment} from "@env/environment";
-import {Api} from "@core/enums/api.enum";
-import { OfferToEdit } from '../interfaces/Category';
+import { Injectable } from '@angular/core';
+import { Observable } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "@env/environment";
+import { Api } from "@core/enums/api.enum";
+import { OfferToEdit } from '@components/add-offer/interfaces/Category';
 
 @Injectable({
   providedIn: 'root'

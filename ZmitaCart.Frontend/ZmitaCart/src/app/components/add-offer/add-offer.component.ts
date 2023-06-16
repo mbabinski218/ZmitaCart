@@ -23,8 +23,7 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { RoutingService } from "@shared/services/routing.service";
 import { RoutesPath } from "@core/enums/routes-path.enum";
 import { Subject, filter, map, switchMap, takeUntil, tap } from 'rxjs';
-import { OfferSingleService } from '@components/offer-single/api/offer-single.service';
-
+import { HeaderStateService } from '@core/services/header-state/header-state.service';
 
 @Component({
   selector: 'pp-add-offer',
@@ -77,8 +76,8 @@ export class AddOfferComponent implements OnInit, OnDestroy {
     private offerService: OfferService,
     private routerService: RoutingService,
     private route: ActivatedRoute,
-  ) {
-  }
+    private headerStateService: HeaderStateService,
+  ) { }
 
   ngOnInit(): void {
     this.createOffer = new FormGroup({
@@ -117,9 +116,14 @@ export class AddOfferComponent implements OnInit, OnDestroy {
         qControl.setValue(val);
       }
     });
+
+    this.headerStateService.setShowSearch(false);
+    this.headerStateService.setShowAddOfferButton(false);
   }
 
   ngOnDestroy(): void {
+    this.headerStateService.resetHeaderState();
+    
     this.onDestroy$.next();
     this.onDestroy$.complete();
   }

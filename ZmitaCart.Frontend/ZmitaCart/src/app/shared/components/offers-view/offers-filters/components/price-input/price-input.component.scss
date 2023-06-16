@@ -1,5 +1,6 @@
 .title {
   margin-bottom: 10px;
+  font-weight: 700;
 }
 
 .whole {
@@ -19,11 +20,10 @@
   max-width: 100%;
   background: #fff;
   padding: 12px 16px;
-  font-size: 16px;
-  line-height: 1.375;
+  font-size: var(--font-m);
   color: #000;
   border: 1px solid #e7e7e7;
-  border-radius: 0.8rem;
+  border-radius: 8px;
   height: 48px;
   font-family: 'Open Sans';
 
@@ -38,7 +38,7 @@
   border: 0;
   text-align: center;
   right: 0;
-  font-size: 14px;
+  font-size: var(--font-normal);
   margin-right: 20px;
 
   position: absolute;

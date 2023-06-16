@@ -9,32 +9,32 @@
 }
 
 .title {
-  font-size: 36px;
+  font-size: var(--font-xl);
   font-weight: 300;
   font-family: 'Roboto';
 }
 
 .name {
   display: flex;
-  gap: 25px;
+  gap: var(--gap-m);
   width: 100%;
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--gap-m);
   margin-inline: auto;
 }
 
 .regulamin {
   padding-top: 8px;
   margin-inline: auto;
-  font-size: 12px;
+  font-size: var(--font-xs);
 
   .link {
     padding: 0;
-    color: var(--color-allegro);
+    color: var(--color-allegro-orange);
     text-decoration: none;
   }
 }
@@ -79,7 +79,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: var(--gap-xs);
 
   width: 100%;
   padding-block: 16px;
@@ -87,7 +87,7 @@
 
 .button {
   width: 100%;
-  background-color: var(--color-allegro);
+  background-color: var(--color-allegro-orange);
   color: white;
   border: 0;
   padding-inline: 16px;

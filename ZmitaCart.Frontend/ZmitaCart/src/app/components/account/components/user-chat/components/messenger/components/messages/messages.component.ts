@@ -1,4 +1,4 @@
-import { ppMessengerDatePipe } from './../../../../../../../../shared/pipes/messenger-date.pipe';
+import { ppMessengerDatePipe } from '@shared/pipes/messenger-date.pipe';
 import { MessageStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';

@@ -10,6 +10,7 @@ import { UserBoughtComponent } from '@components/account/components/user-bought/
 import { UserOffersComponent } from '@components/account/components/user-offers/user-offers.component';
 import { USER_SWITCHES } from '@components/account/constants/user-switch.const';
 import { UserChatComponent } from '@components/account/components/user-chat/user-chat.component';
+import { HeaderStateService } from '@core/services/header-state/header-state.service';
 
 @Component({
   selector: 'pp-account',
@@ -24,7 +25,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   currentView$ = new BehaviorSubject<string>('credentials');
   private onDestroy$ = new Subject<void>();
-  
+
   readonly USER_SWITCHES = USER_SWITCHES;
 
   switch(value: string) {
@@ -33,6 +34,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private headerStateService: HeaderStateService,
     private route: ActivatedRoute,
     private router: Router,
   ) { }
@@ -43,9 +45,13 @@ export class AccountComponent implements OnInit, OnDestroy {
       tap((res) => this.currentView$.next(res)),
       takeUntil(this.onDestroy$),
     ).subscribe();
+
+    this.headerStateService.setShowSearch(false);
   }
 
   ngOnDestroy(): void {
+    this.headerStateService.resetHeaderState();
+
     this.onDestroy$.next();
     this.onDestroy$.complete();
   }

@@ -5,11 +5,11 @@ pp-account {
     padding-top: 20px;
 
     display: flex;
-    gap: 20px;
+    gap: var(--gap-m);
   }
 
   .box {
-    border-radius: 0.8rem;
+    border-radius: 8px;
     box-shadow: 0 1px 1px 0 rgba(10, 22, 70, .1), 0 0 1px 0 rgba(10, 22, 70, .06);
     background-color: #fff;
     padding: 16px;
@@ -17,17 +17,16 @@ pp-account {
 
   .header {
     min-height: 40px;
-    border-radius: 0.8rem 0.8rem 0 0;
+    border-radius: 8px 8px 0 0;
     border-bottom: 1px solid #e7e7e7;
-    padding: 1.6rem 2.6rem;
+    padding: 16px 26px;
     background: #fff;
 
     display: flex;
     justify-content: space-between;
 
     .text {
-      font-size: 23px;
-      line-height: 1;
+      font-size: var(--font-l);
       font-weight: 600;
       text-align: unset;
       color: unset;
@@ -39,22 +38,10 @@ pp-account {
     flex-direction: column;
 
     box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
-    border-radius: 0 0 0.8rem 0.8rem;
+    border-radius: 0 0 8px 8px;
     margin: auto;
-    padding: 25.6px;
+    padding: 26px;
     background: #fff;
-
-    .text {
-      padding-top: 2.4rem;
-      padding-bottom: 2.4rem;
-      color: #484848;
-      font-size: 1.08rem;
-      text-align: center;
-      display: block;
-      max-width: 80vw;
-      margin-left: auto;
-      margin-right: auto;
-    }
   }
 
   .mat-button-toggle-group-appearance-standard.mat-button-toggle-vertical .mat-button-toggle+.mat-button-toggle {
@@ -80,6 +67,6 @@ pp-account {
 
   .mat-button-toggle-checked {
     background-color: #fef7e7;
-    border-right: 5px solid var(--color-allegro) !important;
+    border-right: 5px solid var(--color-allegro-orange) !important;
   }
 }

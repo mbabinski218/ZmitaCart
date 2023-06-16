@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
 import { isEqual } from 'lodash';
-import { SortBy } from '../../interfaces/offers-view.interface';
+import { SortBy } from '@shared/components/offers-view/offers-filters/interfaces/offers-view.interface';
 
 @Component({
   selector: 'pp-sort-selector',

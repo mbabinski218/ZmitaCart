@@ -5,7 +5,7 @@
         <p class="name">{{ data.currentChat?.withUser }}</p>
         <div
           class="cursor-pointer data"
-          (click)="details(data.currentChat?.offerId)"
+          (click)="details(data.currentChat?.offerId, router)"
         >
           <span class="title">{{ data.currentChat?.offerTitle }}</span>
           <p>

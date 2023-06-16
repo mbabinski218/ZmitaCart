@@ -8,14 +8,16 @@ import { MatSelectModule } from '@angular/material/select';
 import { CategoriesMenuComponent } from '@components/home/components/header/components/categories-menu/categories-menu.component';
 import { LoginMenuComponent } from '@components/home/components/header/components/login-menu/login-menu.component';
 import { OverlayService } from '@core/services/overlay/overlay.service';
-import { Observable, Subject, map, shareReplay, takeUntil, tap, filter } from 'rxjs';
+import { Observable, Subject, map, shareReplay, takeUntil, tap } from 'rxjs';
 import { SuperiorCategories } from '@components/home/components/header/interfaces/header.interface';
-import { HeaderService } from '@components/home/components/api/header.service';
+import { HeaderService } from '@components/home/components/header/api/header.service';
 import { RoutingService } from '@shared/services/routing.service';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { SharedService } from '@shared/services/shared.service';
 import { UserChatService } from '@components/account/components/user-chat/services/user-chat.service';
+import { HeaderStateService } from '@core/services/header-state/header-state.service';
+import { UserService } from '@core/services/authorization/user.service';
 
 @Component({
   selector: 'pp-header',
@@ -52,6 +54,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   superiorCategories$: Observable<SuperiorCategories[]>;
   superiorCategoriesContainer: SuperiorCategories[];
 
+  searchShown$: Observable<boolean>;
+  addOfferHidden$: Observable<boolean>;
+
   constructor(
     protected overlayService: OverlayService,
     private routingService: RoutingService,
@@ -60,6 +65,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private sharedService: SharedService,
     private userChatService: UserChatService,
+    private userService: UserService,
+    private headerStateService: HeaderStateService,
   ) { }
 
   ngOnInit(): void {
@@ -69,11 +76,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       shareReplay()
     );
 
-    this.unreadChatsCount$ = this.userChatService.getNotifications().pipe(
-      takeUntil(this.onDestroy$),
-    );
-
-    this.likedCount$ = this.sharedService.getFavouritesCount();
+    if (this.userService.isAuthenticated()) {
+      this.unreadChatsCount$ = this.userChatService.getNotifications();
+      this.likedCount$ = this.sharedService.getFavouritesCount();
+    }
 
     this.form.get('input').valueChanges.pipe(
       tap((res) => this.canShowClearInput = !!res),
@@ -89,6 +95,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.onDestroy$),
     ).subscribe();
+
+    this.searchShown$ = this.headerStateService.getShowSearch();
+    this.addOfferHidden$ = this.headerStateService.getShowAddOfferButton().pipe(
+      map((res) => !res)
+    );
   }
 
   ngOnDestroy(): void {

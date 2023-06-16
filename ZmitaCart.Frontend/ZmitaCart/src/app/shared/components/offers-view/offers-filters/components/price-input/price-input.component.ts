@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { isEqual } from 'lodash';
-import { Prices } from '../../interfaces/offers-view.interface';
+import { Prices } from '@shared/components/offers-view/offers-filters/interfaces/offers-view.interface';
 
 @Component({
   selector: 'pp-price-input',

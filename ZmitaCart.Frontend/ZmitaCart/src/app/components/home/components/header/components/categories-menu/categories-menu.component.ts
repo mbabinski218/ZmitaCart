@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SubCategories, SuperiorCategories } from '@components/home/components/header/interfaces/header.interface';
 import { MatIconModule } from '@angular/material/icon';
-import { HeaderService } from '@components/home/components/api/header.service';
+import { HeaderService } from '@components/home/components/header/api/header.service';
 import { Observable } from 'rxjs';
 import { SubcategoriesMenuComponent } from '@components/home/components/header/components/categories-menu/subcategories-menu/subcategories-menu.component';
 import { Router } from '@angular/router';

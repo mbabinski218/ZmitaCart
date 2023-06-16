@@ -18,5 +18,5 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
-  gap: 16px;
+  gap: var(--gap-s);
 }

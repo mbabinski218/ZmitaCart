@@ -18,7 +18,7 @@
 }
 
 .sent {
-  border-radius: 22px 22px 0 22px;
+  border-radius: 30px 30px 0 30px;
   justify-content: flex-end;
   border: 1px solid #6256b1;
   outline-color: rgb(93, 177, 255);
@@ -27,7 +27,7 @@
 }
 
 .received {
-  border-radius: 22px 22px 22px 0;
+  border-radius: 30px 30px 30px 0;
   border: solid 1px rgb(228, 230, 235);
   outline-color: rgb(148, 150, 153);
   background-color: #fff;
@@ -42,7 +42,7 @@
 
 .date {
   color: rgb(118, 118, 118);
-  font-size: 11px;
-  line-height: 13px;
+  font-size: var(--font-xs);
+  line-height: var(--lineHeight-s);
   font-style: italic;
 }

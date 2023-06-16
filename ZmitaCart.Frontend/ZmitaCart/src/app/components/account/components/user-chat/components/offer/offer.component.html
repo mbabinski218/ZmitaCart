@@ -5,7 +5,7 @@
   <div class="title">Ogłoszenie</div>
   <div
     class="component cursor-pointer"
-    (click)="details(currentChat.offerId)"
+    (click)="details(currentChat.offerId, router)"
   >
     <img
       [src]="currentChat.offerImageUrl ? imageUrl + currentChat.offerImageUrl : 'https://upload.wikimedia.org/wikipedia/commons/5/55/Brak_obrazka.svg'"
@@ -19,7 +19,7 @@
 
   <div
     class="button-allegro buy"
-    (click)="details(currentChat.offerId)"
+    (click)="details(currentChat.offerId, router)"
   >
     KUP TERAZ
   </div>

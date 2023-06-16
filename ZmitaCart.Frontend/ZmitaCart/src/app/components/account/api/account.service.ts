@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { Api } from '@core/enums/api.enum';
 import { environment } from '@env/environment';
 import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
-import { CredentialsForm, AccountOffers, UserCredentials } from '@components/account/interfaces/account.interface';
+import { CredentialsForm, AccountOffers } from '@components/account/interfaces/account.interface';
 import { Observable, catchError, map, of } from 'rxjs';
-import { BoughtOffers } from '../interfaces/account.interface';
+import { BoughtOffers } from '@components/account/interfaces/account.interface';
 
 @Injectable()
 export class AccountService {

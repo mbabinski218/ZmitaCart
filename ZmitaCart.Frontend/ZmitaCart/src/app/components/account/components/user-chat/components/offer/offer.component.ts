@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { RoutesPath } from '@core/enums/routes-path.enum';
-import { ChatsStream } from '../../interfaces/chat.interfaces';
+import { ChatsStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
 import { IMAGE_URL } from '@shared/constants/shared.constants';
+import { goToDetails } from '@shared/utils/offer-details';
 
 @Component({
   selector: 'pp-offer',
@@ -18,12 +18,9 @@ export class OfferComponent {
   @Input() currentChat: ChatsStream;
 
   readonly imageUrl = IMAGE_URL;
+  details = goToDetails;
 
   constructor(
-    private router: Router,
+    protected router: Router,
   ) { }
-
-  details(id: number): void {
-    void this.router.navigateByUrl(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${id}`);
-  }
 }

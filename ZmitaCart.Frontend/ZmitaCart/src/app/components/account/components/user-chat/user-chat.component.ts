@@ -5,13 +5,13 @@ import { AccountService } from '@components/account/api/account.service';
 import { BehaviorSubject, Observable, Subject, filter, map, switchMap, takeUntil, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ppFixPricePipe } from '@shared/pipes/fix-price.pipe';
-import { RoutesPath } from '@core/enums/routes-path.enum';
-import { ChatsComponent } from './components/chats/chats.component';
-import { MessengerComponent } from './components/messenger/messenger.component';
-import { OfferComponent } from './components/offer/offer.component';
+import { ChatsComponent } from '@components/account/components/user-chat/components/chats/chats.component';
+import { MessengerComponent } from '@components/account/components/user-chat/components/messenger/messenger.component';
+import { OfferComponent } from '@components/account/components/user-chat/components/offer/offer.component';
 import { ChatsStream, MessageStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
-import { UserChatService } from './services/user-chat.service';
+import { UserChatService } from '@components/account/components/user-chat/services/user-chat.service';
 import { SharedService } from '@shared/services/shared.service';
+import { goToDetails } from '@shared/utils/offer-details';
 
 @Component({
   selector: 'pp-user-chat',
@@ -29,12 +29,13 @@ export class UserChatComponent implements OnInit, OnDestroy {
   offerId: string;
   chatId: number;
   private onDestroy$ = new Subject<void>();
+  details = goToDetails;
 
   constructor(
+    protected router: Router,
     private sharedService: SharedService,
     private route: ActivatedRoute,
     private ppFixPricePipe: ppFixPricePipe,
-    private router: Router,
     private userChatService: UserChatService,
     private messengerService: MessengerService,
     private accountService: AccountService,
@@ -84,9 +85,5 @@ export class UserChatComponent implements OnInit, OnDestroy {
 
     this.onDestroy$.next();
     this.onDestroy$.complete();
-  }
-
-  details(id: number): void {
-    void this.router.navigateByUrl(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${id}`);
   }
 }

@@ -9,8 +9,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OfferTileComponent } from '@shared/components/offer-tile/offer-tile.component';
 import { OffersFilteredService } from '@components/offers-filtered/api/offers-filtered.service';
 import { ActivatedRoute } from '@angular/router';
-import { OffersFiltersComponent } from './offers-filters/offers-filters.component';
-import { INIT_OFFERS_FORM_CONST, MyForm } from './offers-filters/interfaces/offers-view.interface';
+import { OffersFiltersComponent } from '@shared/components/offers-view/offers-filters/offers-filters.component';
+import { INIT_OFFERS_FORM_CONST, MyForm } from '@shared/components/offers-view/offers-filters/interfaces/offers-view.interface';
 
 @Component({
   selector: 'pp-offers-view',

@@ -35,6 +35,8 @@ const customIcons: [string, string][] = [
   ["user", "user.svg"],
   ["menu", "menu.svg"],
   ["find", "find.svg"],
+  ["android", "android.svg"],
+  ["apple", "apple.svg"],
   ["my-camera", "camera-add.svg"],
   ["logout", "logout.svg"],
   ["user-basic", "user-basic.svg"],

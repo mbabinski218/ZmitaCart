@@ -1,9 +1,9 @@
-import { UserChatService } from './../../services/user-chat.service';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { UserChatService } from '@components/account/components/user-chat/services/user-chat.service';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { filter, tap, BehaviorSubject, Subject, map, takeUntil } from 'rxjs';
-import { ChatsStream } from '../../interfaces/chat.interfaces';
-import { ChatItemComponent } from './components/chat-item/chat-item.component';
+import { ChatsStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
+import { ChatItemComponent } from '@components/account/components/user-chat/components/chats/components/chat-item/chat-item.component';
 import { ppFixPricePipe } from '@shared/pipes/fix-price.pipe';
 import { compareDesc } from 'date-fns';
 import { UserService } from '@core/services/authorization/user.service';

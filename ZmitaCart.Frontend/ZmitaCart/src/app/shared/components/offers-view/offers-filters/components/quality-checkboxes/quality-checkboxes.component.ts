@@ -4,7 +4,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
 import { isEqual } from 'lodash';
-import { Checkboxes } from '../../interfaces/offers-view.interface';
+import { Checkboxes } from '@shared/components/offers-view/offers-filters/interfaces/offers-view.interface';
 
 @Component({
   selector: 'pp-quality-checkboxes',

@@ -1,5 +1,8 @@
 <div class="header">
-  <div class="content">
+  <div
+    class="widthSetter content"
+    [class.hide]="addOfferHidden$ | async"
+  >
     <div
       class="menu"
       (mouseleave)="overlayService.setState(false)"
@@ -29,6 +32,7 @@
     </div>
 
     <form
+      *ngIf="searchShown$ | async"
       class="form"
       [formGroup]="form"
     >
@@ -83,6 +87,7 @@
     <div class="actions">
       <mat-icon
         *ngIf="!isBig"
+        [class.add]="addOfferHidden$ | async"
         class="svg"
         svgIcon="add"
         (click)="goToAddOffer()"
@@ -130,6 +135,7 @@
 
     <a
       *ngIf="isBig"
+      [class.add]="addOfferHidden$ | async"
       class="button button-allegro"
       (click)="goToAddOffer()"
     >

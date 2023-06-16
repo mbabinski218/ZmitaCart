@@ -1,7 +1,7 @@
 pp-offers-view {
   width: 100%;
   display: flex;
-  gap: 15px;
+  gap: var(--gap-s);
 
   .center {
     width: 100%;
@@ -21,7 +21,7 @@ pp-offers-view {
     color: #000;
     border-radius: 8px;
     margin-right: 10px;
-    font-size: 18px;
+    font-size: var(--font-m);
   }
 
   .pagination {
@@ -56,17 +56,16 @@ pp-offers-view {
 
   .header {
     min-height: 40px;
-    border-radius: 0.8rem 0.8rem 0 0;
+    border-radius: 8px 8px 0 0;
     border-bottom: 1px solid #e7e7e7;
-    padding: 1.6rem 2.6rem;
+    padding: 16px 26px;
     background: #fff;
 
     display: flex;
     justify-content: space-between;
 
     .text {
-      font-size: 23px;
-      line-height: 1;
+      font-size: var(--font-l);
       font-weight: 600;
       text-align: unset;
       color: unset;
@@ -78,16 +77,16 @@ pp-offers-view {
     flex-direction: column;
 
     box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
-    border-radius: 0 0 0.8rem 0.8rem;
+    border-radius: 0 0 8px 8px;
     margin: auto;
-    padding: 25.6px;
+    padding: 26px;
     background: #fff;
 
     .text {
-      padding-top: 2.4rem;
-      padding-bottom: 2.4rem;
+      padding-top: 24px;
+      padding-bottom: 24px;
       color: #484848;
-      font-size: 1.08rem;
+      font-size: var(--font-xs);
       text-align: center;
       display: block;
       max-width: 80vw;

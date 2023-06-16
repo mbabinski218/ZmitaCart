@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { SortSelectorComponent } from './components/sort-selector/sort-selector.component';
-import { QualityCheckboxesComponent } from './components/quality-checkboxes/quality-checkboxes.component';
-import { PriceInputComponent } from './components/price-input/price-input.component';
-import { Checkboxes, INIT_OFFERS_FORM_CONST, Prices, SortBy } from './interfaces/offers-view.interface';
+import { SortSelectorComponent } from '@shared/components/offers-view/offers-filters/components/sort-selector/sort-selector.component';
+import { QualityCheckboxesComponent } from '@shared/components/offers-view/offers-filters/components/quality-checkboxes/quality-checkboxes.component';
+import { PriceInputComponent } from '@shared/components/offers-view/offers-filters/components/price-input/price-input.component';
+import { Checkboxes, INIT_OFFERS_FORM_CONST, Prices, SortBy } from '@shared/components/offers-view/offers-filters/interfaces/offers-view.interface';
 
 @Component({
   selector: 'pp-offers-filters',

@@ -7,14 +7,14 @@
     <img
       class="img cursor-pointer"
       [src]="item.offer.imageName ? imageUrl + item.offer.imageName : 'https://upload.wikimedia.org/wikipedia/commons/5/55/Brak_obrazka.svg'"
-      (click)="details(item.offer.id)"
+      (click)="details(item.offer.id, router)"
     >
 
     <div class="component">
       <div class="data">
         <p
           class="title cursor-pointer"
-          (click)="details(item.offer.id)"
+          (click)="details(item.offer.id, router)"
         >
           {{ item.offer.title }}
         </p>

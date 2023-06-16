@@ -4,8 +4,8 @@ import { OfferItem } from '@components/account/interfaces/account.interface';
 import { MatIconModule } from '@angular/material/icon';
 import { Subject, filter, takeUntil, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { RoutesPath } from '@core/enums/routes-path.enum';
 import { SharedService } from '@shared/services/shared.service';
+import { goToDetails } from '@shared/utils/offer-details';
 
 @Component({
   selector: 'pp-favourite-buy',
@@ -20,11 +20,12 @@ export class FavouriteBuyComponent implements OnDestroy {
   @Input() item: OfferItem;
 
   private onDestroy$ = new Subject<void>();
+  details = goToDetails;
 
   constructor(
     private sharedService: SharedService,
     private ref: ChangeDetectorRef,
-    private router: Router,
+    protected router: Router,
   ) { }
 
   ngOnDestroy(): void {
@@ -39,9 +40,5 @@ export class FavouriteBuyComponent implements OnDestroy {
       tap(() => this.ref.detectChanges()),
       takeUntil(this.onDestroy$),
     ).subscribe();
-  }
-
-  details(id: number): void {
-    void this.router.navigateByUrl(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${id}`);
   }
 }

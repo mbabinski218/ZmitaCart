@@ -4,7 +4,7 @@ import { OfferItem } from '@components/account/interfaces/account.interface';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { AreYouSureDialogComponent } from '../../../are-you-sure-dialog/are-you-sure-dialog.component';
+import { AreYouSureDialogComponent } from '@shared/components/are-you-sure-dialog/are-you-sure-dialog.component';
 import { NoopScrollStrategy } from '@angular/cdk/overlay';
 import { RoutingService } from '@shared/services/routing.service';
 import { RoutesPath } from '@core/enums/routes-path.enum';

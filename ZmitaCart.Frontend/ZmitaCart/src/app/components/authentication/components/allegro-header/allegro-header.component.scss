@@ -23,7 +23,7 @@
 .color {
   color: var(--color-allegro-green);
 
-  line-height: 40px;
+  line-height: var(--lineHeight-xl);
   vertical-align: middle;
   letter-spacing: 2px;
 }

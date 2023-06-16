@@ -3,16 +3,13 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { CommonModule } from '@angular/common';
 import { TokenData } from '@components/authentication/interfaces/authentication-interface';
 import { MatMenuModule } from '@angular/material/menu';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { RoutesPath } from '@core/enums/routes-path.enum';
 import { MatIconModule } from '@angular/material/icon';
 import { ClickOutsideDirective } from '@shared/directives/click-outside.directive';
 import { UserService } from '@core/services/authorization/user.service';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '@env/environment';
-import { Api } from '@core/enums/api.enum';
 import { isEmpty } from 'lodash';
-import { HeaderService } from '@components/home/components/api/header.service';
+import { HeaderService } from '@components/home/components/header/api/header.service';
 
 @Component({
   selector: 'pp-login-menu',
@@ -37,8 +34,6 @@ export class LoginMenuComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private headerService: HeaderService,
-    private http: HttpClient,
-    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -54,9 +49,6 @@ export class LoginMenuComponent implements OnInit, OnDestroy {
   logout(): void {
     this.headerService.logout().pipe(
       takeUntil(this.onDestroy$),
-    ).subscribe();
-    this.userService.logout();
-    void this.router.navigate(['/']);
-    window.location.reload();
+    ).subscribe(() => this.userService.logout());
   }
 }

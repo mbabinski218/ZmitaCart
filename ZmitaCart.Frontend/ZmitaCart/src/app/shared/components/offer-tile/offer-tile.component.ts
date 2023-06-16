@@ -4,14 +4,14 @@ import { BoughtOffer } from '@components/account/interfaces/account.interface';
 import { MatIconModule } from '@angular/material/icon';
 import { ppFixPricePipe } from '@shared/pipes/fix-price.pipe';
 import { Router } from '@angular/router';
-import { RoutesPath } from '@core/enums/routes-path.enum';
-import { FavouriteBuyComponent } from './components/favourite-buy/favourite-buy.component';
-import { EditDeleteComponent } from './components/edit-delete/edit-delete.component';
+import { FavouriteBuyComponent } from '@shared/components/offer-tile/components/favourite-buy/favourite-buy.component';
+import { EditDeleteComponent } from '@shared/components/offer-tile/components/edit-delete/edit-delete.component';
 import { OfferSingleService } from '@components/offer-single/api/offer-single.service';
 import { Observable, Subject, filter, takeUntil, tap } from 'rxjs';
-import { ToastMessageService } from '../toast-message/services/toast-message.service';
-import { BoughtInfoComponent } from './components/bought-info/bought-info.component';
+import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
+import { BoughtInfoComponent } from '@shared/components/offer-tile/components/bought-info/bought-info.component';
 import { IMAGE_URL } from '@shared/constants/shared.constants';
+import { goToDetails } from '@shared/utils/offer-details';
 
 @Component({
   selector: 'pp-offer-tile',
@@ -31,9 +31,10 @@ export class OfferTileComponent implements OnDestroy {
   private onDestroy$ = new Subject<void>();
 
   siema: Observable<boolean>;
+  details = goToDetails;
 
   constructor(
-    private router: Router,
+    protected router: Router,
     private offerSingleService: OfferSingleService,
     private toastMessageService: ToastMessageService,
     private ref: ChangeDetectorRef,
@@ -42,10 +43,6 @@ export class OfferTileComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.onDestroy$.next();
     this.onDestroy$.complete();
-  }
-
-  details(id: number): void {
-    void this.router.navigateByUrl(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${id}`);
   }
 
   deleteOffer(item: BoughtOffer) {

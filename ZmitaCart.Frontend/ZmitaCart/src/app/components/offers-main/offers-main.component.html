@@ -12,13 +12,13 @@
         >
           <div [ngClass]="'category-border category-image'+i">
             <div class="title">
-              <h2 class="text">Może zainteresuje cię: {{ offer.name || '-' }}</h2>
+              <div class="text">Może zainteresuje cię: {{ offer.name || '-' }}</div>
             </div>
           </div>
           <ng-container *ngFor="let item of offer.data">
             <div
               class="item cursor-pointer"
-              (click)="details(item.id)"
+              (click)="details(item.id, router)"
             >
               <img
                 [src]="item.imageName ? imageUrl + item.imageName : 'https://upload.wikimedia.org/wikipedia/commons/5/55/Brak_obrazka.svg'"

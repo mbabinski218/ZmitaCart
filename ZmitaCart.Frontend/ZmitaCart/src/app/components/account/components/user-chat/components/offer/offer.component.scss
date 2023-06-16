@@ -7,14 +7,14 @@
 
 .title {
   font-weight: 600;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: var(--font-m);
+  line-height: var(--lineHeight-l);
   margin-bottom: 16px;
 }
 
 .component {
   display: flex;
-  gap: 10px;
+  gap: var(--gap-xs);
 
   .item {
     display: flex;
@@ -29,6 +29,6 @@
 
 .buy {
   margin-top: 18px;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
+  color: var(--color-allegro-purple);
+  border: 1px solid var(--color-allegro-purple);
 }

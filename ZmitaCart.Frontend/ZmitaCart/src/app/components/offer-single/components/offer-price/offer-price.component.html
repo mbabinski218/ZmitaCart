@@ -14,7 +14,10 @@
   class="quantity"
 >
   <span>dostępne: {{ details.quantity }} szt.</span>
-  <div class="buttons">
+  <div
+    *ngIf="userLogged"
+    class="buttons"
+  >
     <button
       [disabled]="currentQuantity <= 1"
       mat-icon-button

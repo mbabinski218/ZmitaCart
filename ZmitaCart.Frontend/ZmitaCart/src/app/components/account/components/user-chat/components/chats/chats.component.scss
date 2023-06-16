@@ -22,8 +22,8 @@
 
     .title {
       font-weight: 600;
-      font-size: 18px;
-      line-height: 26px;
+      font-size: var(--font-m);
+      line-height: var(--lineHeight-l);
       color: #222;
       margin: 0;
     }

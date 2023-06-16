@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { MessengerService } from '../../services/messenger.service';
+import { MessengerService } from '@components/account/components/user-chat/services/messenger.service';
 import { BehaviorSubject, filter, Subject, takeUntil, map, tap } from 'rxjs';
-import { ChatsStream, MessageStream } from '../../interfaces/chat.interfaces';
-import { MessagesComponent } from './components/messages/messages.component';
-import { UserChatService } from '../../services/user-chat.service';
+import { ChatsStream, MessageStream } from '@components/account/components/user-chat/interfaces/chat.interfaces';
+import { MessagesComponent } from '@components/account/components/user-chat/components/messenger/components/messages/messages.component';
+import { UserChatService } from '@components/account/components/user-chat/services/user-chat.service';
 
 @Component({
   selector: 'pp-messenger',

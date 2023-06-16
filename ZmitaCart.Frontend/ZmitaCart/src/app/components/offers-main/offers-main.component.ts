@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { RoutesPath } from '@core/enums/routes-path.enum';
 import { SharedService } from '@shared/services/shared.service';
 import { IMAGE_URL } from '@shared/constants/shared.constants';
+import { goToDetails } from '@shared/utils/offer-details';
 
 @Component({
   selector: 'pp-offers-main',
@@ -28,12 +29,13 @@ export class OffersMainComponent implements OnInit, OnDestroy {
 
   offers$: Observable<Offers[]>;
   readonly imageUrl = IMAGE_URL;
+  details = goToDetails;
 
   constructor(
     private offerMainService: OfferMainService,
     private sharedService: SharedService,
     private userService: UserService,
-    private router: Router,
+    protected router: Router,
     private ref: ChangeDetectorRef,
   ) { }
 
@@ -58,9 +60,5 @@ export class OffersMainComponent implements OnInit, OnDestroy {
       tap(() => this.ref.detectChanges()),
       takeUntil(this.onDestroy$),
     ).subscribe();
-  }
-
-  details(id: number): void {
-    void this.router.navigateByUrl(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${id}`);
   }
 }

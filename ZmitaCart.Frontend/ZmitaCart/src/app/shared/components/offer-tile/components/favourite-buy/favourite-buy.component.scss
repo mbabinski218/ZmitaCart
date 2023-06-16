@@ -10,11 +10,11 @@
 }
 
 .buy {
-  background-color: var(--color-allegro);
+  background-color: var(--color-allegro-orange);
   width: 180px;
   margin-bottom: 14px;
   color: white;
-  
+
   &.disabled {
     background-color: rgba(0, 0, 0, 15%);
     color: black;
@@ -24,8 +24,8 @@
 }
 
 .city {
-  font-size: 12px;
-  line-height: 16px;
+  font-size: var(--font-xs);
+  line-height: var(--lineHeight-s);
   color: rgb(118, 118, 118);
   font-style: italic;
   padding: 0 14px 10px 0;
@@ -33,10 +33,10 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 2px;
+  gap: var(--gap-xxs);
 
   .icon {
-    font-size: 17px;
+    font-size: var(--font-m);
     width: 17px;
     height: 17px;
     color: rgb(118, 118, 118);

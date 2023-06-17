@@ -15,3 +15,6 @@ jeżeli brak adresu (redirect śmiga)
 Wylogowywanie (automatyczne przeładowanie strony)  
 Może zainteresuje cię "kategoria" z backendu  
 ikonka ładowania po redirect do tworzenia/edycji oferty  
+ilość przedmiotów  
+opacity w usuwaniu podglądów zdjęć (tworzenie ofert)  
+czat kolor  

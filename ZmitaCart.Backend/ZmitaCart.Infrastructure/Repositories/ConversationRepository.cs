@@ -67,12 +67,14 @@ public class ConversationRepository : IConversationRepository
 
 	public async Task<Result<bool>> SendMessageAsync(int userId, int conversationId, DateTimeOffset date, string text, bool isConnected)
 	{
+		// user
 		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 		if (user is null)
 		{
 			return Result.Fail(new NotFoundError("User does not exist"));
 		}
 
+		// conversation
 		var conversation = await _dbContext.Conversations
 			.Include(c => c.Messages)
 			.FirstOrDefaultAsync(c => c.Id == conversationId);
@@ -81,6 +83,7 @@ public class ConversationRepository : IConversationRepository
 			return Result.Fail(new NotFoundError("Conversation does not exist"));
 		}
 
+		// other user chat
 		var otherChat = await _dbContext.Chats
 			.FirstOrDefaultAsync(ch => ch.ConversationId == conversationId && ch.UserId != userId);
 		if (otherChat is null)
@@ -90,6 +93,7 @@ public class ConversationRepository : IConversationRepository
 		
 		otherChat.IsRead = isConnected;
 		
+		// user chat
 		var myChat = await _dbContext.Chats
 			.FirstOrDefaultAsync(ch => ch.ConversationId == conversationId && ch.UserId == userId);
 		if (myChat is null)
@@ -99,8 +103,10 @@ public class ConversationRepository : IConversationRepository
 		
 		myChat.IsRead = true;
 		
+		// is first message
 		var firstMessage = !conversation.Messages.Any();
 		
+		// new message
 		var message = new Message
 		{
 			Text = text,
@@ -111,6 +117,7 @@ public class ConversationRepository : IConversationRepository
 			Date = date
 		};
 
+		// save
 		await _dbContext.Messages.AddAsync(message);
 		await _dbContext.SaveChangesAsync();
 

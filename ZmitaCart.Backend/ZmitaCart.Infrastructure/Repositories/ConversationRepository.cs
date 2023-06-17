@@ -65,7 +65,7 @@ public class ConversationRepository : IConversationRepository
 		return conversation.Id;
 	}
 
-	public async Task<Result<(int, bool)>> SendMessageAsync(int userId, int conversationId, DateTimeOffset date, string text, bool isConnected)
+	public async Task<Result<bool>> SendMessageAsync(int userId, int conversationId, DateTimeOffset date, string text, bool isConnected)
 	{
 		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 		if (user is null)
@@ -73,20 +73,31 @@ public class ConversationRepository : IConversationRepository
 			return Result.Fail(new NotFoundError("User does not exist"));
 		}
 
-		var conversation = await _dbContext.Conversations.FirstOrDefaultAsync(c => c.Id == conversationId);
+		var conversation = await _dbContext.Conversations
+			.Include(c => c.Messages)
+			.FirstOrDefaultAsync(c => c.Id == conversationId);
 		if (conversation is null)
 		{
 			return Result.Fail(new NotFoundError("Conversation does not exist"));
 		}
 
-		var chat = await _dbContext.Chats
+		var otherChat = await _dbContext.Chats
 			.FirstOrDefaultAsync(ch => ch.ConversationId == conversationId && ch.UserId != userId);
-		if (chat is null)
+		if (otherChat is null)
 		{
 			return Result.Fail(new NotFoundError("Chat does not exist"));
 		}
 		
-		chat.IsRead = !isConnected;
+		otherChat.IsRead = isConnected;
+		
+		var myChat = await _dbContext.Chats
+			.FirstOrDefaultAsync(ch => ch.ConversationId == conversationId && ch.UserId == userId);
+		if (myChat is null)
+		{
+			return Result.Fail(new NotFoundError("Chat does not exist"));
+		}
+		
+		myChat.IsRead = true;
 		
 		var firstMessage = !conversation.Messages.Any();
 		
@@ -103,7 +114,7 @@ public class ConversationRepository : IConversationRepository
 		await _dbContext.Messages.AddAsync(message);
 		await _dbContext.SaveChangesAsync();
 
-		return (conversation.OfferId, firstMessage);
+		return firstMessage;
 	}
 
 	public async Task<Result<IEnumerable<ConversationDto>>> GetConversationsAsync(int userId)

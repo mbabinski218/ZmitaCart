@@ -7,7 +7,6 @@ using ZmitaCart.Application.Queries.ConversationQueries.GetAllMessages;
 using ZmitaCart.Application.Queries.ConversationQueries.GetConversation;
 using ZmitaCart.Application.Queries.ConversationQueries.GetUserConversations;
 using ZmitaCart.Application.Queries.ConversationQueries.ReadNotificationsStatus;
-using ZmitaCart.Application.Queries.OfferQueries.GetOfferCreatorConnectionId;
 using ZmitaCart.Domain.Events;
 
 namespace ZmitaCart.API.Hubs;
@@ -16,6 +15,7 @@ namespace ZmitaCart.API.Hubs;
 /// <summary>
 /// NIE POLECAM TEGO KODU
 /// ALE DZIAŁA
+/// Takie sphagetthi że cała rodzina się naje, ale już trochę lepiej
 /// </summary>
 public class ChatHub : Hub
 {
@@ -36,7 +36,7 @@ public class ChatHub : Hub
 		var conversations = await _mediator.Send(new GetUserConversationsQuery(userId));
 		if (conversations.IsFailed)
 		{
-			throw new ArgumentException(conversations.Errors.ToString());
+			throw new ArgumentException(conversations.Errors[0].ToString());
 		}
 
 		foreach (var conversation in conversations.Value)
@@ -55,7 +55,7 @@ public class ChatHub : Hub
 		var conversations = await _mediator.Send(new GetAllConversationsQuery(userId));
 		if (conversations.IsFailed)
 		{
-			throw new ArgumentException(conversations.Errors.ToString());
+			throw new ArgumentException(conversations.Errors[0].ToString());
 		}
 
 		foreach (var conversation in conversations.Value)
@@ -74,10 +74,17 @@ public class ChatHub : Hub
 	public async Task RestoreMessages(int chat, string user)
 	{
 		var userId = int.Parse(user);
+		
+		var conversation = await _mediator.Send(new GetConversationQuery(chat, userId));
+		if (conversation.IsFailed)
+		{
+			throw new ArgumentException(conversation.Errors[0].ToString());
+		}
+
 		var messages = await _mediator.Send(new GetAllMessagesQuery(chat, userId));
 		if (messages.IsFailed)
 		{
-			throw new ArgumentException(messages.Errors.ToString());
+			throw new ArgumentException(messages.Errors[0].ToString());
 		}
 
 		foreach (var message in messages.Value)
@@ -88,6 +95,7 @@ public class ChatHub : Hub
 		await _mediator.Publish(new JoinedChat(userId, chat));
 
 		await ReadNotificationStatus(userId);
+		await UpdateConversation(conversation.Value, messages.Value.Last().Date, messages.Value.Last().Text, true);
 	}
 	
 	public async Task LeaveChat(string user)
@@ -104,28 +112,29 @@ public class ChatHub : Hub
 		var conversation = await _mediator.Send(new GetConversationQuery(chat, userId));
 		if (conversation.IsFailed)
 		{
-			throw new ArgumentException(conversation.Errors.ToString());
+			throw new ArgumentException(conversation.Errors[0].ToString());
 		}
 
+		//TODO wrzucić wszystko co poniżej do GetConversationQuery
 		var otherUserId = await _conversationRepository.GetOtherUserIdOfConversation(chat, userId);
 		if (otherUserId.IsFailed)
 		{
-			throw new ArgumentException(otherUserId.Errors.ToString());
+			throw new ArgumentException(otherUserId.Errors[0].ToString());
 		}
 		
 		var otherUserConnectedChatId = await _userRepository.GetCurrentChatAsync(otherUserId.Value);
 		if (otherUserConnectedChatId.IsFailed)
 		{
-			throw new ArgumentException(otherUserConnectedChatId.Errors.ToString());
+			throw new ArgumentException(otherUserConnectedChatId.Errors[0].ToString());
 		}
 		
 		var otherUserConnectionId = await _userRepository.GetConnectionIdByUserIdAsync(otherUserId.Value);
 		if (otherUserConnectionId.IsFailed)
 		{
-			throw new ArgumentException(otherUserConnectionId.Errors.ToString());
+			throw new ArgumentException(otherUserConnectionId.Errors[0].ToString());
 		}
 		
-		var messageSentEvent = new MessageSent(user, chat, date, text, true);
+		var messageSentEvent = new MessageSent(user, chat, date, text, otherUserConnectedChatId.Value == chat);
 		await _mediator.Publish(messageSentEvent);
 
 		if (messageSentEvent.FirstMessage)
@@ -147,7 +156,7 @@ public class ChatHub : Hub
 
 			if (otherUserConnectionId.Value is not null)
 			{
-				await SendConversation(otherUserConnectionId.Value, conversation.Value, date, text, true);
+				await UpdateConversation(otherUserConnectionId.Value, conversation.Value, date, text, true);
 			}
 		}
 		else
@@ -156,8 +165,14 @@ public class ChatHub : Hub
 
 			if (otherUserConnectionId.Value is not null)
 			{
-				await SendConversation(otherUserConnectionId.Value, conversation.Value, date, text, false);
-				await SendNotificationStatus(otherUserConnectionId.Value, otherUserId.Value);
+				var otherUserConversation = await _mediator.Send(new GetConversationQuery(chat, otherUserId.Value));
+				if (otherUserConversation.IsFailed)
+				{
+					throw new ArgumentException(otherUserConnectionId.Errors[0].ToString());
+				}
+				
+				await UpdateConversation(otherUserConnectionId.Value, otherUserConversation.Value, date, text, false);
+				await ReadNotificationStatus(otherUserConnectionId.Value, otherUserId.Value);
 			}
 		}
 	}
@@ -174,7 +189,7 @@ public class ChatHub : Hub
 		await Clients.Caller.SendAsync("ReceiveNotificationStatus", status);
 	}
 	
-	private async Task SendNotificationStatus(string connectionId, int userId)
+	private async Task ReadNotificationStatus(string connectionId, int userId)
 	{
 		var status = await _mediator.Send(new ReadNotificationStatusQuery(userId));
 		await Clients.Client(connectionId).SendAsync("ReceiveNotificationStatus", status);
@@ -198,7 +213,7 @@ public class ChatHub : Hub
 		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", chat, user, userName, date, text);
 	}
 	
-	private async Task SendConversation(string connectionId, ConversationInfoDto conversation, DateTimeOffset date, string text, bool isRead)
+	private async Task UpdateConversation(string connectionId, ConversationInfoDto conversation, DateTimeOffset date, string text, bool isRead)
 	{
 		await Clients.Client(connectionId).SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId,
 			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl, conversation.WithUser,

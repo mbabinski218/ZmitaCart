@@ -25,8 +25,7 @@ public class MessageSentHandler : INotificationHandler<MessageSent>
 			throw new InvalidDataException(result.Errors.ToString());
 		}
 
-		notification.OfferId = result.Value.Item1;
-		notification.FirstMessage = result.Value.Item2;
+		notification.FirstMessage = result.Value;
 		
 		if (!notification.IsConnected)
 		{

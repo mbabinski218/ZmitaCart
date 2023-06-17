@@ -6,7 +6,7 @@ namespace ZmitaCart.Application.Interfaces;
 public interface IConversationRepository
 {
 	public Task<Result<int>> CreateConversationAsync(int offerId, int userId);
-	public Task<Result<(int, bool)>> SendMessageAsync(int userId, int conversationId, DateTimeOffset date, string text, bool isConnected);
+	public Task<Result<bool>> SendMessageAsync(int userId, int conversationId, DateTimeOffset date, string text, bool isConnected);
 	public Task<Result<IEnumerable<ConversationDto>>> GetConversationsAsync(int userId);
 	public Task<Result<IEnumerable<MessageDto>>> GetMessagesAsync(int chat);
 	public Task<Result<IEnumerable<int>>> GetUserConversationsAsync(int userId);

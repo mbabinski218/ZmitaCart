@@ -1,6 +1,5 @@
 ﻿using FluentResults;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.FileDtos;

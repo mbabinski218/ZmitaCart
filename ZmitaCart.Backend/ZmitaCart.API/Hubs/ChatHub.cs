@@ -120,7 +120,7 @@ public class ChatHub : Hub
 		}
 		
 		var otherUserConnectionId = await _userRepository.GetConnectionIdByUserIdAsync(otherUserId.Value);
-		if (otherUserConnectionId.IsFailed || otherUserConnectionId.Value is null)
+		if (otherUserConnectionId.IsFailed)
 		{
 			throw new ArgumentException(otherUserConnectionId.Errors.ToString());
 		}
@@ -131,7 +131,11 @@ public class ChatHub : Hub
 		if (messageSentEvent.FirstMessage)
 		{
 			await Groups.AddToGroupAsync(Context.ConnectionId, chat.ToString());
-			await Groups.AddToGroupAsync(otherUserConnectionId.Value, chat.ToString());
+
+			if (otherUserConnectionId.Value is not null)
+			{
+				await Groups.AddToGroupAsync(otherUserConnectionId.Value, chat.ToString());
+			}
 		}
 
 		await NewMessage(chat, userId, userName, date, text);
@@ -140,13 +144,21 @@ public class ChatHub : Hub
 		if (otherUserConnectedChatId.Value == chat)
 		{
 			await UpdateConversation(conversation.Value, date, text, true);
-			await SendConversation(otherUserConnectionId.Value, conversation.Value, date, text, true);
+
+			if (otherUserConnectionId.Value is not null)
+			{
+				await SendConversation(otherUserConnectionId.Value, conversation.Value, date, text, true);
+			}
 		}
 		else
 		{
 			await UpdateConversation(conversation.Value, date, text, true);
-			await SendConversation(otherUserConnectionId.Value, conversation.Value, date, text, false);
-			await SendNotificationStatus(otherUserConnectionId.Value, otherUserId.Value);
+
+			if (otherUserConnectionId.Value is not null)
+			{
+				await SendConversation(otherUserConnectionId.Value, conversation.Value, date, text, false);
+				await SendNotificationStatus(otherUserConnectionId.Value, otherUserId.Value);
+			}
 		}
 	}
 

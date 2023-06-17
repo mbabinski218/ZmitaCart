@@ -30,6 +30,12 @@ export class MessengerService {
     this.startConnection();
   }
 
+  //Wyjście z zakładki czatu
+  leaveChatTab() {
+    this.hubConnection.invoke("LeaveChat", this.authorId)
+      .catch((err) => console.log(err));
+  }
+
   //Wysyłanie wiadomości
   sendMessage(message: string, chatId: number) {
     this.hubConnection.invoke("SendMessage", chatId, this.authorId, this.authorName, message)

@@ -79,6 +79,7 @@ export class UserChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.messengerService.leaveChatTab();
     this.userChatService.setCurrentChat(null);
     this.userChatService.setMessageStream(null);
     this.userChatService.setPreviousChatsStream(null);

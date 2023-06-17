@@ -95,7 +95,11 @@ public class ChatHub : Hub
 		await _mediator.Publish(new JoinedChat(userId, chat));
 
 		await ReadNotificationStatus(userId);
-		await UpdateConversation(conversation.Value, messages.Value.Last().Date, messages.Value.Last().Text, true);
+		
+		if (messages.Value.Any())
+		{
+			await UpdateConversation(conversation.Value, messages.Value.Last().Date, messages.Value.Last().Text, true);
+		}
 	}
 	
 	public async Task LeaveChat(string user)

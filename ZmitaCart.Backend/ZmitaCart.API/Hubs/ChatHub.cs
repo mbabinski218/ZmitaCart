@@ -153,14 +153,19 @@ public class ChatHub : Hub
 
 		await NewMessage(chat, userId, userName, date, text);
 		
-		
 		if (otherUserConnectedChatId.Value == chat)
 		{
 			await UpdateConversation(conversation.Value, date, text, true);
 
 			if (otherUserConnectionId.Value is not null)
 			{
-				await UpdateConversation(otherUserConnectionId.Value, conversation.Value, date, text, true);
+				var otherUserConversation = await _mediator.Send(new GetConversationQuery(chat, otherUserId.Value));
+				if (otherUserConversation.IsFailed)
+				{
+					throw new ArgumentException(otherUserConnectionId.Errors[0].ToString());
+				}
+				
+				await UpdateConversation(otherUserConnectionId.Value, otherUserConversation.Value, date, text, true);
 			}
 		}
 		else

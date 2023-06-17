@@ -285,4 +285,52 @@ public class UserRepository : IUserRepository
 		
 		return Result.Ok(feedback);
 	}
+
+	public async Task<Result> AddConnectionIdAsync(int userId, string connectionId)
+	{
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+		if (user is null)
+		{
+			return Result.Fail(new NotFoundError("User does not exist"));
+		}
+		
+		user.ConnectionId = connectionId;
+		await _dbContext.SaveChangesAsync();
+		return Result.Ok();
+	}
+
+	public async Task<Result<string?>> GetConnectionIdByUserIdAsync(int userId)
+	{
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+		if (user is null)
+		{
+			return Result.Fail(new NotFoundError("User does not exist"));
+		}
+
+		return user.ConnectionId;
+	}
+
+	public async Task<Result> SetCurrentChatAsync(int userId, int? chatId)
+	{
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+		if (user is null)
+		{
+			return Result.Fail(new NotFoundError("User does not exist"));
+		}
+		
+		user.CurrentConversationId = chatId;
+		await _dbContext.SaveChangesAsync();
+		return Result.Ok();
+	}
+
+	public async Task<Result<int?>> GetCurrentChatAsync(int userId)
+	{
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+		if (user is null)
+		{
+			return Result.Fail(new NotFoundError("User does not exist"));
+		}
+
+		return user.CurrentConversationId;
+	}
 }

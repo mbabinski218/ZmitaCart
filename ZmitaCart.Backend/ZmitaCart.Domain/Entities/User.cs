@@ -12,7 +12,9 @@ public class User : IdentityEntity<int>
 	public virtual List<UserOffer> Favorites { get; set; } = new();
 	public virtual List<Feedback> Feedbacks { get; set; } = new();
 	public virtual List<Offer> Offers { get; set; } = new();
-	
+	public string? ConnectionId { get; set; }
+	public int? CurrentConversationId { get; set; }
+
 	public static User Create(string email, string firstName, string lastName)
 	{
 		var user = new User

@@ -45,7 +45,8 @@ public class ConversationRepository : IConversationRepository
 			ConversationId = conversation.Id,
 			Conversation = conversation,
 			UserId = userId,
-			User = user
+			User = user,
+			IsRead = true
 		};
 
 		var ownerConversation = new UserConversation
@@ -53,7 +54,8 @@ public class ConversationRepository : IConversationRepository
 			ConversationId = conversation.Id,
 			Conversation = conversation,
 			UserId = offer.UserId,
-			User = offer.User
+			User = offer.User,
+			IsRead = false
 		};
 
 		await _dbContext.Conversations.AddAsync(conversation);
@@ -63,7 +65,7 @@ public class ConversationRepository : IConversationRepository
 		return conversation.Id;
 	}
 
-	public async Task<Result> SendMessageAsync(int userId, int conversationId, DateTimeOffset date, string text)
+	public async Task<Result<(int, bool)>> SendMessageAsync(int userId, int conversationId, DateTimeOffset date, string text, bool isConnected)
 	{
 		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 		if (user is null)
@@ -77,6 +79,17 @@ public class ConversationRepository : IConversationRepository
 			return Result.Fail(new NotFoundError("Conversation does not exist"));
 		}
 
+		var chat = await _dbContext.Chats
+			.FirstOrDefaultAsync(ch => ch.ConversationId == conversationId && ch.UserId != userId);
+		if (chat is null)
+		{
+			return Result.Fail(new NotFoundError("Chat does not exist"));
+		}
+		
+		chat.IsRead = !isConnected;
+		
+		var firstMessage = !conversation.Messages.Any();
+		
 		var message = new Message
 		{
 			Text = text,
@@ -90,7 +103,7 @@ public class ConversationRepository : IConversationRepository
 		await _dbContext.Messages.AddAsync(message);
 		await _dbContext.SaveChangesAsync();
 
-		return Result.Ok();
+		return (conversation.OfferId, firstMessage);
 	}
 
 	public async Task<Result<IEnumerable<ConversationDto>>> GetConversationsAsync(int userId)
@@ -230,5 +243,13 @@ public class ConversationRepository : IConversationRepository
 			.FirstOrDefaultAsync();
 		
 		return conversation;
+	}
+
+	public async Task<Result<int>> GetOtherUserIdOfConversation(int chatId, int userId)
+	{
+		return await _dbContext.Chats
+			.Where(c => c.ConversationId == chatId && c.UserId != userId)
+			.Select(c => c.UserId)
+			.FirstOrDefaultAsync();
 	}
 }

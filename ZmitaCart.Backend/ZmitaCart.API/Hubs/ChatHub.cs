@@ -1,47 +1,62 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using ZmitaCart.Application.Dtos.ConversationDtos;
+using ZmitaCart.Application.Interfaces;
 using ZmitaCart.Application.Queries.ConversationQueries.GetAllConversations;
 using ZmitaCart.Application.Queries.ConversationQueries.GetAllMessages;
 using ZmitaCart.Application.Queries.ConversationQueries.GetConversation;
 using ZmitaCart.Application.Queries.ConversationQueries.GetUserConversations;
 using ZmitaCart.Application.Queries.ConversationQueries.ReadNotificationsStatus;
+using ZmitaCart.Application.Queries.OfferQueries.GetOfferCreatorConnectionId;
 using ZmitaCart.Domain.Events;
 
 namespace ZmitaCart.API.Hubs;
 
+// TODO zrobić wszystko WSZYSTKO lepiej xd
+/// <summary>
+/// NIE POLECAM TEGO KODU
+/// ALE DZIAŁA
+/// </summary>
 public class ChatHub : Hub
 {
 	private readonly IMediator _mediator;
+	private readonly IUserRepository _userRepository;
+	private readonly IConversationRepository _conversationRepository;
 
-	public ChatHub(IMediator mediator)
+	public ChatHub(IMediator mediator, IUserRepository userRepository, IConversationRepository conversationRepository)
 	{
 		_mediator = mediator;
+		_userRepository = userRepository;
+		_conversationRepository = conversationRepository;
 	}
 
 	public async Task Join(string user)
 	{
 		var userId = int.Parse(user);
 		var conversations = await _mediator.Send(new GetUserConversationsQuery(userId));
-
 		if (conversations.IsFailed)
-			return;
+		{
+			throw new ArgumentException(conversations.Errors.ToString());
+		}
 
 		foreach (var conversation in conversations.Value)
 		{
 			await Groups.AddToGroupAsync(Context.ConnectionId, conversation.ToString());
 		}
 
+		await _mediator.Publish(new UserJoined(userId, Context.ConnectionId));
+		
 		await ReadNotificationStatus(userId);
 	}
 
 	public async Task RestoreAllConversations(string user)
 	{
 		var userId = int.Parse(user);
-		var conversations =  await _mediator.Send(new GetAllConversationsQuery(userId));
-		
+		var conversations = await _mediator.Send(new GetAllConversationsQuery(userId));
 		if (conversations.IsFailed)
-			return;
+		{
+			throw new ArgumentException(conversations.Errors.ToString());
+		}
 
 		foreach (var conversation in conversations.Value)
 		{
@@ -52,86 +67,135 @@ public class ChatHub : Hub
 				await RestoreMessage(conversation.LastMessage);
 			}
 		}
+
+		await ReadNotificationStatus(userId);
 	}
-	
+
 	public async Task RestoreMessages(int chat, string user)
 	{
 		var userId = int.Parse(user);
 		var messages = await _mediator.Send(new GetAllMessagesQuery(chat, userId));
-
 		if (messages.IsFailed)
-			return;
-		
+		{
+			throw new ArgumentException(messages.Errors.ToString());
+		}
+
 		foreach (var message in messages.Value)
 		{
 			await RestoreMessage(message);
 		}
 		
-		Context.Items.TryAdd("chat", chat);
+		await _mediator.Publish(new JoinedChat(userId, chat));
 
 		await ReadNotificationStatus(userId);
+	}
+	
+	public async Task LeaveChat(string user)
+	{
+		var userId = int.Parse(user);
+		await _mediator.Publish(new LeftChat(userId));
 	}
 
 	public async Task SendMessage(int chat, string user, string userName, string text)
 	{
 		var userId = int.Parse(user);
 		var date = DateTimeOffset.Now;
-		var isConnected = Context.Items["chat"] as int? == chat;
-		var conversation = await _mediator.Send(new GetConversationQuery(chat, userId));
 		
+		var conversation = await _mediator.Send(new GetConversationQuery(chat, userId));
 		if (conversation.IsFailed)
 		{
 			throw new ArgumentException(conversation.Errors.ToString());
 		}
-		
-		await _mediator.Publish(new MessageSent(user, chat, date, text, isConnected));
-		
-		await NewMessage(chat, userId, userName, date, text);
 
-		if (isConnected)
+		var otherUserId = await _conversationRepository.GetOtherUserIdOfConversation(chat, userId);
+		if (otherUserId.IsFailed)
 		{
-			await UpdateConversation(chat, conversation.Value, date, text, false);
+			throw new ArgumentException(otherUserId.Errors.ToString());
+		}
+		
+		var otherUserConnectedChatId = await _userRepository.GetCurrentChatAsync(otherUserId.Value);
+		if (otherUserConnectedChatId.IsFailed)
+		{
+			throw new ArgumentException(otherUserConnectedChatId.Errors.ToString());
+		}
+		
+		var otherUserConnectionId = await _userRepository.GetConnectionIdByUserIdAsync(otherUserId.Value);
+		if (otherUserConnectionId.IsFailed || otherUserConnectionId.Value is null)
+		{
+			throw new ArgumentException(otherUserConnectionId.Errors.ToString());
+		}
+		
+		var messageSentEvent = new MessageSent(user, chat, date, text, true);
+		await _mediator.Publish(messageSentEvent);
+
+		if (messageSentEvent.FirstMessage)
+		{
+			await Groups.AddToGroupAsync(Context.ConnectionId, chat.ToString());
+			await Groups.AddToGroupAsync(otherUserConnectionId.Value, chat.ToString());
+		}
+
+		await NewMessage(chat, userId, userName, date, text);
+		
+		
+		if (otherUserConnectedChatId.Value == chat)
+		{
+			await UpdateConversation(conversation.Value, date, text, true);
+			await SendConversation(otherUserConnectionId.Value, conversation.Value, date, text, true);
 		}
 		else
 		{
-			await ReadNotificationStatus(chat, userId);
-			await UpdateConversation(chat, conversation.Value, date, text, true);
+			await UpdateConversation(conversation.Value, date, text, true);
+			await SendConversation(otherUserConnectionId.Value, conversation.Value, date, text, false);
+			await SendNotificationStatus(otherUserConnectionId.Value, otherUserId.Value);
 		}
 	}
-	
+
 	private async Task ReadNotificationStatus(int chatId, int userId)
 	{
 		var status = await _mediator.Send(new ReadNotificationStatusQuery(userId));
 		await Clients.Group(chatId.ToString()).SendAsync("ReceiveNotificationStatus", status);
 	}
-	
+
 	private async Task ReadNotificationStatus(int userId)
 	{
 		var status = await _mediator.Send(new ReadNotificationStatusQuery(userId));
 		await Clients.Caller.SendAsync("ReceiveNotificationStatus", status);
 	}
+	
+	private async Task SendNotificationStatus(string connectionId, int userId)
+	{
+		var status = await _mediator.Send(new ReadNotificationStatusQuery(userId));
+		await Clients.Client(connectionId).SendAsync("ReceiveNotificationStatus", status);
+	}
 
 	private async Task RestoreMessage(MessageDto message)
 	{
-		await Clients.Caller.SendAsync("ReceiveMessage", message.ChatId, message.UserId, message.UserName, 
+		await Clients.Caller.SendAsync("ReceiveMessage", message.ChatId, message.UserId, message.UserName,
 			message.Date, message.Text);
 	}
 
 	private async Task RestoreConversation(ConversationDto conversation)
 	{
-		await Clients.Caller.SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId, 
+		await Clients.Caller.SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId,
 			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl, conversation.WithUser,
 			conversation.LastMessage?.Date, conversation.LastMessage?.Text, conversation.IsRead);
 	}
-	
+
 	private async Task NewMessage(int chat, int user, string userName, DateTimeOffset date, string text)
 	{
 		await Clients.Group(chat.ToString()).SendAsync("ReceiveMessage", chat, user, userName, date, text);
 	}
 	
-	private async Task UpdateConversation(int chat, ConversationInfoDto conversation, DateTimeOffset date, string text, bool isRead)
+	private async Task SendConversation(string connectionId, ConversationInfoDto conversation, DateTimeOffset date, string text, bool isRead)
 	{
-		await Clients.Group(chat.ToString()).SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId, 
+		await Clients.Client(connectionId).SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId,
+			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl, conversation.WithUser,
+			date, text, isRead);
+	}
+	
+	private async Task UpdateConversation(ConversationInfoDto conversation, DateTimeOffset date, string text, bool isRead)
+	{
+		await Clients.Caller.SendAsync("ReceiveConversation", conversation.Id, conversation.OfferId,
 			conversation.OfferTitle, conversation.OfferPrice, conversation.OfferImageUrl, conversation.WithUser,
 			date, text, isRead);
 	}

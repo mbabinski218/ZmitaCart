@@ -17,13 +17,17 @@ public class MessageSentHandler : INotificationHandler<MessageSent>
 	{
 		var userId = int.Parse(notification.UserId);
 		
-		var result = await _conversationRepository.SendMessageAsync(userId, notification.ChatId, notification.Date, notification.Text);
-
+		var result = await _conversationRepository.SendMessageAsync(userId, notification.ChatId, notification.Date, 
+			notification.Text, notification.IsConnected);
+		
 		if (result.IsFailed)
 		{
 			throw new InvalidDataException(result.Errors.ToString());
 		}
 
+		notification.OfferId = result.Value.Item1;
+		notification.FirstMessage = result.Value.Item2;
+		
 		if (!notification.IsConnected)
 		{
 			await _conversationRepository.IncrementNotificationStatusAsync(userId, notification.ChatId);

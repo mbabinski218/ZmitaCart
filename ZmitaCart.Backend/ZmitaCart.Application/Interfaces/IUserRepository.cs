@@ -19,4 +19,9 @@ public interface IUserRepository
 	public Task<Result<int>> UpdateFeedbackAsync(int feedbackId, int raterId, int? rating, string? comment);
 	public Task<Result> DeleteFeedbackAsync(int feedbackId);
 	public Task<Result<PaginatedList<FeedbackDto>>> GetFeedbackAsync(int userId, int? pageNumber, int? pageSize);
+	public Task<Result> AddConnectionIdAsync(int userId, string connectionId);
+	public Task<Result<string?>> GetConnectionIdByUserIdAsync(int userId);
+	public Task<Result> SetCurrentChatAsync(int userId, int? chatId);
+	public Task<Result<int?>> GetCurrentChatAsync(int userId);
+	
 }

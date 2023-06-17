@@ -290,6 +290,7 @@ public class OfferRepository : IOfferRepository
 				.ThenInclude(u => u.Address)
 			.Include(o => o.Pictures)
 			.Include(o => o.Favorites)
+			.OrderByDescending(o => o.CreatedAt)
 			.AsNoTracking()
 			.ToUniqueListAsync(o => o.Category.Name, o => o.Adapt<OfferInfoDto>());
 
@@ -318,5 +319,16 @@ public class OfferRepository : IOfferRepository
 		return await _dbContext.Favorites
 			.Where(f => f.UserId == userId)
 			.CountAsync();
+	}
+
+	public async Task<Result<int>> GetUserIdByOfferIdAsync(int offerId)
+	{
+		var offer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Id == offerId);
+		if (offer is null)
+		{
+			return Result.Fail(new NotFoundError("Offer not found"));
+		}
+
+		return offer.UserId;
 	}
 }

@@ -1,12 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component, ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  ViewEncapsulation
-} from '@angular/core';
+import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
@@ -22,15 +15,16 @@ import { OfferService } from "@components/add-offer/api/offer.service";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { RoutingService } from "@shared/services/routing.service";
 import { RoutesPath } from "@core/enums/routes-path.enum";
-import { Subject, filter, map, switchMap, takeUntil, tap, BehaviorSubject } from 'rxjs';
+import { Subject, filter, map, switchMap, takeUntil, tap, BehaviorSubject, catchError, of } from 'rxjs';
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { HeaderStateService } from '@core/services/header-state/header-state.service';
-
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'pp-add-offer',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, ReactiveFormsModule, MatInputModule, ConditionWrapperComponent, CategorySelectorComponent, RouterLink, MatSlideToggleModule],
+  imports: [CommonModule, MatIconModule, MatProgressSpinnerModule, MatButtonModule, ReactiveFormsModule, MatInputModule, ConditionWrapperComponent, CategorySelectorComponent, RouterLink, MatSlideToggleModule],
   templateUrl: './add-offer.component.html',
   styleUrls: ['./add-offer.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -57,6 +51,7 @@ export class AddOfferComponent implements OnInit, OnDestroy {
   inEdit = false;
   offerId: number;
   isAvailable: boolean;
+  loaded$ = new BehaviorSubject<boolean>(true);
 
   @ViewChild('dropZone', { static: true }) dropZone!: ElementRef;
 
@@ -81,6 +76,7 @@ export class AddOfferComponent implements OnInit, OnDestroy {
     private routerService: RoutingService,
     private route: ActivatedRoute,
     private headerStateService: HeaderStateService,
+    private toastMessageService: ToastMessageService,
   ) { }
 
   readonly imageUrl = 'http://localhost:5102/File?name=';
@@ -99,7 +95,9 @@ export class AddOfferComponent implements OnInit, OnDestroy {
       filter((id) => !!id),
       tap(() => this.inEdit = true),
       tap((id) => this.offerId = Number(id)),
+      tap(() => this.loaded$.next(false)),
       switchMap((id) => this.offerService.goToEditOffer(id)),
+      tap(() => this.loaded$.next(true)),
       tap((res) => this.createOffer.patchValue(res)),
       tap((res) => this.pickedCategory = { id: res.categoryId, name: '' }),
       tap((res) => this.createOffer.get('price').setValue(res.price.toString().replace('.', ','))),
@@ -239,20 +237,17 @@ export class AddOfferComponent implements OnInit, OnDestroy {
 
   onFileSelected(event: any) {
     if (this.selectedImages.length >= 15) {
-      //TODO toast z odpowiednią inofmracją
-      console.log("more than 15");
+      this.toastMessageService.notifyOfError('Nie można dodać więcej niż 15 zdjęć');
       return;
     }
 
     this.selectedImages = [...this.selectedImages, ...event.target.files];
-    console.log(this.selectedImages);
     this.handleImages();
   }
 
   deleteImage(index: number) {
     this.selectedImages = Array.from(this.selectedImages).filter((file, i) => i !== index);
     this.previews.getValue().splice(index, 1);
-    console.log(this.selectedImages);
   }
 
   addOffer(formValue: any) {
@@ -260,8 +255,14 @@ export class AddOfferComponent implements OnInit, OnDestroy {
       return;
 
     this.offerService.createOffer(formValue.title, formValue.description, formValue.price, formValue.quantity, Condition[this.condition.value], this.pickedCategory.id, this.selectedImages).pipe(
-      takeUntil(this.onDestroy$))
+      takeUntil(this.onDestroy$),
+      catchError((err: HttpErrorResponse) => {
+        const error = err.error as string[];
+        this.toastMessageService.notifyOfError(error[0]);
+        return of(null);
+      }))
       .subscribe(res => {
+        this.toastMessageService.notifyOfSuccess('Dodano ofertę');
         this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
       }
       );
@@ -273,8 +274,14 @@ export class AddOfferComponent implements OnInit, OnDestroy {
 
     this.offerService.updateOffer(this.offerId, formValue.title, formValue.description, formValue.price, formValue.quantity, Condition[this.condition.value], this.isAvailable, this.selectedImages)
       .pipe(
-        takeUntil(this.onDestroy$))
+        takeUntil(this.onDestroy$),
+        catchError((err: HttpErrorResponse) => {
+          const error = err.error as string[];
+          this.toastMessageService.notifyOfError(error[0]);
+          return of(null);
+        }))
       .subscribe(res => {
+        this.toastMessageService.notifyOfSuccess('Zaktualizowano ofertę');
         this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
       }
       );
@@ -302,13 +309,5 @@ export class AddOfferComponent implements OnInit, OnDestroy {
     this.isDragOver = false;
     event.preventDefault();
     event.stopPropagation();
-    // console.log("funkcja onDragLeave");
-    // const dropZoneElement = this.dropZone.nativeElement;
-    // const isInsideDropZone = dropZoneElement.contains(event.relatedTarget as Node);
-    // if (!isInsideDropZone) {
-    //   console.log("jestem w if")
-    //   this.isDragOver = true;
-    // }
-
   }
 }

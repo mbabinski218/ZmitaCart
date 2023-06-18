@@ -44,6 +44,7 @@ export class UserChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.messengerService.getCanConnect().pipe(
       filter((res) => !!res),
+      tap(() => this.messengerService.leaveChatTab()),
       tap(() => this.messengerService.restoreAllConversations()),
       takeUntil(this.onDestroy$),
     ).subscribe();

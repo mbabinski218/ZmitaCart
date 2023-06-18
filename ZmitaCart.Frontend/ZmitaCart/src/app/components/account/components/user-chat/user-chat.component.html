@@ -20,7 +20,10 @@
     </div>
 
     <div class="info">
-      <pp-offer [currentChat]="data.currentChat"></pp-offer>
+      <pp-offer
+        *ngIf="data.currentChat"
+        [currentChat]="data.currentChat"
+      ></pp-offer>
       <pp-chats></pp-chats>
     </div>
   </div>

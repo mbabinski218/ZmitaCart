@@ -26,7 +26,7 @@
         </div>
       </div>
 
-      <hr>
+    <hr>
 
       <div
         class="addPhotos"
@@ -191,32 +191,20 @@
           >
         </div>
 
-        <div class="quantity">
-          <label>Liczba przedmiotów</label>
-          <input
-            type="text"
-            formControlName="quantity"
-            class="customForm"
-            id="qForm"
-            min="1"
-            pattern="^(?=.*[1-9])\d+$"
-          >
-        </div>
-        <div class="createOfferWrapper">
-          <button
-            type="submit"
-            class="button-allegro submit"
-            [disabled]="!createOffer.valid || !validateProps()"
-          >
-            {{ inEdit ? 'Zaktualizuj ofertę' : 'Utwórz ofertę' }}
-          </button>
-        </div>
-        <div class="blank"></div>
+      <div class="quantity">
+        <label>Liczba przedmiotów</label>
+        <input type="text" formControlName="quantity" class="customForm" id="qForm" min="1">
       </div>
-    </form>
-  </div>
+      <div class="createOfferWrapper">
+        <button type="submit" class="button-allegro submit" [disabled]="!createOffer.valid || !validateProps()">
+          {{ inEdit ? 'Zaktualizuj ofertę' : 'Utwórz ofertę' }}
+        </button>
+      </div>
+      <div class="blank"></div>
+    </div>
+  </form>
+</div>
 </ng-container>
-
 <ng-template #loading>
   <div class="center">
     <mat-spinner></mat-spinner>

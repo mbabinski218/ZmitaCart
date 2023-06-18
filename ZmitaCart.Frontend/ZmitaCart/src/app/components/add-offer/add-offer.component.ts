@@ -1,25 +1,34 @@
-import { ToastMessageService } from '@shared/components/toast-message/services/toast-message.service';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from "@angular/material/icon";
-import { MatButtonModule } from "@angular/material/button";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatInputModule } from "@angular/material/input";
-import { CategoryService } from "@components/add-offer/api/category.service";
-import { Category } from "@components/add-offer/interfaces/Category";
-import { Condition } from "@core/enums/condition.enum";
-import { ConditionWrapperComponent } from "@components/add-offer/condition-wrapper/condition-wrapper.component";
-import { ConditionType } from "@components/add-offer/interfaces/ConditionType";
-import { CategorySelectorComponent } from "@components/add-offer/category-selector/category-selector.component";
-import { OfferService } from "@components/add-offer/api/offer.service";
-import { ActivatedRoute, RouterLink } from "@angular/router";
-import { RoutingService } from "@shared/services/routing.service";
-import { RoutesPath } from "@core/enums/routes-path.enum";
-import { Subject, filter, map, switchMap, takeUntil, tap, BehaviorSubject, catchError, of } from 'rxjs';
-import { MatSlideToggleModule } from "@angular/material/slide-toggle";
-import { HeaderStateService } from '@core/services/header-state/header-state.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {ToastMessageService} from '@shared/components/toast-message/services/toast-message.service';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
+import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {MatInputModule} from "@angular/material/input";
+import {CategoryService} from "@components/add-offer/api/category.service";
+import {Category} from "@components/add-offer/interfaces/Category";
+import {Condition} from "@core/enums/condition.enum";
+import {ConditionWrapperComponent} from "@components/add-offer/condition-wrapper/condition-wrapper.component";
+import {ConditionType} from "@components/add-offer/interfaces/ConditionType";
+import {CategorySelectorComponent} from "@components/add-offer/category-selector/category-selector.component";
+import {OfferService} from "@components/add-offer/api/offer.service";
+import {ActivatedRoute, RouterLink} from "@angular/router";
+import {RoutingService} from "@shared/services/routing.service";
+import {RoutesPath} from "@core/enums/routes-path.enum";
+import {Subject, filter, map, switchMap, takeUntil, tap, BehaviorSubject, catchError, of} from 'rxjs';
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {HeaderStateService} from '@core/services/header-state/header-state.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'pp-add-offer',
@@ -36,7 +45,6 @@ export class AddOfferComponent implements OnInit, OnDestroy {
 
   createOffer: FormGroup;
   characterCount: number;
-  // price: number;
   quantity: number;
   condition = new BehaviorSubject<Condition>(null);
   subCategories: Category[] = null;
@@ -51,9 +59,8 @@ export class AddOfferComponent implements OnInit, OnDestroy {
   inEdit = false;
   offerId: number;
   isAvailable: boolean;
+  filesCounter: number;
   loaded$ = new BehaviorSubject<boolean>(true);
-
-  @ViewChild('dropZone', { static: true }) dropZone!: ElementRef;
 
   items: ConditionType[] = [{
     title: "Używany",
@@ -77,11 +84,14 @@ export class AddOfferComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private headerStateService: HeaderStateService,
     private toastMessageService: ToastMessageService,
-  ) { }
+  ) {
+  }
 
   readonly imageUrl = 'http://localhost:5102/File?name=';
 
   ngOnInit(): void {
+    this.filesCounter = 0;
+
     this.createOffer = new FormGroup({
       title: new FormControl(null as string, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
       description: new FormControl(null as string, [Validators.required]),
@@ -91,7 +101,7 @@ export class AddOfferComponent implements OnInit, OnDestroy {
     });
 
     this.route.queryParams.pipe(
-      map(({ id }) => id as string),
+      map(({id}) => id as string),
       filter((id) => !!id),
       tap(() => this.inEdit = true),
       tap((id) => this.offerId = Number(id)),
@@ -99,11 +109,12 @@ export class AddOfferComponent implements OnInit, OnDestroy {
       switchMap((id) => this.offerService.goToEditOffer(id)),
       tap(() => this.loaded$.next(true)),
       tap((res) => this.createOffer.patchValue(res)),
-      tap((res) => this.pickedCategory = { id: res.categoryId, name: '' }),
+      tap((res) => this.pickedCategory = {id: res.categoryId, name: ''}),
       tap((res) => this.createOffer.get('price').setValue(res.price.toString().replace('.', ','))),
       tap((res) => this.createOffer.get('availability').setValue(res.isAvailable)),
       tap((res) => this.condition.next(Object.values(Condition).indexOf(res.condition))),
       tap(res => this.previews.next(res.picturesNames?.map((name: string) => name = this.imageUrl + name))),
+      tap(res => this.filesCounter = res.picturesNames?.length as unknown as number),
       switchMap(res => this.offerService.restoreOfferImages(res?.picturesNames as string[])),
       tap(res => this.selectedImages = res as File[]),
     ).subscribe();
@@ -114,23 +125,6 @@ export class AddOfferComponent implements OnInit, OnDestroy {
 
     this.createOffer.get('availability').valueChanges.subscribe((res: boolean) => {
       this.isAvailable = res;
-    });
-
-    // this.createOffer.get('price').valueChanges.subscribe((res: string) => {
-    //   this.createOffer.get('price').setValue(res.replace('.', ','));
-    // });
-
-    const quantityControl = this.createOffer.get('quantity');
-    quantityControl.valueChanges.pipe(
-      takeUntil(this.onDestroy$),
-    ).subscribe((res: string) => {
-      if (res.length === 0) {
-        quantityControl.setValue(1);
-      }
-      if (!quantityControl.valid) {
-        const val = res.replace(/\D/g, '');
-        quantityControl.setValue(val);
-      }
     });
 
     this.headerStateService.setShowSearch(false);
@@ -236,18 +230,21 @@ export class AddOfferComponent implements OnInit, OnDestroy {
   }
 
   onFileSelected(event: any) {
-    if (this.selectedImages.length >= 15) {
+    this.filesCounter += event.target.files.length;
+    if (this.filesCounter > 15) {
       this.toastMessageService.notifyOfError('Nie można dodać więcej niż 15 zdjęć');
+      this.filesCounter -= event.target.files.length;
       return;
     }
 
-    this.selectedImages = [...this.selectedImages, ...event.target.files];
+    this.selectedImages = [...this.selectedImages, ...event.target.files] as File[];
     this.handleImages();
   }
 
   deleteImage(index: number) {
     this.selectedImages = Array.from(this.selectedImages).filter((file, i) => i !== index);
     this.previews.getValue().splice(index, 1);
+    this.filesCounter--;
   }
 
   addOffer(formValue: any) {
@@ -262,9 +259,9 @@ export class AddOfferComponent implements OnInit, OnDestroy {
         return of(null);
       }))
       .subscribe(res => {
-        this.toastMessageService.notifyOfSuccess('Dodano ofertę');
-        this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
-      }
+          this.toastMessageService.notifyOfSuccess('Dodano ofertę');
+          this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
+        }
       );
   }
 
@@ -281,9 +278,9 @@ export class AddOfferComponent implements OnInit, OnDestroy {
           return of(null);
         }))
       .subscribe(res => {
-        this.toastMessageService.notifyOfSuccess('Zaktualizowano ofertę');
-        this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
-      }
+          this.toastMessageService.notifyOfSuccess('Zaktualizowano ofertę');
+          this.routerService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.OFFER}/${res}`);
+        }
       );
   }
 

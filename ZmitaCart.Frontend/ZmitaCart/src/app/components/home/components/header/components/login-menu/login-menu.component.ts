@@ -49,6 +49,6 @@ export class LoginMenuComponent implements OnInit, OnDestroy {
   logout(): void {
     this.headerService.logout().pipe(
       takeUntil(this.onDestroy$),
-    ).subscribe(() => this.userService.logout());
+    ).subscribe(() => { this.userService.logout(); window.location.reload(); });
   }
 }

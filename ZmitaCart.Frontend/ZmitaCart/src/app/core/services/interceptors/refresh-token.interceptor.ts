@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { UserService } from '@core/services/authorization/user.service';
 import { ErrorStatus } from '@core/enums/error-status.enum';
@@ -24,6 +24,8 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         if (error instanceof HttpErrorResponse && error.status === ErrorStatus.UNAUTHORIZED) {
           return this.handle401Error(request, next);
+        } else {
+          return throwError(error);
         }
       })
     );

@@ -54,14 +54,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
         ...res,
         offerPrice: this.ppFixPricePipe.transform(Number(res.offerPrice)),
       })),
-      tap((res) => console.log(res)),
       tap((res) => {
-        if (res.withUser === this.user)
-          res = {
-            ...res,
-            isRead: true,
-          };
-
         const itemIndex = this.previousChats$.value.findIndex((result) => result.offerId === res.offerId);
         if (itemIndex !== -1) {
           if (this.previousChats$.value[itemIndex].isNewChat)
@@ -94,14 +87,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
   }
 
   changeCurrentChat(chat: ChatsStream) {
-    // console.log(chat)
-    const fixedChat = {
-      ...chat,
-      isRead: true,
-    };
-    // console.log(fixedChat)
-
-    this.userChatService.setCurrentChat(fixedChat);
+    this.userChatService.setCurrentChat(chat);
   }
 
   private setCurrentChatStyle() {

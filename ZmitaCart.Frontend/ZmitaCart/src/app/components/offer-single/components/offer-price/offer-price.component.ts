@@ -124,6 +124,7 @@ export class OfferPriceComponent implements OnInit, OnDestroy {
       tap(() => this.toastMessageService.notifyOfSuccess(`Kupiono ${this.details.title}`)),
       tap(() => this.details = { ...this.details, quantity: this.details.quantity - this.currentQuantity }),
       tap(() => { this.currentQuantity = 1; this.currentQuantity$.next(1); }),
+      tap(() => { this.details.quantity <= 0 && this.routingService.navigateTo('/'); }),
       tap(() => this.ref.detectChanges()),
       takeUntil(this.onDestroy$),
     ).subscribe();

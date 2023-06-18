@@ -1,22 +1,31 @@
-import os
-import time
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
-# Get the current working directory
-project_dir = os.getcwd()
+# Set up the WebDriver instance (in this case, using Firefox)
+driver = webdriver.Firefox()
 
-# Set the path to the Chrome driver executable
-chrome_driver_path = os.path.join(project_dir, "Chrome Driver", "chromedriver.exe")
-os.environ["webdriver.chrome.driver"] = chrome_driver_path
+# Navigate to the desired webpage
+driver.get("http://localhost:4200/home/offers")
 
-options = Options()
-driver = webdriver.Chrome(options=options)
+# Find the search input element and enter the search query
+search_input = driver.find_element(By.CSS_SELECTOR, 'input[formcontrolname="input"]')
+search_query = "CS:GO Klucze"
+search_input.send_keys(search_query)
 
-driver.get("http://localhost:4200/")
+# Submit the search query
+search_input.send_keys(Keys.RETURN)
 
-# Add a delay of 3 seconds before the browser closes
-time.sleep(3)
+# Wait for the search results page to load (you can add an explicit wait here if needed)
+driver.implicitly_wait(5)
 
-# Close the browser window
+# Get the search results and check if the search query is present in any of the results
+search_results = driver.find_element(By.CSS_SELECTOR, "p.title.cursor-pointer")
+
+if search_query in search_results.text:
+    print("The expected text is present in the search results.")
+else:
+    print("The expected text is not present in the search results.")
+
+# Close the browser
 driver.quit()

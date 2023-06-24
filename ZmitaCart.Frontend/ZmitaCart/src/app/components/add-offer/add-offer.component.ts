@@ -96,7 +96,7 @@ export class AddOfferComponent implements OnInit, OnDestroy {
       title: new FormControl(null as string, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
       description: new FormControl(null as string, [Validators.required]),
       price: new FormControl(null as number, [Validators.required, Validators.pattern("^\\d+(?:\\,\\d{1,2})?$")]),
-      quantity: new FormControl(1, [Validators.pattern("^(?=.*[1-9])\\d+$")]),
+      quantity: new FormControl(1, [Validators.required, Validators.pattern("^(?=.*[1-9])\\d+$")]),
       availability: new FormControl()
     });
 

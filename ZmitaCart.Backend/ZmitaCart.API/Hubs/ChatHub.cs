@@ -11,23 +11,13 @@ using ZmitaCart.Domain.Events;
 
 namespace ZmitaCart.API.Hubs;
 
-// TODO zrobić wszystko WSZYSTKO lepiej xd
-/// <summary>
-/// NIE POLECAM TEGO KODU
-/// ALE DZIAŁA
-/// Takie sphagetthi że cała rodzina się naje, ale już trochę lepiej
-/// </summary>
 public class ChatHub : Hub
 {
 	private readonly IMediator _mediator;
-	private readonly IUserRepository _userRepository;
-	private readonly IConversationRepository _conversationRepository;
 
-	public ChatHub(IMediator mediator, IUserRepository userRepository, IConversationRepository conversationRepository)
+	public ChatHub(IMediator mediator)
 	{
 		_mediator = mediator;
-		_userRepository = userRepository;
-		_conversationRepository = conversationRepository;
 	}
 
 	public async Task Join(string user)
@@ -36,7 +26,7 @@ public class ChatHub : Hub
 		var conversations = await _mediator.Send(new GetUserConversationsQuery(userId));
 		if (conversations.IsFailed)
 		{
-			throw new ArgumentException(conversations.Errors[0].ToString());
+			throw new ArgumentException(conversations.Errors.ToList().ToString());
 		}
 
 		foreach (var conversation in conversations.Value)
@@ -55,7 +45,7 @@ public class ChatHub : Hub
 		var conversations = await _mediator.Send(new GetAllConversationsQuery(userId));
 		if (conversations.IsFailed)
 		{
-			throw new ArgumentException(conversations.Errors[0].ToString());
+			throw new ArgumentException(conversations.Errors.ToList().ToString());
 		}
 
 		foreach (var conversation in conversations.Value)
@@ -78,13 +68,13 @@ public class ChatHub : Hub
 		var conversation = await _mediator.Send(new GetConversationQuery(chat, userId));
 		if (conversation.IsFailed)
 		{
-			throw new ArgumentException(conversation.Errors[0].ToString());
+			throw new ArgumentException(conversation.Errors.ToList().ToString());
 		}
 
 		var messages = await _mediator.Send(new GetAllMessagesQuery(chat, userId));
 		if (messages.IsFailed)
 		{
-			throw new ArgumentException(messages.Errors[0].ToString());
+			throw new ArgumentException(messages.Errors.ToList().ToString());
 		}
 
 		foreach (var message in messages.Value)
@@ -116,82 +106,57 @@ public class ChatHub : Hub
 		var conversation = await _mediator.Send(new GetConversationQuery(chat, userId));
 		if (conversation.IsFailed)
 		{
-			throw new ArgumentException(conversation.Errors[0].ToString());
+			throw new ArgumentException(conversation.Errors.ToList().ToString());
 		}
 
-		//TODO wrzucić wszystko co poniżej do GetConversationQuery
-		var otherUserId = await _conversationRepository.GetOtherUserIdOfConversation(chat, userId);
-		if (otherUserId.IsFailed)
-		{
-			throw new ArgumentException(otherUserId.Errors[0].ToString());
-		}
-		
-		var otherUserConnectedChatId = await _userRepository.GetCurrentChatAsync(otherUserId.Value);
-		if (otherUserConnectedChatId.IsFailed)
-		{
-			throw new ArgumentException(otherUserConnectedChatId.Errors[0].ToString());
-		}
-		
-		var otherUserConnectionId = await _userRepository.GetConnectionIdByUserIdAsync(otherUserId.Value);
-		if (otherUserConnectionId.IsFailed)
-		{
-			throw new ArgumentException(otherUserConnectionId.Errors[0].ToString());
-		}
-		
-		var messageSentEvent = new MessageSent(user, chat, date, text, otherUserConnectedChatId.Value == chat);
+		var messageSentEvent = new MessageSent(user, chat, date, text, conversation.Value.WithUserConnectedChatId == chat);
 		await _mediator.Publish(messageSentEvent);
 
 		if (messageSentEvent.FirstMessage)
 		{
 			await Groups.AddToGroupAsync(Context.ConnectionId, chat.ToString());
 
-			if (otherUserConnectionId.Value is not null)
+			if (conversation.Value.WithUserConnectionId is not null)
 			{
-				await Groups.AddToGroupAsync(otherUserConnectionId.Value, chat.ToString());
+				await Groups.AddToGroupAsync(conversation.Value.WithUserConnectionId, chat.ToString());
 			}
 		}
 
 		await NewMessage(chat, userId, userName, date, text);
 		
-		if (otherUserConnectedChatId.Value == chat)
+		if (conversation.Value.WithUserConnectedChatId == chat)
 		{
 			await UpdateConversation(conversation.Value, date, text, true);
 
-			if (otherUserConnectionId.Value is not null)
+			if (conversation.Value.WithUserConnectionId is not null)
 			{
-				var otherUserConversation = await _mediator.Send(new GetConversationQuery(chat, otherUserId.Value));
+				var otherUserConversation = await _mediator.Send(new GetConversationQuery(chat, conversation.Value.WithUserId));
 				if (otherUserConversation.IsFailed)
 				{
-					throw new ArgumentException(otherUserConnectionId.Errors[0].ToString());
+					throw new ArgumentException(otherUserConversation.Errors.ToList().ToString());
 				}
 				
-				await UpdateConversation(otherUserConnectionId.Value, otherUserConversation.Value, date, text, true);
+				await UpdateConversation(conversation.Value.WithUserConnectionId, otherUserConversation.Value, date, text, true);
 			}
 		}
 		else
 		{
 			await UpdateConversation(conversation.Value, date, text, true);
 
-			if (otherUserConnectionId.Value is not null)
+			if (conversation.Value.WithUserConnectionId is not null)
 			{
-				var otherUserConversation = await _mediator.Send(new GetConversationQuery(chat, otherUserId.Value));
+				var otherUserConversation = await _mediator.Send(new GetConversationQuery(chat, conversation.Value.WithUserId));
 				if (otherUserConversation.IsFailed)
 				{
-					throw new ArgumentException(otherUserConnectionId.Errors[0].ToString());
+					throw new ArgumentException(otherUserConversation.Errors.ToList().ToString());
 				}
 				
-				await UpdateConversation(otherUserConnectionId.Value, otherUserConversation.Value, date, text, false);
-				await ReadNotificationStatus(otherUserConnectionId.Value, otherUserId.Value);
+				await UpdateConversation(conversation.Value.WithUserConnectionId, otherUserConversation.Value, date, text, false);
+				await ReadNotificationStatus(conversation.Value.WithUserConnectionId, conversation.Value.WithUserId);
 			}
 		}
 	}
-
-	private async Task ReadNotificationStatus(int chatId, int userId)
-	{
-		var status = await _mediator.Send(new ReadNotificationStatusQuery(userId));
-		await Clients.Group(chatId.ToString()).SendAsync("ReceiveNotificationStatus", status);
-	}
-
+	
 	private async Task ReadNotificationStatus(int userId)
 	{
 		var status = await _mediator.Send(new ReadNotificationStatusQuery(userId));

@@ -15,5 +15,4 @@ public interface IConversationRepository
 	public Task DecrementNotificationStatusAsync(int userId, int chatId);
 	public Task<Result<int>> ReadNotificationStatusAsync(int userId);
 	public Task<Result<ConversationInfoDto>> GetConversationAsync(int conversationId, int userId);
-	public Task<Result<int>> GetOtherUserIdOfConversation(int chatId, int userId);
 }

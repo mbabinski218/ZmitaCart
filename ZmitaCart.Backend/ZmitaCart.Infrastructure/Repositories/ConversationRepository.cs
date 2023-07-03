@@ -254,20 +254,14 @@ public class ConversationRepository : IConversationRepository
 			.FirstAsync(ch => ch.ConversationId == conversation.Id && ch.UserId != userId)).User;
 
 		conversation.WithUser = $"{user.FirstName} {user.LastName}";
-		
+		conversation.WithUserId = user.Id;
+		conversation.WithUserConnectionId = user.ConnectionId;
+
 		conversation.IsRead = await _dbContext.Chats
 			.Where(ch => ch.ConversationId == conversation.Id && ch.UserId == userId)
 			.Select(ch => ch.IsRead)
 			.FirstOrDefaultAsync();
 		
 		return conversation;
-	}
-
-	public async Task<Result<int>> GetOtherUserIdOfConversation(int chatId, int userId)
-	{
-		return await _dbContext.Chats
-			.Where(c => c.ConversationId == chatId && c.UserId != userId)
-			.Select(c => c.UserId)
-			.FirstOrDefaultAsync();
 	}
 }

@@ -133,5 +133,4 @@ Najtrudniejszym elementem do zrealizowania okazał się czat. Łącznie na jego 
 ## Design & Tests:
 - Wiktor - https://github.com/wm1511
 - Karol - https://github.com/my-memory-leaked
-- Dominik - https://github.com/DominikBarys
 - Jakub Mieszczak - -\-

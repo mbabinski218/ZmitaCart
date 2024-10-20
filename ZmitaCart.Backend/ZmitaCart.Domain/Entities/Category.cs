@@ -2,7 +2,7 @@
 
 namespace ZmitaCart.Domain.Entities;
 
-public class Category : AggregateRoot<int>
+public class Category : Entity<int>
 {
     public string Name { get; set; } = null!;
     public int? ParentId { get; set; }

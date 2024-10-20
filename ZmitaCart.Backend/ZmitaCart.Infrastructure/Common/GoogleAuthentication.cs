@@ -15,15 +15,12 @@ namespace ZmitaCart.Infrastructure.Common;
 public class GoogleAuthentication
 {
 	private readonly UserManager<User> _userManager;
-	private readonly SignInManager<User> _signInManager;
 	private readonly JwtHelper _jwtHelper;
 	private readonly GoogleSettings _googleSettings;
 
-	public GoogleAuthentication(IOptions<GoogleSettings> googleSettings, UserManager<User> userManager, 
-		SignInManager<User> signInManager, JwtHelper jwtHelper)
+	public GoogleAuthentication(IOptions<GoogleSettings> googleSettings, UserManager<User> userManager, JwtHelper jwtHelper)
 	{
 		_userManager = userManager;
-		_signInManager = signInManager;
 		_jwtHelper = jwtHelper;
 		_googleSettings = googleSettings.Value;
 	}
@@ -95,8 +92,6 @@ public class GoogleAuthentication
 		var user = await _userManager.FindByEmailAsync(payload.Email);
 		if (user == null) 
 			return Result.Fail(new InvalidDataError("Failed to authenticate user"));
-		
-		await _signInManager.SignInAsync(user, true, GrantType.google);
 
 		var authClaims = await _userManager.GetClaimsAsync(user);
 

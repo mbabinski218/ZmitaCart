@@ -1,6 +1,6 @@
 using FluentResults;
 using MediatR;
-using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Application.Interfaces.Repositories;
 
 namespace ZmitaCart.Application.Commands.CategoryCommands.CreateCategory;
 

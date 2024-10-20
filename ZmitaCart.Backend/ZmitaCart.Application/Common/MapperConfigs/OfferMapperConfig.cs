@@ -12,7 +12,7 @@ public class OfferMapperConfig : IRegister
 			.Map(dest => dest.City, src => src.User.Address.City)
 			.Map(dest => dest.ImageName, src => !src.Pictures.Any()
 				? null
-				: src.Pictures.OrderBy(p => p.CreationTime).First().Name)
+				: src.Pictures.OrderBy(p => p.CreatedAt).First().Name)
 			.Map(dest => dest.AuthorEmail, src => src.User.Email)
 			.Map(dest => dest.AuthorName, src => src.User.FirstName);
 
@@ -31,7 +31,7 @@ public class OfferMapperConfig : IRegister
 			.Map(dest => dest.Offer.IsAvailable, src => src.Offer.IsAvailable)
 			.Map(dest => dest.Offer.ImageName, src => !src.Offer.Pictures.Any()
 				? null
-				: src.Offer.Pictures.OrderBy(p => p.CreationTime).First().Name)
+				: src.Offer.Pictures.OrderBy(p => p.CreatedAt).First().Name)
 			.Map(dest => dest.Offer.AuthorEmail, src => src.User.Email)
 			.Map(dest => dest.Offer.AuthorName, src => src.User.FirstName)
 			.Map(dest => dest.BoughtQuantity, src => src.Quantity);

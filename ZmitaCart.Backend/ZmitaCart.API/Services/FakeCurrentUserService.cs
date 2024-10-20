@@ -1,5 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using ZmitaCart.Application.Services;
+using ZmitaCart.Application.Interfaces.Services;
 
 namespace ZmitaCart.API.Services;
 

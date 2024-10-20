@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Application.Interfaces.Repositories;
+using ZmitaCart.Domain.Common.Models;
 using ZmitaCart.Domain.Common.Types;
 
 namespace ZmitaCart.Infrastructure.Persistence;
@@ -8,9 +9,9 @@ namespace ZmitaCart.Infrastructure.Persistence;
 public class DatabaseSeeder : IDatabaseSeeder
 {
     private readonly ApplicationDbContext _dbContext;
-    private readonly RoleManager<IdentityRole<int>> _roleManager;
+    private readonly RoleManager<IdentityUserRole> _roleManager;
 
-    public DatabaseSeeder(ApplicationDbContext dbContext, RoleManager<IdentityRole<int>> roleManager)
+    public DatabaseSeeder(ApplicationDbContext dbContext, RoleManager<IdentityUserRole> roleManager)
     {
         _dbContext = dbContext;
         _roleManager = roleManager;
@@ -24,11 +25,11 @@ public class DatabaseSeeder : IDatabaseSeeder
         }
 
         await SeedRoles();
-
-        // if (!await _dbContext.Categories.AnyAsync() || !await _dbContext.Offers.AnyAsync())
-        // {
-        //     await SeedData();
-        // }
+        
+        if (!await _dbContext.Users.AnyAsync())
+        {
+            await SeedData("Users.txt");
+        }
         
         if (!await _dbContext.Categories.AnyAsync())
         {
@@ -47,12 +48,11 @@ public class DatabaseSeeder : IDatabaseSeeder
     {
         foreach (var supportedRole in Role.SupportedRoles)
         {
-            var role = new IdentityRole<int>(supportedRole);
+            var role = new IdentityUserRole(supportedRole);
 
             if (!_dbContext.Roles.Contains(role))
             {
                 await _roleManager.CreateAsync(role);
-                // await _roleManager.AddClaimAsync(role, new Claim(ClaimNames.Role, supportedRole));
             }
         }
     }

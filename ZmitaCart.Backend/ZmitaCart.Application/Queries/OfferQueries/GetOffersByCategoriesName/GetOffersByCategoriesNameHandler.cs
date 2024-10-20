@@ -2,8 +2,8 @@
 using MediatR;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.OfferDtos;
-using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Application.Services;
+using ZmitaCart.Application.Interfaces.Repositories;
+using ZmitaCart.Application.Interfaces.Services;
 
 namespace ZmitaCart.Application.Queries.OfferQueries.GetOffersByCategoriesName;
 

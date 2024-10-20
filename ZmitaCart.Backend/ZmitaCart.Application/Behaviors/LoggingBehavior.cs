@@ -1,6 +1,6 @@
 ﻿using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
-using ZmitaCart.Application.Services;
+using ZmitaCart.Application.Interfaces.Services;
 
 namespace ZmitaCart.Application.Behaviors;
 

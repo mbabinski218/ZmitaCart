@@ -1,9 +1,11 @@
 using FluentResults;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
 using ZmitaCart.Application.Common.Errors;
-using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Application.Interfaces.Repositories;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Persistence;
 
@@ -57,7 +59,7 @@ public class PictureRepository : IPictureRepository
                 OfferId = offerId,
                 Offer = offer,
                 Name = imageName,
-                CreationTime = creationTime
+                CreatedAt = creationTime
             };
 
             await _dbContext.Pictures.AddAsync(picture);

@@ -1,8 +1,8 @@
 ﻿using FluentResults;
 using MediatR;
 using ZmitaCart.Application.Common.Errors;
-using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Application.Services;
+using ZmitaCart.Application.Interfaces.Repositories;
+using ZmitaCart.Application.Interfaces.Services;
 
 namespace ZmitaCart.Application.Commands.UserCommands.UpdateCredentials;
 

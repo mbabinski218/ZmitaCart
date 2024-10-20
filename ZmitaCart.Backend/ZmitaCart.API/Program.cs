@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using ZmitaCart.API.Common;
-using ZmitaCart.API.Hubs;
 using ZmitaCart.API.Services;
 using ZmitaCart.Application;
-using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Application.Services;
+using ZmitaCart.Application.Interfaces.Repositories;
+using ZmitaCart.Application.Interfaces.Services;
 using ZmitaCart.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,14 +42,16 @@ builder.Services.AddSwaggerGen(options =>
 	options.DescribeAllParametersInCamelCase();
 });
 builder.Services.AddHealthChecks()
-	.AddSqlServerCheck(builder.Configuration.GetConnectionString(settings.ApplicationDbName), "Database")
-	.AddSignalRHubCheck(settings.Url + settings.ChatHubUrl, "ChatHub");
+	.AddSqlServerCheck(builder.Configuration.GetConnectionString(settings.ApplicationDbName), "Database");
+
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
-builder.Services.AddSignalR(options => options.EnableDetailedErrors = true);
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration, settings.ApplicationDbName);
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddCors(options => options.AddPolicy("corsapp", corsBuilder =>
+
+const string corsApp = "corsapp";
+builder.Services.AddCors(options => options.AddPolicy(corsApp, corsBuilder =>
 	corsBuilder.WithOrigins(settings.Origin).AllowAnyMethod().AllowAnyHeader().AllowCredentials()));
 
 if (builder.Environment.IsDevelopment())
@@ -71,13 +72,11 @@ var seeder = scope.ServiceProvider.GetRequiredService<IDatabaseSeeder>();
 await seeder.Seed();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
-app.UseCors("corsapp");
+app.UseCors(corsApp);
 app.UseAuthentication();
 app.UseRouting();
 app.MapHealthChecks(settings.HealthCheckUrl, new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
 app.UseAuthorization();
 app.MapControllers();
-
-app.MapHub<ChatHub>(settings.ChatHubUrl);
 
 app.Run();

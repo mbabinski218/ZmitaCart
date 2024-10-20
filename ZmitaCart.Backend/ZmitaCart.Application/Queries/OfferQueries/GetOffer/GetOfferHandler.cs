@@ -1,14 +1,14 @@
 using FluentResults;
 using MediatR;
 using ZmitaCart.Application.Dtos.OfferDtos;
-using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Application.Services;
+using ZmitaCart.Application.Interfaces.Repositories;
+using ZmitaCart.Application.Interfaces.Services;
 
 namespace ZmitaCart.Application.Queries.OfferQueries.GetOffer;
 
 public class GetOfferHandler : IRequestHandler<GetOfferQuery, Result<OfferDto>>
 {
-    private readonly  IOfferRepository _offerRepository;
+    private readonly IOfferRepository _offerRepository;
     private readonly ICurrentUserService _currentUserService;
 
     public GetOfferHandler(IOfferRepository offerRepository, ICurrentUserService currentUserService)

@@ -33,10 +33,4 @@ public static class HealthCheckExtensions
 		builder.AddSqlServer(connectionString!, name: name);
 		return builder;
 	}
-	
-	public static IHealthChecksBuilder AddSignalRHubCheck(this IHealthChecksBuilder builder, string? url, string name)
-	{
-		builder.AddSignalRHub(url!, name: name);
-		return builder;
-	}
 }

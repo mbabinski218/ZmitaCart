@@ -2,14 +2,13 @@
 
 namespace ZmitaCart.Domain.Entities;
 
-public class Offer : AggregateRoot<int>
+public class Offer : Entity<int>
 {
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
     public decimal Price { get; set; }
     public int Quantity { get; set; }
     public bool IsAvailable { get; set; }
-    public DateTimeOffset CreatedAt { get; set; }
     public string Condition { get; set; } = null!;
     public int CategoryId { get; set; }
     public virtual Category Category { get; set; } = null!;

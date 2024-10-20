@@ -8,12 +8,9 @@ public class User : IdentityEntity<int>
 	public string LastName { get; set; } = null!;
 	public Address Address { get; set; } = null!;
 	public virtual List<Bought> Bought { get; set; } = new();
-	public virtual List<UserConversation> Chats { get; set; } = new();
 	public virtual List<UserOffer> Favorites { get; set; } = new();
 	public virtual List<Feedback> Feedbacks { get; set; } = new();
 	public virtual List<Offer> Offers { get; set; } = new();
-	public string? ConnectionId { get; set; }
-	public int? CurrentConversationId { get; set; }
 
 	public static User Create(string email, string firstName, string lastName)
 	{
@@ -23,7 +20,7 @@ public class User : IdentityEntity<int>
 			UserName = email,
 			FirstName = firstName,
 			LastName = lastName,
-			EmailConfirmed = true
+			EmailConfirmed = true //TODO można zrobić potwierdzanie (robiłem coś takiego na inż.)
 		};
 
 		return user;

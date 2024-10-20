@@ -26,6 +26,8 @@ public class JwtHelper
 		var token = new JwtSecurityToken
 		(
 			claims: userClaims,
+			issuer: _jwtSettings.Issuer,
+			audience: _jwtSettings.Audience,
 			expires: DateTime.Now.AddMinutes(_jwtSettings.ExpireTimeInMinutes),
 			signingCredentials: signingCredentials
 		);

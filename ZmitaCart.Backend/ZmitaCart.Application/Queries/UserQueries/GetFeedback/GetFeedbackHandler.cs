@@ -2,7 +2,7 @@
 using MediatR;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.UserDtos;
-using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Application.Interfaces.Repositories;
 
 namespace ZmitaCart.Application.Queries.UserQueries.GetFeedback;
 

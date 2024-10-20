@@ -1,14 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ZmitaCart.Domain.Common.Types;
 using ZmitaCart.Domain.Entities;
 
 namespace ZmitaCart.Infrastructure.Persistence.Configurations;
 
 public class FeedbackConfiguration: IEntityTypeConfiguration<Feedback>
 {
-	public void Configure(EntityTypeBuilder<Feedback> feedbackModelBuilder)
+	public void Configure(EntityTypeBuilder<Feedback> builder)
 	{
-		feedbackModelBuilder.Property(f => f.RaterId).IsRequired();
-		feedbackModelBuilder.Property(f => f.Rating).IsRequired();
+		builder.Property(f => f.RaterId).IsRequired();
+		builder.Property(f => f.Rating).IsRequired();
+		builder.Property(f => f.Comment).HasMaxLength(Constants.descriptionLength);
 	}
 }

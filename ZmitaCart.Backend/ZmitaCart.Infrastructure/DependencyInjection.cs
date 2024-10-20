@@ -1,13 +1,13 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Application.Interfaces.Repositories;
+using ZmitaCart.Domain.Common.Models;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Common;
 using ZmitaCart.Infrastructure.Common.Settings;
@@ -21,7 +21,7 @@ public static class DependencyInjection
 {
 	public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, string applicationDbName)
 	{
-		AddDatabase(services, configuration, applicationDbName);
+		AddPersistence(services, configuration, applicationDbName);
 		AddAuthentication(services, configuration);
 		AddRepositories(services);
 		services.AddAuthorization();
@@ -35,21 +35,21 @@ public static class DependencyInjection
 		services.AddScoped<ICategoryRepository, CategoryRepository>();
 		services.AddScoped<IOfferRepository, OfferRepository>();
 		services.AddScoped<IPictureRepository, PictureRepository>();
-		services.AddScoped<IConversationRepository, ConversationRepository>();
 		services.AddScoped<GoogleAuthentication>();
 
 		return services;
 	}
 
-	private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration, string applicationDbName)
+	private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration, string applicationDbName)
 	{
 		services.AddDbContext<ApplicationDbContext>(options =>
-			options.UseSqlServer(configuration.GetConnectionString(applicationDbName)));
+			options.UseSqlServer(configuration.GetConnectionString(applicationDbName)!).EnableDetailedErrors());
 
-		services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
-
-		services.AddIdentity<User, IdentityRole<int>>(options =>
+		services.AddIdentityCore<User>(options =>
 			{
+				options.User.RequireUniqueEmail = true;
+				options.SignIn.RequireConfirmedEmail = true;
+				
 				//TODO Remove password requirements
 				options.Password.RequireDigit = false;
 				options.Password.RequireLowercase = false;
@@ -58,21 +58,12 @@ public static class DependencyInjection
 				options.Password.RequiredLength = 1;
 				options.Password.RequiredUniqueChars = 0;
 			})
-			.AddEntityFrameworkStores<ApplicationDbContext>()
-			.AddDefaultTokenProviders();
-
-		services.ConfigureApplicationCookie(options =>
-		{
-			options.Cookie.Name = "auth_cookie";
-			options.Events.OnRedirectToLogin = context =>
-			{
-				context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-				context.RedirectUri = "";
-				return Task.CompletedTask;
-			};
-		});
-
-		services.AddScoped<PublishDomainEventsInterceptor>();
+			.AddRoles<IdentityUserRole>()
+			.AddDefaultTokenProviders()
+			.AddEntityFrameworkStores<ApplicationDbContext>();
+		
+		services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
+		services.AddScoped<DateTimeSetterInterceptor>();
 
 		return services;
 	}
@@ -98,9 +89,17 @@ public static class DependencyInjection
 			{
 				options.TokenValidationParameters = new TokenValidationParameters
 				{
-					ValidateIssuer = false,
-					ValidateAudience = false,
+					// RequireAudience = false,
+					// ValidateLifetime = false,
+					// ValidateIssuer = false,
+					// ValidateAudience = false,
+					RequireAudience = true,
+					ValidateIssuer = true,
+					ValidateAudience = true,
 					ValidateIssuerSigningKey = true,
+					ValidateLifetime = true,
+					ValidIssuer = jwtSettings.Issuer,
+					ValidAudience = jwtSettings.Audience,
 					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
 				};
 			})

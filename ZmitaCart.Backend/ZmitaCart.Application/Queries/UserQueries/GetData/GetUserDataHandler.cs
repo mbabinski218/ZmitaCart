@@ -2,8 +2,8 @@
 using MediatR;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.UserDtos;
-using ZmitaCart.Application.Interfaces;
-using ZmitaCart.Application.Services;
+using ZmitaCart.Application.Interfaces.Repositories;
+using ZmitaCart.Application.Interfaces.Services;
 
 namespace ZmitaCart.Application.Queries.UserQueries.GetData;
 

@@ -2,7 +2,7 @@
 using MapsterMapper;
 using MediatR;
 using ZmitaCart.Application.Dtos.UserDtos;
-using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Application.Interfaces.Repositories;
 
 namespace ZmitaCart.Application.Commands.UserCommands.Register;
 

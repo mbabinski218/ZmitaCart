@@ -29,10 +29,12 @@ public static class Extensions
 		};
 	}
 
-	public static async Task<List<NamedList<TKey, TElement>>> ToUniqueListAsync<TSource, TKey, TElement>(
+	public static async Task<List<NamedList<TKey, TElement>>> ToUniqueListAsync<TSource, TKey, TElement>
+	(
 		this IQueryable<TSource> queryable,
 		Func<TSource, TKey> keySelector,
-		Func<TSource, TElement> elementSelector)
+		Func<TSource, TElement> elementSelector
+	)
 		where TKey : IEquatable<TKey>
 	{
 		var list = new List<NamedList<TKey, TElement>>();
@@ -54,24 +56,5 @@ public static class Extensions
 		}
 
 		return list;
-	}
-	
-	public static async Task<Dictionary<TKey, List<TElement>>> ToDictionaryWithList<TSource, TKey, TElement>(
-		this IQueryable<TSource> queryable,
-		Func<TSource, TKey> keySelector,
-		Func<TSource, TElement> elementSelector)
-		where TKey : notnull
-	{
-		var dictionary = new Dictionary<TKey, List<TElement>>();
-		
-		await foreach (var element in queryable.AsAsyncEnumerable())
-		{
-			if (!dictionary.TryAdd(keySelector(element), new List<TElement>{ elementSelector(element) }))
-			{
-				dictionary[keySelector(element)].Add(elementSelector(element));
-			}
-		}
-
-		return dictionary;
 	}
 }

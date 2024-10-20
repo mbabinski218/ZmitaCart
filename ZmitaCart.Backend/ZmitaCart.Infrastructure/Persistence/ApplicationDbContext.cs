@@ -2,45 +2,40 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ZmitaCart.Domain.Common;
+using ZmitaCart.Domain.Common.Models;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Persistence.Interceptors;
 
 namespace ZmitaCart.Infrastructure.Persistence;
 
-public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int>
-{
-    private readonly PublishDomainEventsInterceptor _publishDomainEventsInterceptor;
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, PublishDomainEventsInterceptor publishDomainEventsInterceptor) : base(options)
-    {
-        _publishDomainEventsInterceptor = publishDomainEventsInterceptor;
-        
-        // Database.EnsureDeleted();
-        // Database.EnsureCreated();
-    }
-
+public class ApplicationDbContext : IdentityDbContext<User, IdentityUserRole, int>
+{ 
+    // DbSet
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Offer> Offers { get; set; } = null!;
     public DbSet<UserOffer> Favorites { get; set; } = null!;
     public DbSet<Bought> Bought { get; set; } = null!;
     public DbSet<Feedback> Feedbacks { get; set; } = null!;
-    public DbSet<Conversation> Conversations { get; set; } = null!;
-    public DbSet<UserConversation> Chats { get; set; } = null!;
-    public DbSet<Message> Messages { get; set; } = null!;
     public DbSet<Picture> Pictures { get; set; } = null!;
-
+    
+    // Configuration
+    private readonly DateTimeSetterInterceptor _dateTimeSetterInterceptor;
+    
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, DateTimeSetterInterceptor dateTimeSetterInterceptor) : base(options)
+    {
+        _dateTimeSetterInterceptor = dateTimeSetterInterceptor;
+    }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder
-            .Ignore<List<IDomainEvent>>()
-            .ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Ignore<IdentityRoleClaim<int>>();
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.AddInterceptors(_publishDomainEventsInterceptor);
         base.OnConfiguring(optionsBuilder);
+        optionsBuilder.AddInterceptors(_dateTimeSetterInterceptor);
     }
 }

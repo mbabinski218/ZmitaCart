@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.OfferDtos;
-using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Application.Interfaces.Repositories;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Persistence;
 

@@ -1,7 +1,7 @@
 using FluentResults;
 using MediatR;
 using ZmitaCart.Application.Dtos.CategoryDtos;
-using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Application.Interfaces.Repositories;
 
 namespace ZmitaCart.Application.Queries.CategoryQueries.GetSuperiorsWithChildren;
 

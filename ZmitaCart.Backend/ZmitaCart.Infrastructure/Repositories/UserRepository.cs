@@ -6,8 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.UserDtos;
-using ZmitaCart.Application.Interfaces;
+using ZmitaCart.Application.Interfaces.Repositories;
 using ZmitaCart.Domain.Common;
+using ZmitaCart.Domain.Common.Models;
 using ZmitaCart.Domain.Common.Types;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Domain.ValueObjects;
@@ -19,18 +20,15 @@ namespace ZmitaCart.Infrastructure.Repositories;
 public class UserRepository : IUserRepository
 {
 	private readonly UserManager<User> _userManager;
-	private readonly SignInManager<User> _signInManager;
-	private readonly RoleManager<IdentityRole<int>> _roleManager;
+	private readonly RoleManager<IdentityUserRole> _roleManager;
 	private readonly JwtHelper _jwtHelper;
 	private readonly ApplicationDbContext _dbContext;
 	private readonly GoogleAuthentication _googleAuthentication;
 
-	public UserRepository(UserManager<User> userManager, SignInManager<User> signInManager,
-		RoleManager<IdentityRole<int>> roleManager, JwtHelper jwtHelper,
+	public UserRepository(UserManager<User> userManager, RoleManager<IdentityUserRole> roleManager, JwtHelper jwtHelper,
 		ApplicationDbContext dbContext, GoogleAuthentication googleAuthentication)
 	{
 		_userManager = userManager;
-		_signInManager = signInManager;
 		_roleManager = roleManager;
 		_jwtHelper = jwtHelper;
 		_dbContext = dbContext;
@@ -86,16 +84,11 @@ public class UserRepository : IUserRepository
 		if (user == null) 
 			return Result.Fail(new NotFoundError("User does not exist"));
 		
+		if (!await _userManager.IsEmailConfirmedAsync(user))
+			return Result.Fail(new InvalidDataError("Email is not confirmed"));
+		
 		if (!await _userManager.CheckPasswordAsync(user, loginUserDto.Password)) 
 			return Result.Fail(new InvalidDataError("Invalid password"));
-
-		var signInResult = await _signInManager.PasswordSignInAsync(user, loginUserDto.Password, false, true);
-
-		if (!signInResult.Succeeded) 
-			return Result.Fail(new InvalidDataError("Could not sign in"));
-		
-		if (signInResult.IsLockedOut) 
-			return Result.Fail(new InvalidDataError("User is locked out"));
 
 		var authClaims = await _userManager.GetClaimsAsync(user);
 		var accessToken = _jwtHelper.GenerateAccessToken(authClaims);
@@ -134,8 +127,6 @@ public class UserRepository : IUserRepository
 				return Result.Fail(new InvalidDataError("Invalid refresh token"));
 			}
 
-			await _signInManager.RefreshSignInAsync(user);
-
 			var authClaims = await _userManager.GetClaimsAsync(user);
 			var accessToken = _jwtHelper.GenerateAccessToken(authClaims);
 			var newRefreshToken = _jwtHelper.GenerateRefreshToken();
@@ -158,9 +149,18 @@ public class UserRepository : IUserRepository
 		return _googleAuthentication.AuthenticateAsync(idToken);
 	}
 
-	public async Task<Result> LogoutAsync()
+	public async Task<Result> LogoutAsync(int userId)
 	{
-		await _signInManager.SignOutAsync();
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+		
+		if (user is null)
+			return Result.Fail(new NotFoundError("User does not exist"));
+		
+		foreach (var authenticator in GrantType.SupportedGrantTypes)
+		{
+			await _userManager.RemoveAuthenticationTokenAsync(user, authenticator, "RefreshToken");
+		}
+		
 		return Result.Ok();
 	}
 
@@ -284,53 +284,5 @@ public class UserRepository : IUserRepository
 			.ToPaginatedListAsync(pageNumber, pageSize);
 		
 		return Result.Ok(feedback);
-	}
-
-	public async Task<Result> AddConnectionIdAsync(int userId, string connectionId)
-	{
-		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-		if (user is null)
-		{
-			return Result.Fail(new NotFoundError("User does not exist"));
-		}
-		
-		user.ConnectionId = connectionId;
-		await _dbContext.SaveChangesAsync();
-		return Result.Ok();
-	}
-
-	public async Task<Result<string?>> GetConnectionIdByUserIdAsync(int userId)
-	{
-		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-		if (user is null)
-		{
-			return Result.Fail(new NotFoundError("User does not exist"));
-		}
-
-		return user.ConnectionId;
-	}
-
-	public async Task<Result> SetCurrentChatAsync(int userId, int? chatId)
-	{
-		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-		if (user is null)
-		{
-			return Result.Fail(new NotFoundError("User does not exist"));
-		}
-		
-		user.CurrentConversationId = chatId;
-		await _dbContext.SaveChangesAsync();
-		return Result.Ok();
-	}
-
-	public async Task<Result<int?>> GetCurrentChatAsync(int userId)
-	{
-		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-		if (user is null)
-		{
-			return Result.Fail(new NotFoundError("User does not exist"));
-		}
-
-		return user.CurrentConversationId;
 	}
 }

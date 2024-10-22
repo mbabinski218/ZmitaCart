@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Http.Extensions;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Interfaces.Services;
 using ZmitaCart.Domain.Common.Types;
@@ -17,4 +18,19 @@ public class CurrentUserService : ICurrentUserService
 	public JwtSecurityToken? UserToken => Reader.ReadToken(_httpContextAccessor.HttpContext);
 	public string? UserId => UserToken?.FindOrDefault(ClaimNames.Id);
 	public string? UserRole => UserToken?.FindOrDefault(ClaimNames.Role);
+	public Uri? Uri
+	{
+		get
+		{
+			try
+			{
+				var url = _httpContextAccessor.HttpContext?.Request.GetDisplayUrl();
+				return url is null ? null : new Uri(url);
+			}
+			catch
+			{
+				return null;
+			}
+		}
+	}
 }

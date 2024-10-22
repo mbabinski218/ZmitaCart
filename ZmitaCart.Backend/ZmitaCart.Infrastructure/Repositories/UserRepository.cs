@@ -45,7 +45,7 @@ public class UserRepository : IUserRepository
 			: user.Adapt<UserDataDto>();
 	}
 
-	public async Task<Result> RegisterAsync(RegisterUserDto dto)
+	public async Task<Result<User>> RegisterAsync(RegisterUserDto dto)
 	{
 		if (await _userManager.FindByEmailAsync(dto.Email) != null)
 			return Result.Fail(new AlreadyExistsError("User already exists"));
@@ -75,7 +75,7 @@ public class UserRepository : IUserRepository
 		};
 		await _userManager.AddClaimsAsync(user, claims);
 
-		return Result.Ok();
+		return user;
 	}
 
 	public async Task<Result<TokensDto>> LoginAsync(LoginUserDto loginUserDto)
@@ -94,6 +94,7 @@ public class UserRepository : IUserRepository
 		var accessToken = _jwtHelper.GenerateAccessToken(authClaims);
 		var refreshToken = _jwtHelper.GenerateRefreshToken();
 
+		await RemoveTokens(user);
 		await _userManager.SetAuthenticationTokenAsync(user, GrantType.password, "RefreshToken", refreshToken);
 		
 		return new TokensDto
@@ -131,7 +132,7 @@ public class UserRepository : IUserRepository
 			var accessToken = _jwtHelper.GenerateAccessToken(authClaims);
 			var newRefreshToken = _jwtHelper.GenerateRefreshToken();
 
-			await _userManager.RemoveAuthenticationTokenAsync(user, authenticator, "RefreshToken");
+			await RemoveTokens(user);
 			await _userManager.SetAuthenticationTokenAsync(user, GrantType.refreshToken, "RefreshToken", newRefreshToken);
 
 			return new TokensDto
@@ -155,11 +156,8 @@ public class UserRepository : IUserRepository
 		
 		if (user is null)
 			return Result.Fail(new NotFoundError("User does not exist"));
-		
-		foreach (var authenticator in GrantType.SupportedGrantTypes)
-		{
-			await _userManager.RemoveAuthenticationTokenAsync(user, authenticator, "RefreshToken");
-		}
+
+		await RemoveTokens(user);
 		
 		return Result.Ok();
 	}
@@ -284,5 +282,43 @@ public class UserRepository : IUserRepository
 			.ToPaginatedListAsync(pageNumber, pageSize);
 		
 		return Result.Ok(feedback);
+	}
+	
+	public async Task<Result<User>> FindByIdAsync(int id)
+	{
+		var user = await _dbContext.Users.FindAsync(id);
+		return user is null 
+			? Result.Fail<User>(new NotFoundError("User not found")) 
+			: Result.Ok(user);
+	}
+	
+	public async Task<Result<User>> FindByEmailAsync(string email)
+	{
+		var user = await _userManager.FindByEmailAsync(email);
+		return user is null 
+			? Result.Fail<User>(new NotFoundError("User not found")) 
+			: Result.Ok(user);
+	}
+	
+	public async Task<Result> ConfirmEmailAsync(User user, string token)
+	{
+		var result = await _userManager.ConfirmEmailAsync(user, token);
+		return !result.Succeeded 
+			? Result.Fail(new InvalidDataError("Email confirmation failed")) 
+			: Result.Ok();
+	}
+	
+	public async Task<Result<string>> GenerateEmailConfirmationTokenAsync(User user)
+	{
+		var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+		return Result.Ok(token);
+	}
+	
+	private async Task RemoveTokens(User user)
+	{
+		foreach (var authenticator in GrantType.SupportedGrantTypes)
+		{
+			await _userManager.RemoveAuthenticationTokenAsync(user, authenticator, "RefreshToken");
+		}
 	}
 }

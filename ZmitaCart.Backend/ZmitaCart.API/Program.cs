@@ -1,6 +1,7 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using ZmitaCart.API.Common;
 using ZmitaCart.API.Services;
@@ -13,6 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 var settings = new GlobalSettings();
 builder.Configuration.Bind(GlobalSettings.sectionName, settings);
+
+var emailServiceSettings = new EmailServiceSettings();
+builder.Configuration.Bind(EmailServiceSettings.sectionName, emailServiceSettings);
+builder.Services.AddSingleton(Options.Create(emailServiceSettings));
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(options =>
@@ -49,6 +54,7 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration, settings.ApplicationDbName);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IEmailServiceProvider, EmailServiceProvider>();
 
 const string corsApp = "corsapp";
 builder.Services.AddCors(options => options.AddPolicy(corsApp, corsBuilder =>

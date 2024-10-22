@@ -98,6 +98,7 @@ public class GoogleAuthentication
 		var accessToken = _jwtHelper.GenerateAccessToken(authClaims);
 		var refreshToken = _jwtHelper.GenerateRefreshToken();
 		
+		await RemoveTokens(user);
 		await _userManager.SetAuthenticationTokenAsync(user, GrantType.google, "RefreshToken", refreshToken);
 
 		return new TokensDto
@@ -105,5 +106,13 @@ public class GoogleAuthentication
 			AccessToken = accessToken,
 			RefreshToken = refreshToken
 		};
+	}
+	
+	private async Task RemoveTokens(User user)
+	{
+		foreach (var authenticator in GrantType.SupportedGrantTypes)
+		{
+			await _userManager.RemoveAuthenticationTokenAsync(user, authenticator, "RefreshToken");
+		}
 	}
 }

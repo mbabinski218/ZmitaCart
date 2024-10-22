@@ -20,7 +20,7 @@ public class User : IdentityEntity<int>
 			UserName = email,
 			FirstName = firstName,
 			LastName = lastName,
-			EmailConfirmed = true //TODO można zrobić potwierdzanie (robiłem coś takiego na inż.)
+			EmailConfirmed = false
 		};
 
 		return user;

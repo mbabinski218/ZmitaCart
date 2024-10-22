@@ -1,39 +1,32 @@
 ﻿using FluentResults;
-using MapsterMapper;
 using MediatR;
-using ZmitaCart.Application.Commands.UserCommands.ConfirmEmail;
-using ZmitaCart.Application.Commands.UserCommands.ResendEmailConfirmation;
 using ZmitaCart.Application.Common;
-using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces.Repositories;
 using ZmitaCart.Application.Interfaces.Services;
 
-namespace ZmitaCart.Application.Commands.UserCommands.Register;
+namespace ZmitaCart.Application.Commands.UserCommands.ResendEmailConfirmation;
 
-public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Result>
+public sealed class ResendEmailConfirmationHandler : IRequestHandler<ResendEmailConfirmationCommand, Result>
 {
 	private readonly IUserRepository _userRepository;
-	private readonly IMapper _mapper;
 	private readonly ICurrentUserService _currentUserService;
 	private readonly IEmailServiceProvider _emailServiceProvider;
 
-	public RegisterUserHandler(IUserRepository userRepository, IMapper mapper, 
-		ICurrentUserService currentUserService, IEmailServiceProvider emailServiceProvider)
+	public ResendEmailConfirmationHandler(IUserRepository userRepository, ICurrentUserService currentUserService,
+		IEmailServiceProvider emailServiceProvider)
 	{
 		_userRepository = userRepository;
-		_mapper = mapper;
 		_currentUserService = currentUserService;
 		_emailServiceProvider = emailServiceProvider;
 	}
 
-	public async Task<Result> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+	public async Task<Result> Handle(ResendEmailConfirmationCommand request, CancellationToken cancellationToken)
 	{
-		var registerUser = _mapper.Map<RegisterUserDto>(request);
-
-		var user = await _userRepository.RegisterAsync(registerUser);
+		var user = await _userRepository.FindByEmailAsync(request.Email);
+		
 		if (user.IsFailed)
 		{
-			return user.ToResult();
+			return Result.Fail("User not found");
 		}
 		
 		var token = await _userRepository.GenerateEmailConfirmationTokenAsync(user.Value);

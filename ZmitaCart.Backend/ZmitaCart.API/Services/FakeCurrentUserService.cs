@@ -8,4 +8,5 @@ public class FakeCurrentUserService : ICurrentUserService
 	public JwtSecurityToken? UserToken => new();
 	public string? UserId => "1";
 	public string? UserRole => "Admin";
+	public Uri? Uri => new("http://localhost:4200/");
 }

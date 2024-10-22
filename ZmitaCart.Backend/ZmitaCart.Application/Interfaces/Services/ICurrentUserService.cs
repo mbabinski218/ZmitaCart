@@ -7,4 +7,5 @@ public interface ICurrentUserService
 	public JwtSecurityToken? UserToken { get; }
 	public string? UserId { get; }
 	public string? UserRole { get; }
+	public Uri? Uri { get; }
 }

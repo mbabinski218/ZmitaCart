@@ -1,11 +1,15 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.UserCommands.AddRole;
+using ZmitaCart.Application.Commands.UserCommands.ConfirmEmail;
 using ZmitaCart.Application.Commands.UserCommands.DeleteFeedback;
 using ZmitaCart.Application.Commands.UserCommands.GiveFeedback;
 using ZmitaCart.Application.Commands.UserCommands.LoginUser;
 using ZmitaCart.Application.Commands.UserCommands.Register;
+using ZmitaCart.Application.Commands.UserCommands.ResendEmailConfirmation;
 using ZmitaCart.Application.Commands.UserCommands.UpdateCredentials;
 using ZmitaCart.Application.Commands.UserCommands.UpdateFeedback;
 using ZmitaCart.Application.Common;
@@ -121,4 +125,18 @@ public class UserController : ApiController
 			s => Ok(s.Value),
 			err => StatusCode(err.StatusCode, err.ToList()));
 	}
+	
+	[AllowAnonymous]
+	[HttpPost("resend-email-confirmation")]
+	public async Task<ActionResult> ResendEmailConfirmation([FromQuery] ResendEmailConfirmationCommand command, CancellationToken cancellationToken) => 
+		await mediator.Send(command, cancellationToken).Then(
+			Ok,
+			err => StatusCode(err.StatusCode, err.ToList()));
+	
+	[AllowAnonymous]
+	[HttpPost("confirm-email")]
+	public async Task<ActionResult> ConfirmEmail([FromQuery] ConfirmEmailCommand command, CancellationToken cancellationToken) =>
+		await mediator.Send(command, cancellationToken).Then(
+			Ok,
+			err => StatusCode(err.StatusCode, err.ToList()));
 }

@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ZmitaCart.Infrastructure.Persistence;
+using ZmitaCart.Infrastructure.Persistence.DbContexts;
 
 #nullable disable
 
 namespace ZmitaCart.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241019154057_Init")]
+    [Migration("20241022173356_Init")]
     partial class Init
     {
         /// <inheritdoc />

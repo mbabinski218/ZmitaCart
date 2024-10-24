@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using ZmitaCart.API.Common;
 using ZmitaCart.Application.Commands.UserCommands.AddRole;
 using ZmitaCart.Application.Commands.UserCommands.ConfirmEmail;
@@ -13,8 +12,10 @@ using ZmitaCart.Application.Commands.UserCommands.ResendEmailConfirmation;
 using ZmitaCart.Application.Commands.UserCommands.UpdateCredentials;
 using ZmitaCart.Application.Commands.UserCommands.UpdateFeedback;
 using ZmitaCart.Application.Common;
+using ZmitaCart.Application.Dtos.LogDtos;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Dtos.UserDtos;
+using ZmitaCart.Application.Queries.LogQueries.GetLogs;
 using ZmitaCart.Application.Queries.OfferQueries.GetUserOffers;
 using ZmitaCart.Application.Queries.UserQueries.GetData;
 using ZmitaCart.Application.Queries.UserQueries.GetFeedback;
@@ -137,6 +138,13 @@ public class UserController : ApiController
 	[HttpPost("confirm-email")]
 	public async Task<ActionResult> ConfirmEmail([FromQuery] ConfirmEmailCommand command, CancellationToken cancellationToken) =>
 		await mediator.Send(command, cancellationToken).Then(
+			Ok,
+			err => StatusCode(err.StatusCode, err.ToList()));
+	
+	[RoleAuthorize(Role.administrator)]
+	[HttpGet("log")]
+	public async Task<ActionResult<PaginatedList<LogDto>>> GetLogs([FromQuery] GetLogsQuery query, CancellationToken cancellationToken) =>
+		await mediator.Send(query, cancellationToken).Then(
 			Ok,
 			err => StatusCode(err.StatusCode, err.ToList()));
 }

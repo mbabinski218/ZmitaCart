@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Common.Errors;
+using ZmitaCart.Application.Dtos.LogDtos;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces.Repositories;
 using ZmitaCart.Domain.Common;
@@ -13,7 +14,8 @@ using ZmitaCart.Domain.Common.Types;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Domain.ValueObjects;
 using ZmitaCart.Infrastructure.Common;
-using ZmitaCart.Infrastructure.Persistence;
+using ZmitaCart.Infrastructure.Persistence.DbContexts;
+using ZmitaCart.Infrastructure.Services;
 
 namespace ZmitaCart.Infrastructure.Repositories;
 
@@ -24,15 +26,17 @@ public class UserRepository : IUserRepository
 	private readonly JwtHelper _jwtHelper;
 	private readonly ApplicationDbContext _dbContext;
 	private readonly GoogleAuthentication _googleAuthentication;
+	private readonly IUserEventLoggerService _userEventLoggerService;
 
 	public UserRepository(UserManager<User> userManager, RoleManager<IdentityUserRole> roleManager, JwtHelper jwtHelper,
-		ApplicationDbContext dbContext, GoogleAuthentication googleAuthentication)
+		ApplicationDbContext dbContext, GoogleAuthentication googleAuthentication, IUserEventLoggerService userEventLoggerService)
 	{
 		_userManager = userManager;
 		_roleManager = roleManager;
 		_jwtHelper = jwtHelper;
 		_dbContext = dbContext;
 		_googleAuthentication = googleAuthentication;
+		_userEventLoggerService = userEventLoggerService;
 	}
 
 	public async Task<Result<UserDataDto>> GetDataAsync(int id)
@@ -48,14 +52,18 @@ public class UserRepository : IUserRepository
 	public async Task<Result<User>> RegisterAsync(RegisterUserDto dto)
 	{
 		if (await _userManager.FindByEmailAsync(dto.Email) != null)
+		{
+			await _userEventLoggerService.LogUserRegisteredFailureAsync("User already exists", dto.Email);
 			return Result.Fail(new AlreadyExistsError("User already exists"));
+		}
 
 		var user = User.Create(dto.Email, dto.FirstName, dto.LastName);
 		var result = await _userManager.CreateAsync(user, dto.Password);
 
 		if (!result.Succeeded)
 		{
-			var reasons = result.Errors.Select(e => e.Description);
+			var reasons = result.Errors.Select(e => e.Description).ToList();
+			await _userEventLoggerService.LogUserRegisteredFailureAsync("Invalid register data: " + string.Concat(reasons), dto.Email);
 			return Result.Fail(new InvalidDataError("Invalid register data", reasons));
 		}
 		
@@ -75,20 +83,30 @@ public class UserRepository : IUserRepository
 		};
 		await _userManager.AddClaimsAsync(user, claims);
 
+		await _userEventLoggerService.LogUserRegisteredSuccessAsync("User registered successfully", user.Id, user.Email!);
 		return user;
 	}
 
 	public async Task<Result<TokensDto>> LoginAsync(LoginUserDto loginUserDto)
 	{
 		var user = await _userManager.FindByEmailAsync(loginUserDto.Email);
-		if (user == null) 
+		if (user == null)
+		{
+			await _userEventLoggerService.LogUserLoggedInFailureAsync("User does not exist", loginUserDto.Email);
 			return Result.Fail(new NotFoundError("User does not exist"));
-		
+		}
+
 		if (!await _userManager.IsEmailConfirmedAsync(user))
+		{
+			await _userEventLoggerService.LogUserLoggedInFailureAsync("Email is not confirmed", loginUserDto.Email);
 			return Result.Fail(new InvalidDataError("Email is not confirmed"));
-		
-		if (!await _userManager.CheckPasswordAsync(user, loginUserDto.Password)) 
+		}
+
+		if (!await _userManager.CheckPasswordAsync(user, loginUserDto.Password))
+		{
+			await _userEventLoggerService.LogUserLoggedInFailureAsync("Invalid password", loginUserDto.Email);
 			return Result.Fail(new InvalidDataError("Invalid password"));
+		}
 
 		var authClaims = await _userManager.GetClaimsAsync(user);
 		var accessToken = _jwtHelper.GenerateAccessToken(authClaims);
@@ -97,6 +115,7 @@ public class UserRepository : IUserRepository
 		await RemoveTokens(user);
 		await _userManager.SetAuthenticationTokenAsync(user, GrantType.password, "RefreshToken", refreshToken);
 		
+		await _userEventLoggerService.LogUserLoggedInSuccessAsync("User logged in successfully", user.Id, user.Email!);
 		return new TokensDto
 		{
 			AccessToken = accessToken,
@@ -107,14 +126,20 @@ public class UserRepository : IUserRepository
 	public async Task<Result<TokensDto>> LoginWithRefreshTokenAsync(string refreshToken)
 	{
 		var userToken = await _dbContext.UserTokens.FirstOrDefaultAsync(t => t.Value == refreshToken);
-		
-		if (userToken is null) 
+
+		if (userToken is null)
+		{
+			await _userEventLoggerService.LogUserLoggedInFailureAsync("Try to login with invalid refresh token: " + refreshToken, null);
 			return Result.Fail(new NotFoundError("User does not exist"));
+		}
 		
 		var user = await _userManager.FindByIdAsync(userToken.UserId.ToString());
-		
-		if (user is null) 
+
+		if (user is null)
+		{
+			await _userEventLoggerService.LogUserLoggedInFailureAsync("Invalid id in refresh token: " + refreshToken, null);
 			return Result.Fail(new NotFoundError("User does not exist"));
+		}
 		
 		foreach(var authenticator in GrantType.SupportedGrantTypes)
 		{
@@ -125,6 +150,7 @@ public class UserRepository : IUserRepository
 			if (userRefreshToken != refreshToken)
 			{
 				await _userManager.RemoveAuthenticationTokenAsync(user, authenticator, "RefreshToken");
+				await _userEventLoggerService.LogUserLoggedInFailureAsync("Outdated or invalid refresh token: " + refreshToken, user.Email!);
 				return Result.Fail(new InvalidDataError("Invalid refresh token"));
 			}
 
@@ -135,6 +161,7 @@ public class UserRepository : IUserRepository
 			await RemoveTokens(user);
 			await _userManager.SetAuthenticationTokenAsync(user, GrantType.refreshToken, "RefreshToken", newRefreshToken);
 
+			await _userEventLoggerService.LogUserLoggedInSuccessAsync("User logged in successfully with refresh token", user.Id, user.Email!);
 			return new TokensDto
 			{
 				AccessToken = accessToken,
@@ -142,6 +169,7 @@ public class UserRepository : IUserRepository
 			};
 		}
 		
+		await _userEventLoggerService.LogUserLoggedInFailureAsync("Failed to login with refresh token (invalid grant type): " + refreshToken, user.Email!);
 		return Result.Fail(new InvalidDataError("Failed to login with refresh token"));
 	}
 
@@ -153,12 +181,15 @@ public class UserRepository : IUserRepository
 	public async Task<Result> LogoutAsync(int userId)
 	{
 		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-		
-		if (user is null)
-			return Result.Fail(new NotFoundError("User does not exist"));
 
+		if (user is null)
+		{
+			await _userEventLoggerService.LogUserLoggedOutFailureAsync("User does not exist", userId);
+			return Result.Fail(new NotFoundError("User does not exist"));
+		}
 		await RemoveTokens(user);
 		
+		await _userEventLoggerService.LogUserLoggedOutSuccessAsync("User logged out successfully", user.Id, user.Email!);
 		return Result.Ok();
 	}
 
@@ -320,5 +351,10 @@ public class UserRepository : IUserRepository
 		{
 			await _userManager.RemoveAuthenticationTokenAsync(user, authenticator, "RefreshToken");
 		}
+	}
+	
+	public async Task<Result<PaginatedList<LogDto>>> GetLogsAsync(int? pageNumber, int? pageSize)
+	{
+		return await _userEventLoggerService.GetLogsAsync(pageNumber, pageSize);
 	}
 }

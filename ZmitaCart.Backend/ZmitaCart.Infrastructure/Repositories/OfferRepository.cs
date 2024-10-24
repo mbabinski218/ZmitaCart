@@ -1,13 +1,14 @@
 ﻿using FluentResults;
 using Mapster;
 using MapsterMapper;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.OfferDtos;
 using ZmitaCart.Application.Interfaces.Repositories;
 using ZmitaCart.Domain.Entities;
-using ZmitaCart.Infrastructure.Persistence;
+using ZmitaCart.Infrastructure.Persistence.DbContexts;
 
 namespace ZmitaCart.Infrastructure.Repositories;
 
@@ -223,6 +224,8 @@ public class OfferRepository : IOfferRepository
 	public async Task<Result<PaginatedList<OfferInfoDto>>> SearchOffersAsync(SearchOfferDto search, int? pageNumber = null,
 		int? pageSize = null)
 	{
+		var categoryId = new SqlParameter("categoryId", search.CategoryId);
+		
 		var categoriesId = await _dbContext.Database
 			.SqlQuery<int>
 			($@"
@@ -230,7 +233,7 @@ public class OfferRepository : IOfferRepository
 				(
 		            SELECT DISTINCT Id, ParentId
 		            FROM Categories
-		            WHERE ParentId = {search.CategoryId}
+		            WHERE ParentId = {categoryId}
 
 		            UNION ALL
 
@@ -266,21 +269,10 @@ public class OfferRepository : IOfferRepository
 	public async Task<Result<List<NamedList<string, OfferInfoDto>>>> GetOffersByCategoriesNameAsync(
 		IEnumerable<string> categoriesNames, int userId, int size)
 	{
-		var offersId = await _dbContext.Database
-			.SqlQueryRaw<int>
-			($@"
-				SELECT id FROM
-				(
-					SELECT *, ROW_NUMBER() OVER (PARTITION BY CategoryId ORDER BY CreatedAt DESC) AS RowNumber
-					FROM Offers
-					WHERE IsAvailable = 1 AND UserId != {userId} AND CategoryId IN
-					(
-						SELECT Id FROM Categories
-						WHERE Name IN ({string.Join(", ", categoriesNames.Select(s => $"'{s}'"))})
-					)
-				) AS Offers
-				WHERE RowNumber <= {size}	
-			")
+		var offersId = await _dbContext.Offers
+			.Include(o => o.Category)
+			.Where(o => o.IsAvailable && o.UserId != userId && categoriesNames.Contains(o.Category.Name))
+			.Select(o => o.Id)
 			.ToListAsync();
 
 		var offers = await _dbContext.Offers

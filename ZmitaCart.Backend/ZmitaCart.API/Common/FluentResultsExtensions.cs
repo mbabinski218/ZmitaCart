@@ -40,6 +40,8 @@ public class Error
 			_ => StatusCodes.Status400BadRequest
 		};
 	}
+
+	public override string ToString() => string.Join("\n", Reasons.Select(r => r.Message));
 }
 
 public static class FluentResultsExtensions

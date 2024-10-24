@@ -5,7 +5,7 @@ using ZmitaCart.Application.Common.Errors;
 using ZmitaCart.Application.Dtos.CategoryDtos;
 using ZmitaCart.Application.Interfaces.Repositories;
 using ZmitaCart.Domain.Entities;
-using ZmitaCart.Infrastructure.Persistence;
+using ZmitaCart.Infrastructure.Persistence.DbContexts;
 
 namespace ZmitaCart.Infrastructure.Repositories;
 

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ZmitaCart.Application.Interfaces.Repositories;
 using ZmitaCart.Domain.Common.Models;
 using ZmitaCart.Domain.Common.Types;
+using ZmitaCart.Infrastructure.Persistence.DbContexts;
 
 namespace ZmitaCart.Infrastructure.Persistence;
 

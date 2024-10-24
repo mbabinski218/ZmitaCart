@@ -6,7 +6,7 @@ using ZmitaCart.Domain.Common.Models;
 using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Persistence.Interceptors;
 
-namespace ZmitaCart.Infrastructure.Persistence;
+namespace ZmitaCart.Infrastructure.Persistence.DbContexts;
 
 public class ApplicationDbContext : IdentityDbContext<User, IdentityUserRole, int>
 { 

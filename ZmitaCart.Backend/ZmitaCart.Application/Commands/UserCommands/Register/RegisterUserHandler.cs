@@ -1,8 +1,6 @@
 ﻿using FluentResults;
 using MapsterMapper;
 using MediatR;
-using ZmitaCart.Application.Commands.UserCommands.ConfirmEmail;
-using ZmitaCart.Application.Commands.UserCommands.ResendEmailConfirmation;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.UserDtos;
 using ZmitaCart.Application.Interfaces.Repositories;

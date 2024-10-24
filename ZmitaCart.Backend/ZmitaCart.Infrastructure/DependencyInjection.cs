@@ -12,8 +12,10 @@ using ZmitaCart.Domain.Entities;
 using ZmitaCart.Infrastructure.Common;
 using ZmitaCart.Infrastructure.Common.Settings;
 using ZmitaCart.Infrastructure.Persistence;
+using ZmitaCart.Infrastructure.Persistence.DbContexts;
 using ZmitaCart.Infrastructure.Persistence.Interceptors;
 using ZmitaCart.Infrastructure.Repositories;
+using ZmitaCart.Infrastructure.Services;
 
 namespace ZmitaCart.Infrastructure;
 
@@ -42,6 +44,10 @@ public static class DependencyInjection
 
 	private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration, string applicationDbName)
 	{
+		services.AddDbContext<LogDbContext>(options =>
+			options.UseSqlServer(configuration.GetConnectionString(applicationDbName)!, 
+				sqlOpt => sqlOpt.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null)));
+		
 		services.AddDbContext<ApplicationDbContext>(options =>
 			options.UseSqlServer(configuration.GetConnectionString(applicationDbName)!).EnableDetailedErrors());
 
@@ -63,7 +69,9 @@ public static class DependencyInjection
 			.AddEntityFrameworkStores<ApplicationDbContext>();
 		
 		services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
+		services.AddScoped<IUserEventLoggerService, UserEventLoggerService>();
 		services.AddScoped<DateTimeSetterInterceptor>();
+		services.AddScoped<LogOnlyInsertInterceptor>();
 
 		return services;
 	}

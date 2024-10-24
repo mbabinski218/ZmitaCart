@@ -9,4 +9,6 @@ public class FakeCurrentUserService : ICurrentUserService
 	public string? UserId => "1";
 	public string? UserRole => "Admin";
 	public Uri? Uri => new("http://localhost:4200/");
+	public string? IpAddress => "127.0.0.1";
+	public string? UserAgent => "Example User Agent";
 }

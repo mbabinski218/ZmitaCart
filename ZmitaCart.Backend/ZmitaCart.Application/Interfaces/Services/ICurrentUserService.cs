@@ -8,4 +8,6 @@ public interface ICurrentUserService
 	public string? UserId { get; }
 	public string? UserRole { get; }
 	public Uri? Uri { get; }
+	public string? IpAddress { get; }
+	public string? UserAgent { get; }
 }

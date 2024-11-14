@@ -120,9 +120,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @google-pay/button-angular
 Apache-2.0
 
-@microsoft/signalr
-MIT
-
 @ngneat/input-mask
 MIT
 

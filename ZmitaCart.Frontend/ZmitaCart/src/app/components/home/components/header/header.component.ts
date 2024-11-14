@@ -15,7 +15,6 @@ import { RoutingService } from '@shared/services/routing.service';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { SharedService } from '@shared/services/shared.service';
-import { UserChatService } from '@components/account/components/user-chat/services/user-chat.service';
 import { HeaderStateService } from '@core/services/header-state/header-state.service';
 import { UserService } from '@core/services/authorization/user.service';
 
@@ -30,6 +29,8 @@ import { UserService } from '@core/services/authorization/user.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+
+  isAdmin = false;
 
   @HostListener('window:resize')
   onResize(): void {
@@ -64,9 +65,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private sharedService: SharedService,
-    private userChatService: UserChatService,
     private userService: UserService,
-    private headerStateService: HeaderStateService,
+    private headerStateService: HeaderStateService
   ) { }
 
   ngOnInit(): void {
@@ -77,8 +77,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     );
 
     if (this.userService.isAuthenticated()) {
-      this.unreadChatsCount$ = this.userChatService.getNotifications();
       this.likedCount$ = this.sharedService.getFavouritesCount();
+      this.isAdmin = this.userService.isUserAdministrator();
     }
 
     this.form.get('input').valueChanges.pipe(
@@ -109,6 +109,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   navigateTo(fragment?: string): void {
     this.routingService.navigateTo(`${RoutesPath.HOME}/${RoutesPath.ACCOUNT}`, fragment);
+  }
+
+  navigateToLogs(): void {
+    void this.router.navigate([`${RoutesPath.HOME}/${RoutesPath.LOGS}`]);
   }
 
   goToAddOffer(): void {

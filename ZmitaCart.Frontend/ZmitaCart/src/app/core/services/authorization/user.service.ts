@@ -49,6 +49,11 @@ export class UserService {
     return !isEmpty(this.user());
   }
 
+  isUserAdministrator(): boolean {
+    const user = this.user();
+    return user.role === 'Administrator';
+  }
+
   userAuthorization(): TokenData {
     return this.user();
   }

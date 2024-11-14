@@ -224,27 +224,31 @@ public class OfferRepository : IOfferRepository
 	public async Task<Result<PaginatedList<OfferInfoDto>>> SearchOffersAsync(SearchOfferDto search, int? pageNumber = null,
 		int? pageSize = null)
 	{
-		var categoryId = new SqlParameter("categoryId", search.CategoryId);
-		
-		var categoriesId = await _dbContext.Database
-			.SqlQuery<int>
-			($@"
-				WITH Subcategories AS
-				(
-		            SELECT DISTINCT Id, ParentId
-		            FROM Categories
-		            WHERE ParentId = {categoryId}
+		var categoriesId = Enumerable.Empty<int>();
+		if (search.CategoryId != null)
+		{
+			var categoryId = new SqlParameter("categoryId", search.CategoryId);
+			
+			categoriesId = await _dbContext.Database
+				.SqlQuery<int>
+				($@"
+					WITH Subcategories AS
+					(
+			            SELECT DISTINCT Id, ParentId
+			            FROM Categories
+			            WHERE ParentId = {categoryId}
 
-		            UNION ALL
+			            UNION ALL
 
-		            SELECT Categories.Id, Categories.ParentId
-		            FROM Subcategories, Categories
-		            WHERE Categories.ParentId = Subcategories.Id
-				)
+			            SELECT Categories.Id, Categories.ParentId
+			            FROM Subcategories, Categories
+			            WHERE Categories.ParentId = Subcategories.Id
+					)
 
-				SELECT Id FROM Subcategories
-			")
-			.ToListAsync();
+					SELECT Id FROM Subcategories
+				")
+				.ToListAsync();
+		}
 
 		var offers = await _dbContext.Offers
 			.Where(o => EF.Functions.Like(o.Title, $"%{search.Title}%")

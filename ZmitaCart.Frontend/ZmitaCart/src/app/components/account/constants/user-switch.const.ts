@@ -3,10 +3,10 @@ export const USER_SWITCHES: UserSwitch[] = [
     name: 'Dane użytkownika',
     value: 'credentials',
   },
-  {
-    name: 'Czat',
-    value: 'chats',
-  },
+  // {
+  //   name: 'Czat',
+  //   value: 'chats',
+  // },
   {
     name: 'Obserwowane',
     value: 'observed',

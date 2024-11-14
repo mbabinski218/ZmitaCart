@@ -118,6 +118,7 @@ public class GoogleAuthentication
 		await RemoveTokens(user);
 		await _userManager.SetAuthenticationTokenAsync(user, GrantType.google, "RefreshToken", refreshToken);
 
+		await _userManager.ResetAccessFailedCountAsync(user);
 		await _userEventLoggerService.LogUserLoggedInSuccessAsync("Google - User logged in", user.Id, user.Email!);
 		return new TokensDto
 		{

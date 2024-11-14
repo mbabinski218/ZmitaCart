@@ -145,6 +145,6 @@ public class UserController : ApiController
 	[HttpGet("log")]
 	public async Task<ActionResult<PaginatedList<LogDto>>> GetLogs([FromQuery] GetLogsQuery query, CancellationToken cancellationToken) =>
 		await mediator.Send(query, cancellationToken).Then(
-			Ok,
+			s => Ok(s.Value),
 			err => StatusCode(err.StatusCode, err.ToList()));
 }

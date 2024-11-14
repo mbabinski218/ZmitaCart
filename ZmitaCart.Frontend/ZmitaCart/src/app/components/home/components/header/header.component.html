@@ -113,19 +113,13 @@
       </div>
 
       <div
-        *ngIf="{ unreadChatsCount: unreadChatsCount$ | async} as data"
+        *ngIf="isAdmin"
         class="fixer"
       >
         <mat-icon
           class="svg"
-          svgIcon="chat"
-          (click)="navigateTo('chats')"
-        >
-        </mat-icon>
-        <mat-icon
-          class="badge"
-          [matBadge]="data.unreadChatsCount || null"
-          matBadgeSize="medium"
+          svgIcon="logs"
+          (click)="navigateToLogs()"
         >
         </mat-icon>
       </div>

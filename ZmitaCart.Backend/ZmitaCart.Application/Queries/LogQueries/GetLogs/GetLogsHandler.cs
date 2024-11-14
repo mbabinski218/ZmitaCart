@@ -17,6 +17,7 @@ public class GetLogsHandler : IRequestHandler<GetLogsQuery, Result<PaginatedList
 
 	public async Task<Result<PaginatedList<LogDto>>> Handle(GetLogsQuery request, CancellationToken cancellationToken)
 	{
-		return await _userRepository.GetLogsAsync(request.PageNumber, request.PageSize);
+		return await _userRepository.GetLogsAsync(request.SearchText, request.IsSuccess, request.From,
+			request.To, request.PageNumber, request.PageSize);
 	}
 }

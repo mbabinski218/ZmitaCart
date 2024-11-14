@@ -10,6 +10,6 @@ export enum RoutesPath {
     FAVOURITES = 'favourites',
     ACCOUNT = 'account',
     MESSAGES = 'messages',
-
+    LOGS = 'logs',
     DETAILS = 'details',
 }

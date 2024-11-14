@@ -10,6 +10,7 @@ export enum Api {
   USER_CREDENTIALS_UPDATE = '/user/updateCredentials',
   USER_CREDENTIALS = '/user',
   USER_OFFERS = '/user/offer',
+  LOGS = '/user/log',
 
   GET_SUPERIOR_CATEGORIES = '/category/getAllSuperiors',
   GET_SUB_CATEGORIES = '/category/getBySuperiorId',

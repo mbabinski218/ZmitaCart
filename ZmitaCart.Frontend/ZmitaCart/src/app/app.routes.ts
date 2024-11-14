@@ -39,6 +39,11 @@ export const routes: Route[] = [
         canActivate: [userHasAddress],
         loadComponent: () => import('@components/add-offer/add-offer.component').then(m => m.AddOfferComponent),
       },
+      {
+        path: RoutesPath.LOGS,
+        canActivate: [userHasAddress],
+        loadComponent: () => import('@components/read-logs/read-logs.component').then(m => m.ReadLogsComponent),
+      },
     ]
   },
   {

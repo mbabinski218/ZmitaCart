@@ -98,12 +98,14 @@ public class UserRepository : IUserRepository
 
 		if (!await _userManager.IsEmailConfirmedAsync(user))
 		{
+			await _userManager.AccessFailedAsync(user);
 			await _userEventLoggerService.LogUserLoggedInFailureAsync("Email is not confirmed", loginUserDto.Email);
 			return Result.Fail(new InvalidDataError("Email is not confirmed"));
 		}
 
 		if (!await _userManager.CheckPasswordAsync(user, loginUserDto.Password))
 		{
+			await _userManager.AccessFailedAsync(user);
 			await _userEventLoggerService.LogUserLoggedInFailureAsync("Invalid password", loginUserDto.Email);
 			return Result.Fail(new InvalidDataError("Invalid password"));
 		}
@@ -115,6 +117,7 @@ public class UserRepository : IUserRepository
 		await RemoveTokens(user);
 		await _userManager.SetAuthenticationTokenAsync(user, GrantType.password, "RefreshToken", refreshToken);
 		
+		await _userManager.ResetAccessFailedCountAsync(user);
 		await _userEventLoggerService.LogUserLoggedInSuccessAsync("User logged in successfully", user.Id, user.Email!);
 		return new TokensDto
 		{
@@ -145,11 +148,15 @@ public class UserRepository : IUserRepository
 		{
 			var userRefreshToken = await _userManager.GetAuthenticationTokenAsync(user, authenticator, "RefreshToken");
 
-			if(userRefreshToken is null) continue;
+			if (userRefreshToken is null)
+			{
+				continue;
+			}
 			
 			if (userRefreshToken != refreshToken)
 			{
 				await _userManager.RemoveAuthenticationTokenAsync(user, authenticator, "RefreshToken");
+				await _userManager.AccessFailedAsync(user);
 				await _userEventLoggerService.LogUserLoggedInFailureAsync("Outdated or invalid refresh token: " + refreshToken, user.Email!);
 				return Result.Fail(new InvalidDataError("Invalid refresh token"));
 			}
@@ -161,6 +168,7 @@ public class UserRepository : IUserRepository
 			await RemoveTokens(user);
 			await _userManager.SetAuthenticationTokenAsync(user, GrantType.refreshToken, "RefreshToken", newRefreshToken);
 
+			await _userManager.ResetAccessFailedCountAsync(user);
 			await _userEventLoggerService.LogUserLoggedInSuccessAsync("User logged in successfully with refresh token", user.Id, user.Email!);
 			return new TokensDto
 			{
@@ -169,13 +177,14 @@ public class UserRepository : IUserRepository
 			};
 		}
 		
+		await _userManager.AccessFailedAsync(user);
 		await _userEventLoggerService.LogUserLoggedInFailureAsync("Failed to login with refresh token (invalid grant type): " + refreshToken, user.Email!);
 		return Result.Fail(new InvalidDataError("Failed to login with refresh token"));
 	}
 
-	public Task<Result<TokensDto>> LoginWithGoogleAsync(string idToken)
+	public async Task<Result<TokensDto>> LoginWithGoogleAsync(string idToken)
 	{
-		return _googleAuthentication.AuthenticateAsync(idToken);
+		return await _googleAuthentication.AuthenticateAsync(idToken);
 	}
 
 	public async Task<Result> LogoutAsync(int userId)
@@ -353,8 +362,9 @@ public class UserRepository : IUserRepository
 		}
 	}
 	
-	public async Task<Result<PaginatedList<LogDto>>> GetLogsAsync(int? pageNumber, int? pageSize)
+	public async Task<Result<PaginatedList<LogDto>>> GetLogsAsync(string? searchText, bool? isSuccess,
+		DateTimeOffset? from, DateTimeOffset? to, int? pageNumber, int? pageSize)
 	{
-		return await _userEventLoggerService.GetLogsAsync(pageNumber, pageSize);
+		return await _userEventLoggerService.GetLogsAsync(searchText, isSuccess, from, to, pageNumber, pageSize);
 	}
 }

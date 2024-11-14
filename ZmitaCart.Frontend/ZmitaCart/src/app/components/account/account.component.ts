@@ -9,13 +9,12 @@ import { UserDataComponent } from '@components/account/components/user-data/user
 import { UserBoughtComponent } from '@components/account/components/user-bought/user-bought.component';
 import { UserOffersComponent } from '@components/account/components/user-offers/user-offers.component';
 import { USER_SWITCHES } from '@components/account/constants/user-switch.const';
-import { UserChatComponent } from '@components/account/components/user-chat/user-chat.component';
 import { HeaderStateService } from '@core/services/header-state/header-state.service';
 
 @Component({
   selector: 'pp-account',
   standalone: true,
-  imports: [CommonModule, AddressFormComponent, UserFavouritesComponent, MatButtonToggleModule, UserDataComponent, UserBoughtComponent, UserOffersComponent, UserChatComponent],
+  imports: [CommonModule, AddressFormComponent, UserFavouritesComponent, MatButtonToggleModule, UserDataComponent, UserBoughtComponent, UserOffersComponent],
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

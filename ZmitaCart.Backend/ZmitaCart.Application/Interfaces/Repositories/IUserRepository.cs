@@ -25,5 +25,6 @@ public interface IUserRepository
 	Task<Result<User>> FindByEmailAsync(string email);
 	Task<Result> ConfirmEmailAsync(User user, string token);
 	Task<Result<string>> GenerateEmailConfirmationTokenAsync(User user);
-	Task<Result<PaginatedList<LogDto>>> GetLogsAsync(int? pageNumber, int? pageSize);
+	Task<Result<PaginatedList<LogDto>>> GetLogsAsync(string? searchText, bool? isSuccess,
+		DateTimeOffset? from, DateTimeOffset? to, int? pageNumber, int? pageSize);
 }

@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'pp-app-root',
@@ -19,7 +20,7 @@ export class AppComponent {
     customIcons.forEach(([iconName, icon]) => {
       iconRegistry.addSvgIcon(
         iconName,
-        sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:4200/assets/images/${icon}`),
+        sanitizer.bypassSecurityTrustResourceUrl(`${environment.iconPath}${icon}`),
       );
     });
   }
@@ -29,7 +30,7 @@ const customIcons: [string, string][] = [
   ["allegro", "allegro.svg"],
   ["add", "add.svg"],
   ["arrow", "arrow.svg"],
-  ["chat", "chat.svg"],
+  ["logs", "logs.svg"],
   ["heart", "heart.svg"],
   ["heart-filled", "heart-filled.svg"],
   ["user", "user.svg"],

@@ -12,5 +12,6 @@ public interface IUserEventLoggerService
 	Task LogUserLoggedOutFailureAsync(string details, int userId);
 	Task LogUserRegisteredSuccessAsync(string details, int userId, string userEmail);
 	Task LogUserRegisteredFailureAsync(string details, string userEmail);
-	Task<Result<PaginatedList<LogDto>>> GetLogsAsync(int? pageNumber, int? pageSize);
+	Task<Result<PaginatedList<LogDto>>> GetLogsAsync(string? searchText, bool? isSuccess,
+		DateTimeOffset? from, DateTimeOffset? to, int? pageNumber, int? pageSize);
 }

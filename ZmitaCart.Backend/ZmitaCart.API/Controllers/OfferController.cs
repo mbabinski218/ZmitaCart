@@ -94,14 +94,14 @@ public class OfferController : ApiController
             err => StatusCode(err.StatusCode, err.ToList()));
     }
     
-        [HttpGet("favorites/count")]
-        [RoleAuthorize]
-        public async Task<ActionResult<int>> GetFavoritesOffersCount()
-        {
-            return await mediator.Send(new GetFavouritesOfferCountQuery()).Then(
-                s => Ok(s.Value),
-                err => StatusCode(err.StatusCode, err.ToList()));
-        }
+    [HttpGet("favorites/count")]
+    [RoleAuthorize]
+    public async Task<ActionResult<int>> GetFavoritesOffersCount()
+    {
+        return await mediator.Send(new GetFavouritesOfferCountQuery()).Then(
+            s => Ok(s.Value),
+            err => StatusCode(err.StatusCode, err.ToList()));
+    }
     
     [HttpPost("buy")]
     [RoleAuthorize]

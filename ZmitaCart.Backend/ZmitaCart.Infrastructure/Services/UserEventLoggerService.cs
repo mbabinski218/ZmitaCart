@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using Mapster;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ZmitaCart.Application.Common;
 using ZmitaCart.Application.Dtos.LogDtos;
@@ -67,9 +68,22 @@ public sealed class UserEventLoggerService : IUserEventLoggerService
 		}
 	}
 	
-	public async Task<Result<PaginatedList<LogDto>>> GetLogsAsync(int? pageNumber, int? pageSize)
+	public async Task<Result<PaginatedList<LogDto>>> GetLogsAsync(string? searchText, bool? isSuccess,
+		DateTimeOffset? from, DateTimeOffset? to, int? pageNumber, int? pageSize)
 	{
 		var logs = await _logDbContext.UserLogs
+			.Where(x => isSuccess == null || x.IsSuccess == isSuccess)
+            .Where(x => string.IsNullOrWhiteSpace(searchText) 
+				|| EF.Functions.Like(x.Id.ToString(), $"%{searchText}%")
+				|| EF.Functions.Like(x.Action, $"%{searchText}%")
+				|| EF.Functions.Like(x.Details, $"%{searchText}%")
+				|| EF.Functions.Like(x.IpAddress, $"%{searchText}%")
+				|| EF.Functions.Like(x.UserAgent, $"%{searchText}%")
+				|| (x.UserId != null && EF.Functions.Like(x.UserId.ToString(), $"%{searchText}%"))
+				|| (x.UserEmail != null && EF.Functions.Like(x.UserEmail, $"%{searchText}%"))
+			)
+			.Where(x => from == null || x.Timestamp >= from)
+			.Where(x => to == null || x.Timestamp <= to)
 			.OrderByDescending(x => x.Timestamp)
 			.ProjectToType<LogDto>()
 			.ToPaginatedListAsync(pageNumber, pageSize);

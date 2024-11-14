@@ -40,18 +40,18 @@ export class AccountService {
     );
   }
 
-  createNewChat(id: string): Observable<number> {
-    const params = new HttpParams()
-      .set('offerId', id);
+  // createNewChat(id: string): Observable<number> {
+  //   const params = new HttpParams()
+  //     .set('offerId', id);
 
-    return this.http.post<number>(`${environment.httpBackend}${Api.CONVERSATION}`, {}, { params }).pipe(
-      catchError((err: HttpErrorResponse) => {
-        const error = err.error as string[];
-        this.toastMessageService.notifyOfError(error[0]);
-        return of();
-      })
-    );
-  }
+  //   return this.http.post<number>(`${environment.httpBackend}${Api.CONVERSATION}`, {}, { params }).pipe(
+  //     catchError((err: HttpErrorResponse) => {
+  //       const error = err.error as string[];
+  //       this.toastMessageService.notifyOfError(error[0]);
+  //       return of();
+  //     })
+  //   );
+  // }
 
   getFavourites(pageNumber: number): Observable<AccountOffers> {
     const params = new HttpParams()
